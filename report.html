@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#b91c1c" />
+  <title>รายงานผลตรวจ | Fire Extinguisher</title>
+
+  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.0.4" />
+
+  <style>
+    .page-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .back-link {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      box-shadow: var(--shadow);
+    }
+
+    .page-title h1 {
+      margin: 0;
+      font-size: clamp(20px, 5vw, 30px);
+      line-height: 1.12;
+    }
+
+    .page-title p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .tab-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .tab-btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 16px;
+      padding: 12px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      border-color: rgba(185, 28, 28, 0.85);
+      background: rgba(185, 28, 28, 0.09);
+      color: var(--primary-dark);
+      box-shadow: 0 0 0 4px rgba(185, 28, 28, 0.08);
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .field label {
+      display: block;
+      font-weight: 900;
+      margin-bottom: 7px;
+      font-size: 14px;
+    }
+
+    .date-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .action-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .summary-grid.report-summary {
+      margin-top: 0;
+    }
+
+    .summary-card small {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .toolbar h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    th,
+    td {
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    th {
+      background: #f9fafb;
+      font-weight: 900;
+      color: #374151;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .badge.ok {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .badge.bad {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .badge.wait {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .mobile-list {
+      display: none;
+      gap: 10px;
+    }
+
+    .result-card {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+    }
+
+    .result-card h3 {
+      margin: 0 0 6px;
+      font-size: 18px;
+    }
+
+    .result-card p {
+      margin: 3px 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .result-card .card-foot {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .empty-state {
+      color: var(--muted);
+      background: #f9fafb;
+      border: 1px dashed var(--line);
+      padding: 14px;
+      border-radius: 16px;
+      text-align: center;
+      line-height: 1.45;
+    }
+
+    .detail-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9998;
+      display: none;
+      background: rgba(15, 23, 42, 0.55);
+      padding: 16px;
+      overflow: auto;
+    }
+
+    .detail-modal.show {
+      display: grid;
+      place-items: center;
+    }
+
+    .modal-box {
+      width: min(100%, 760px);
+      max-height: 92vh;
+      overflow: auto;
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.24);
+      padding: 18px;
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .modal-head h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .detail-item {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px 12px;
+      background: #f9fafb;
+    }
+
+    .detail-item span {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    .detail-item strong {
+      display: block;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    @media (min-width: 720px) {
+      .filter-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .field.wide {
+        grid-column: span 2;
+      }
+
+      .action-row {
+        grid-template-columns: repeat(4, auto);
+        justify-content: end;
+      }
+
+      .detail-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 680px) {
+      .table-wrap {
+        display: none;
+      }
+
+      .mobile-list {
+        display: grid;
+      }
+
+      .tab-row {
+        grid-template-columns: 1fr;
+      }
+
+      .date-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .action-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .app-shell {
+        padding: 12px;
+      }
+
+      .panel {
+        padding: 13px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app-shell">
+    <div class="page-top">
+      <a class="back-link" href="/fire-extinguisher/">←</a>
+      <div class="page-title">
+        <h1>รายงานผลตรวจ</h1>
+        <p>กรองข้อมูล ตรวจแล้ว/ยังไม่ได้ตรวจ และ Export CSV/Excel</p>
+      </div>
+    </div>
+
+    <section class="panel">
+      <div class="tab-row">
+        <button class="tab-btn active" id="tabReport" type="button" data-mode="report">
+          รายการผลตรวจ
+        </button>
+        <button class="tab-btn" id="tabStatus" type="button" data-mode="status">
+          สถานะตรวจแล้ว/ยังไม่ได้ตรวจ
+        </button>
+      </div>
+
+      <div class="filter-grid">
+        <div class="field">
+          <label for="periodSelect">ช่วงเวลา</label>
+          <select id="periodSelect">
+            <option value="today">วันนี้</option>
+            <option value="yesterday">เมื่อวาน</option>
+            <option value="last7days">7 วันที่ผ่านมา</option>
+            <option value="last14days">14 วันที่ผ่านมา</option>
+            <option value="last30days">30 วันที่ผ่านมา</option>
+            <option value="thisMonth" selected>เดือนนี้</option>
+            <option value="lastMonth">เดือนที่แล้ว</option>
+            <option value="thisYear">ปีนี้</option>
+            <option value="custom">กำหนดเอง</option>
+          </select>
+        </div>
+
+        <div class="field date-field" hidden>
+          <label for="startDate">วันที่เริ่มต้น</label>
+          <input id="startDate" type="date" />
+        </div>
+
+        <div class="field date-field" hidden>
+          <label for="endDate">วันที่สิ้นสุด</label>
+          <input id="endDate" type="date" />
+        </div>
+
+        <div class="field">
+          <label for="inspectorSelect">ผู้บันทึก</label>
+          <select id="inspectorSelect">
+            <option value="all">ทั้งหมด</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="typeSelect">ประเภทถัง</label>
+          <select id="typeSelect">
+            <option value="all">ทั้งหมด</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="statusSelect">ผลตรวจ/สถานะ</label>
+          <select id="statusSelect">
+            <option value="all">ทั้งหมด</option>
+            <option value="ปกติ">ปกติ</option>
+            <option value="ผิดปกติ">ผิดปกติ</option>
+            <option value="ตรวจแล้ว">ตรวจแล้ว</option>
+            <option value="ยังไม่ได้ตรวจ">ยังไม่ได้ตรวจ</option>
+          </select>
+        </div>
+
+        <div class="field wide">
+          <label for="searchInput">ค้นหา</label>
+          <input id="searchInput" type="search" placeholder="หมายเลขถัง / จุดติดตั้ง" />
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="btn primary" id="loadBtn" type="button">แสดงผล</button>
+        <button class="btn ghost" id="clearBtn" type="button">ล้างตัวกรอง</button>
+        <button class="btn danger" id="csvBtn" type="button">Export CSV</button>
+        <button class="btn danger" id="excelBtn" type="button">Export Excel</button>
+      </div>
+    </section>
+
+    <section class="summary-grid report-summary">
+      <article class="summary-card">
+        <span id="sumLabel1">รายการทั้งหมด</span>
+        <strong id="sum1">-</strong>
+      </article>
+
+      <article class="summary-card">
+        <span id="sumLabel2">ถังที่ตรวจแล้ว</span>
+        <strong id="sum2">-</strong>
+      </article>
+
+      <article class="summary-card warning">
+        <span id="sumLabel3">ยังไม่ได้ตรวจ</span>
+        <strong id="sum3">-</strong>
+      </article>
+
+      <article class="summary-card danger">
+        <span id="sumLabel4">ผิดปกติ</span>
+        <strong id="sum4">-</strong>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="toolbar">
+        <h2 id="resultTitle">รายการผลตรวจ</h2>
+        <span class="count-badge" id="resultCount">0 รายการ</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead id="tableHead"></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="mobile-list" id="mobileList"></div>
+    </section>
+  </main>
+
+  <div class="detail-modal" id="detailModal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div>
+          <h2 id="modalTitle">รายละเอียด</h2>
+          <p style="margin:4px 0 0;color:var(--muted);font-size:13px;" id="modalSubTitle"></p>
+        </div>
+        <button class="btn ghost small" id="closeModalBtn" type="button">ปิด</button>
+      </div>
+
+      <div class="detail-grid" id="detailGrid"></div>
+    </div>
+  </div>
+
+  <script src="/fire-extinguisher/js/config.js?v=1.0.4"></script>
+  <script src="/fire-extinguisher/js/api.js?v=1.0.4"></script>
+  <script src="/fire-extinguisher/js/utils.js?v=1.0.4"></script>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const U = window.FireUtils;
+      const API = window.FireAPI;
+
+      let mode = 'report';
+      let currentItems = [];
+      let names = [];
+      let extinguishers = [];
+
+      document.addEventListener('DOMContentLoaded', init);
+
+      async function init() {
+        bindEvents();
+        await loadOptions();
+        await loadData();
+      }
+
+      function bindEvents() {
+        U.$('#tabReport').addEventListener('click', () => setMode('report'));
+        U.$('#tabStatus').addEventListener('click', () => setMode('status'));
+        U.$('#periodSelect').addEventListener('change', toggleCustomDate);
+        U.$('#loadBtn').addEventListener('click', loadData);
+        U.$('#clearBtn').addEventListener('click', clearFilters);
+        U.$('#csvBtn').addEventListener('click', () => exportFile('csv'));
+        U.$('#excelBtn').addEventListener('click', () => exportFile('excel'));
+        U.$('#closeModalBtn').addEventListener('click', closeModal);
+        U.$('#detailModal').addEventListener('click', (e) => {
+          if (e.target.id === 'detailModal') closeModal();
+        });
+      }
+
+      function setMode(nextMode) {
+        mode = nextMode;
+
+        U.$('#tabReport').classList.toggle('active', mode === 'report');
+        U.$('#tabStatus').classList.toggle('active', mode === 'status');
+
+        U.$('#resultTitle').textContent = mode === 'report'
+          ? 'รายการผลตรวจ'
+          : 'สถานะตรวจแล้ว/ยังไม่ได้ตรวจ';
+
+        loadData();
+      }
+
+      async function loadOptions() {
+        try {
+          const [namesRes, extRes] = await Promise.all([
+            API.getNames(),
+            API.getExtinguishers()
+          ]);
+
+          names = namesRes.items || [];
+          extinguishers = extRes.items || [];
+
+          renderInspectorOptions();
+          renderTypeOptions();
+        } catch (err) {
+          U.toast(err.message || 'โหลดตัวเลือกไม่สำเร็จ', 'warning');
+        }
+      }
+
+      function renderInspectorOptions() {
+        const select = U.$('#inspectorSelect');
+
+        select.innerHTML = '<option value="all">ทั้งหมด</option>' + names.map(item => {
+          const label = item.displayName || item.thaiName || item.englishName || '';
+          const value = item.thaiName || item.englishName || '';
+          return `<option value="${U.escapeHtml(value)}">${U.escapeHtml(label)}</option>`;
+        }).join('');
+      }
+
+      function renderTypeOptions() {
+        const select = U.$('#typeSelect');
+        const types = [...new Set(extinguishers.map(x => x.type).filter(Boolean))];
+
+        select.innerHTML = '<option value="all">ทั้งหมด</option>' + types.map(type => {
+          return `<option value="${U.escapeHtml(type)}">${U.escapeHtml(type)}</option>`;
+        }).join('');
+      }
+
+      function toggleCustomDate() {
+        const isCustom = U.$('#periodSelect').value === 'custom';
+        U.$all('.date-field').forEach(el => {
+          el.hidden = !isCustom;
+        });
+      }
+
+      function clearFilters() {
+        U.$('#periodSelect').value = 'thisMonth';
+        U.$('#startDate').value = '';
+        U.$('#endDate').value = '';
+        U.$('#inspectorSelect').value = 'all';
+        U.$('#typeSelect').value = 'all';
+        U.$('#statusSelect').value = 'all';
+        U.$('#searchInput').value = '';
+        toggleCustomDate();
+        loadData();
+      }
+
+      function buildParams() {
+        const period = U.$('#periodSelect').value;
+        const search = U.$('#searchInput').value.trim();
+
+        const params = {
+          period,
+          inspector: U.$('#inspectorSelect').value || 'all',
+          type: U.$('#typeSelect').value || 'all',
+          status: U.$('#statusSelect').value || 'all'
+        };
+
+        if (period === 'custom') {
+          params.start = U.$('#startDate').value;
+          params.end = U.$('#endDate').value;
+        }
+
+        if (search) {
+          if (search.toUpperCase().startsWith('FE')) {
+            params.extinguisherId = search;
+          } else {
+            params.location = search;
+          }
+        }
+
+        return params;
+      }
+
+      async function loadData() {
+        const btn = U.$('#loadBtn');
+
+        try {
+          U.setLoading(btn, true, 'กำลังโหลด...');
+
+          const params = buildParams();
+          let res;
+
+          if (mode === 'status') {
+            res = await API.getInspectionStatus(params);
+          } else {
+            res = await API.getReport(params);
+          }
+
+          currentItems = res.items || [];
+
+          renderSummary(res.summary || {});
+          renderResults(currentItems);
+        } catch (err) {
+          U.toast(err.message || 'โหลดข้อมูลไม่สำเร็จ', 'error');
+          currentItems = [];
+          renderResults([]);
+        } finally {
+          U.setLoading(btn, false);
+        }
+      }
+
+      function renderSummary(summary) {
+        if (mode === 'status') {
+          U.setText('#sumLabel1', 'ถังทั้งหมด');
+          U.setText('#sumLabel2', 'ตรวจแล้ว');
+          U.setText('#sumLabel3', 'ยังไม่ได้ตรวจ');
+          U.setText('#sumLabel4', 'ผิดปกติ');
+
+          U.setText('#sum1', summary.totalExtinguishers ?? 0);
+          U.setText('#sum2', summary.checked ?? 0);
+          U.setText('#sum3', summary.unchecked ?? 0);
+          U.setText('#sum4', summary.abnormal ?? 0);
+        } else {
+          U.setText('#sumLabel1', 'รายการทั้งหมด');
+          U.setText('#sumLabel2', 'ถังที่ตรวจแล้ว');
+          U.setText('#sumLabel3', 'ผลปกติ');
+          U.setText('#sumLabel4', 'ผลผิดปกติ');
+
+          U.setText('#sum1', summary.totalRecords ?? 0);
+          U.setText('#sum2', summary.checkedExtinguishers ?? 0);
+          U.setText('#sum3', summary.normalRecords ?? 0);
+          U.setText('#sum4', summary.abnormalRecords ?? 0);
+        }
+      }
+
+      function renderResults(items) {
+        U.$('#resultCount').textContent = `${items.length} รายการ`;
+
+        if (mode === 'status') {
+          renderStatusTable(items);
+          renderStatusCards(items);
+        } else {
+          renderReportTable(items);
+          renderReportCards(items);
+        }
+      }
+
+      function renderReportTable(items) {
+        U.$('#tableHead').innerHTML = `
+          <tr>
+            <th>วันที่ตรวจ</th>
+            <th>หมายเลขถัง</th>
+            <th>จุดติดตั้ง</th>
+            <th>ชนิด</th>
+            <th>ผลตรวจ</th>
+            <th>ผู้บันทึก</th>
+            <th>รายละเอียด</th>
+          </tr>
+        `;
+
+        if (!items.length) {
+          U.$('#tableBody').innerHTML = `
+            <tr><td colspan="7">ไม่พบข้อมูล</td></tr>
+          `;
+          return;
+        }
+
+        U.$('#tableBody').innerHTML = items.map((item, index) => {
+          return `
+            <tr>
+              <td>${U.escapeHtml(item.timestamp)}</td>
+              <td><strong>${U.escapeHtml(item.extinguisherId)}</strong></td>
+              <td>${U.escapeHtml(item.location)}</td>
+              <td>${U.escapeHtml(item.type)}</td>
+              <td>${renderBadge(item.overallStatus)}</td>
+              <td>${U.escapeHtml(item.inspectorThai || '-')}</td>
+              <td><button class="btn ghost small" type="button" data-detail="${index}">ดู</button></td>
+            </tr>
+          `;
+        }).join('');
+
+        bindDetailButtons();
+      }
+
+      function renderStatusTable(items) {
+        U.$('#tableHead').innerHTML = `
+          <tr>
+            <th>หมายเลขถัง</th>
+            <th>จุดติดตั้ง</th>
+            <th>ชนิด</th>
+            <th>สถานะ</th>
+            <th>ตรวจล่าสุด</th>
+            <th>ผลล่าสุด</th>
+            <th>จำนวนครั้ง</th>
+            <th>ผู้ตรวจล่าสุด</th>
+          </tr>
+        `;
+
+        if (!items.length) {
+          U.$('#tableBody').innerHTML = `
+            <tr><td colspan="8">ไม่พบข้อมูล</td></tr>
+          `;
+          return;
+        }
+
+        U.$('#tableBody').innerHTML = items.map(item => {
+          return `
+            <tr>
+              <td><strong>${U.escapeHtml(item.extinguisherId)}</strong></td>
+              <td>${U.escapeHtml(item.location)}</td>
+              <td>${U.escapeHtml(item.type)}</td>
+              <td>${renderStatusBadge(item.inspectionStatus)}</td>
+              <td>${U.escapeHtml(item.lastCheckedAt || '-')}</td>
+              <td>${item.lastResult ? renderBadge(item.lastResult) : '-'}</td>
+              <td>${U.escapeHtml(item.checkCount ?? 0)}</td>
+              <td>${U.escapeHtml(item.lastInspectorThai || '-')}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      function renderReportCards(items) {
+        const box = U.$('#mobileList');
+
+        if (!items.length) {
+          box.innerHTML = '<div class="empty-state">ไม่พบข้อมูล</div>';
+          return;
+        }
+
+        box.innerHTML = items.map((item, index) => {
+          return `
+            <article class="result-card">
+              <h3>${U.escapeHtml(item.extinguisherId)}</h3>
+              <p>${U.escapeHtml(item.location || '-')}</p>
+              <p>${U.escapeHtml(item.type || '-')} / ${U.escapeHtml(item.size || '-')}</p>
+              <p>${U.escapeHtml(item.timestamp || '-')}</p>
+              <div class="card-foot">
+                ${renderBadge(item.overallStatus)}
+                <button class="btn ghost small" type="button" data-detail="${index}">ดูรายละเอียด</button>
+              </div>
+            </article>
+          `;
+        }).join('');
+
+        bindDetailButtons();
+      }
+
+      function renderStatusCards(items) {
+        const box = U.$('#mobileList');
+
+        if (!items.length) {
+          box.innerHTML = '<div class="empty-state">ไม่พบข้อมูล</div>';
+          return;
+        }
+
+        box.innerHTML = items.map(item => {
+          return `
+            <article class="result-card">
+              <h3>${U.escapeHtml(item.extinguisherId)}</h3>
+              <p>${U.escapeHtml(item.location || '-')}</p>
+              <p>${U.escapeHtml(item.type || '-')} / ${U.escapeHtml(item.size || '-')}</p>
+              <div class="card-foot">
+                ${renderStatusBadge(item.inspectionStatus)}
+                <span>${item.lastResult ? renderBadge(item.lastResult) : ''}</span>
+              </div>
+              <p>ตรวจล่าสุด: ${U.escapeHtml(item.lastCheckedAt || '-')}</p>
+              <p>จำนวนครั้ง: ${U.escapeHtml(item.checkCount ?? 0)}</p>
+              <p>ผู้ตรวจล่าสุด: ${U.escapeHtml(item.lastInspectorThai || '-')}</p>
+            </article>
+          `;
+        }).join('');
+      }
+
+      function renderBadge(status) {
+        const isOk = status === 'ปกติ';
+        return `<span class="badge ${isOk ? 'ok' : 'bad'}">${U.escapeHtml(status || '-')}</span>`;
+      }
+
+      function renderStatusBadge(status) {
+        if (status === 'ตรวจแล้ว') {
+          return `<span class="badge ok">ตรวจแล้ว</span>`;
+        }
+
+        return `<span class="badge wait">ยังไม่ได้ตรวจ</span>`;
+      }
+
+      function bindDetailButtons() {
+        U.$all('[data-detail]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const index = Number(btn.dataset.detail);
+            openDetail(currentItems[index]);
+          });
+        });
+      }
+
+      function openDetail(item) {
+        if (!item) return;
+
+        U.$('#modalTitle').textContent = item.extinguisherId || 'รายละเอียด';
+        U.$('#modalSubTitle').textContent = `${item.location || '-'} • ${item.timestamp || '-'}`;
+
+        const fields = [
+          ['Timestamp', item.timestamp],
+          ['เดือน', item.month],
+          ['หมายเลขถัง', item.extinguisherId],
+          ['จุดติดตั้ง', item.location],
+          ['ชนิดถังดับเพลิง', item.type],
+          ['ขนาด', item.size],
+          ['ปีผลิดถัง', item.yearMade],
+          ['ความสะอาด', item.cleanliness],
+          ['หมายเหตุความสะอาด', item.cleanlinessNote],
+          ['สภาพถัง', item.bodyStatus],
+          ['หมายเหตุสภาพถัง', item.bodyNote],
+          ['แรงดัน', item.pressureStatus],
+          ['หมายเหตุแรงดัน', item.pressureNote],
+          ['เกจวัด/น้ำหนัก', item.gaugeWeightStatus],
+          ['หมายเหตุเกจวัด/น้ำหนัก', item.gaugeWeightNote],
+          ['น้ำหนักถัง CO2', item.co2Weight],
+          ['สาย/กระบอกฉีด', item.hoseStatus],
+          ['หมายเหตุสาย/กระบอกฉีด', item.hoseNote],
+          ['สายรัดสลัก', item.pinSealStatus],
+          ['หมายเหตุสายรัดสลัก', item.pinSealNote],
+          ['คันบังคับ', item.handleStatus],
+          ['หมายเหตุคันบังคับ', item.handleNote],
+          ['ผลตรวจรวม', item.overallStatus],
+          ['ชื่อผู้บันทึก', item.inspectorThai],
+          ['Name', item.inspectorEnglish],
+          ['หมายเหตุเพิ่มเติม', item.remark]
+        ];
+
+        U.$('#detailGrid').innerHTML = fields.map(([label, value]) => {
+          return `
+            <div class="detail-item">
+              <span>${U.escapeHtml(label)}</span>
+              <strong>${U.escapeHtml(value || '-')}</strong>
+            </div>
+          `;
+        }).join('');
+
+        U.$('#detailModal').classList.add('show');
+      }
+
+      function closeModal() {
+        U.$('#detailModal').classList.remove('show');
+      }
+
+      async function exportFile(type) {
+        try {
+          const params = {
+            ...buildParams(),
+            mode
+          };
+
+          U.toast(`กำลังสร้างไฟล์ ${type.toUpperCase()}...`, 'info');
+
+          const res = type === 'csv'
+            ? await API.exportCsv(params)
+            : await API.exportExcel(params);
+
+          U.downloadBase64File(res.base64, res.fileName, res.mimeType);
+
+          U.toast('Export สำเร็จ', 'success');
+        } catch (err) {
+          U.toast(err.message || 'Export ไม่สำเร็จ', 'error');
+        }
+      }
+    })();
+  </script>
+</body>
+</html>
