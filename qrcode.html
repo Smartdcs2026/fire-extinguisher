@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.6" />
+  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.7" />
 
   <style>
     body,
@@ -238,7 +238,7 @@
       width: 100%;
       box-sizing: border-box;
       display: grid;
-      grid-template-rows: 0.24cm 0.46cm 2.95cm 1fr 0.22cm;
+      grid-template-rows: 0.48cm 3.05cm 1.25cm 0.22cm;
       justify-items: center;
       align-content: start;
       padding: 0.12cm 0.18cm;
@@ -253,24 +253,11 @@
       padding-top: 0.20cm;
     }
 
-    .qr-title {
-      width: 100%;
-      font-size: 7.2px;
-      line-height: 1;
-      font-weight: 950;
-      letter-spacing: 0.35px;
-      color: #991b1b;
-      text-transform: uppercase;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
     .qr-no {
       width: 100%;
       display: grid;
       place-items: center;
-      font-size: 18px;
+      font-size: 20px;
       line-height: 1;
       font-weight: 950;
       color: #111827;
@@ -279,80 +266,113 @@
       overflow: hidden;
       text-overflow: ellipsis;
       border-bottom: 1px solid #e5e7eb;
-      padding-bottom: 0.04cm;
+      padding-bottom: 0.05cm;
     }
 
     .qr-box-wrap {
       width: 100%;
       display: grid;
       place-items: center;
-      padding-top: 0.05cm;
+      padding-top: 0.08cm;
     }
 
     .qr-box {
-      width: 2.85cm;
-      height: 2.85cm;
+      width: 2.92cm;
+      height: 2.92cm;
       display: grid;
       place-items: center;
     }
 
     .qr-box canvas,
     .qr-box img {
-      width: 2.85cm !important;
-      height: 2.85cm !important;
+      width: 2.92cm !important;
+      height: 2.92cm !important;
       display: block;
     }
 
     .qr-detail {
       width: 100%;
       display: grid;
-      align-content: start;
-      gap: 0.04cm;
-      padding-top: 0.06cm;
+      grid-template-rows: auto auto;
+      gap: 0.07cm;
+      padding-top: 0.07cm;
       color: #111827;
       overflow: hidden;
     }
 
-    .qr-detail-line {
+    .detail-location {
       width: 100%;
       display: grid;
       grid-template-columns: auto minmax(0, 1fr);
-      gap: 0.05cm;
-      align-items: baseline;
-      font-size: 8.1px;
-      line-height: 1.14;
+      gap: 0.06cm;
+      align-items: center;
+      min-height: 0.36cm;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.08cm;
+      padding: 0.04cm 0.08cm;
+      box-sizing: border-box;
+      font-size: 8.4px;
+      line-height: 1.1;
       text-align: left;
       white-space: nowrap;
       overflow: hidden;
     }
 
-    .qr-detail-line b {
-      font-weight: 950;
-      color: #111827;
+    .detail-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr 0.82fr;
+      gap: 0.07cm;
     }
 
-    .qr-detail-line span {
+    .detail-box {
       min-width: 0;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.08cm;
+      padding: 0.04cm 0.06cm;
+      box-sizing: border-box;
+      text-align: left;
+      overflow: hidden;
+    }
+
+    .detail-label {
+      display: block;
+      font-size: 6.2px;
+      line-height: 1;
+      color: #64748b;
+      font-weight: 900;
+      margin-bottom: 0.03cm;
+      white-space: nowrap;
+    }
+
+    .detail-value {
+      display: block;
+      font-size: 8.2px;
+      line-height: 1.08;
+      color: #111827;
+      font-weight: 850;
+      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .qr-detail-pair {
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.10cm;
+    .detail-location .detail-label {
+      margin-bottom: 0;
     }
 
-    .qr-detail-pair .qr-detail-line {
-      grid-template-columns: auto minmax(0, 1fr);
+    .detail-location .detail-value {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .qr-footer {
       width: 100%;
       display: grid;
       place-items: center;
-      font-size: 7.1px;
+      font-size: 7px;
       line-height: 1;
       color: #6b7280;
       font-weight: 800;
@@ -503,7 +523,7 @@
 
       <div class="page-title">
         <h1>พิมพ์ QR Code</h1>
-        <p>1 ใบเคลือบ 7.2 x 11 ซม. / 2 ถัง / หมายเลขอยู่บน QR</p>
+        <p>1 ใบเคลือบ 7.2 x 11 ซม. / 2 ถัง / ข้อมูลใต้ QR แบบจัดระเบียบ</p>
       </div>
     </div>
 
@@ -552,9 +572,9 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script src="/fire-extinguisher/js/config.js?v=1.2.6"></script>
-  <script src="/fire-extinguisher/js/api.js?v=1.2.6"></script>
-  <script src="/fire-extinguisher/js/utils.js?v=1.2.6"></script>
+  <script src="/fire-extinguisher/js/config.js?v=1.2.7"></script>
+  <script src="/fire-extinguisher/js/api.js?v=1.2.7"></script>
+  <script src="/fire-extinguisher/js/utils.js?v=1.2.7"></script>
 
   <script>
     (function () {
@@ -750,10 +770,6 @@
       function buildQrMiniHtml(item, qrId) {
         return `
           <div class="qr-mini">
-            <div class="qr-title">
-              FIRE EXTINGUISHER CHECK
-            </div>
-
             <div class="qr-no">
               ${U.escapeHtml(item.extinguisherId || '-')}
             </div>
@@ -763,26 +779,26 @@
             </div>
 
             <div class="qr-detail">
-              <div class="qr-detail-line">
-                <b>จุด:</b>
-                <span>${U.escapeHtml(item.location || '-')}</span>
+              <div class="detail-location">
+                <span class="detail-label">จุดติดตั้ง</span>
+                <span class="detail-value">${U.escapeHtml(item.location || '-')}</span>
               </div>
 
-              <div class="qr-detail-pair">
-                <div class="qr-detail-line">
-                  <b>ชนิด:</b>
-                  <span>${U.escapeHtml(item.type || '-')}</span>
+              <div class="detail-grid">
+                <div class="detail-box">
+                  <span class="detail-label">ชนิด</span>
+                  <span class="detail-value">${U.escapeHtml(item.type || '-')}</span>
                 </div>
 
-                <div class="qr-detail-line">
-                  <b>ขนาด:</b>
-                  <span>${U.escapeHtml(item.size || '-')}</span>
+                <div class="detail-box">
+                  <span class="detail-label">ขนาด</span>
+                  <span class="detail-value">${U.escapeHtml(item.size || '-')}</span>
                 </div>
-              </div>
 
-              <div class="qr-detail-line">
-                <b>ปีผลิต:</b>
-                <span>${U.escapeHtml(item.yearMade || '-')}</span>
+                <div class="detail-box">
+                  <span class="detail-label">ปีผลิต</span>
+                  <span class="detail-value">${U.escapeHtml(item.yearMade || '-')}</span>
+                </div>
               </div>
             </div>
 
@@ -815,8 +831,8 @@
 
         new QRCode(element, {
           text,
-          width: 108,
-          height: 108,
+          width: 110,
+          height: 110,
           colorDark: '#111827',
           colorLight: '#ffffff',
           correctLevel: QRCode.CorrectLevel.M
