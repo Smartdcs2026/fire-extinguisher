@@ -344,12 +344,17 @@
 <body>
   <main class="app-shell">
     <div class="page-top">
-      <a class="back-link" href="/fire-extinguisher/">←</a>
-      <div class="page-title">
-        <h1>รายงานผลตรวจ</h1>
-        <p>กรองข้อมูล ตรวจแล้ว/ยังไม่ได้ตรวจ และ Export CSV/Excel</p>
-      </div>
-    </div>
+  <a class="back-link" href="/fire-extinguisher/">←</a>
+
+  <div class="page-logo">
+    <img id="pageLogo" alt="Fire Extinguisher Logo" />
+  </div>
+
+  <div class="page-title">
+    <h1>รายงานผลตรวจ</h1>
+    <p>กรองข้อมูล ตรวจแล้ว/ยังไม่ได้ตรวจ และ Export CSV/Excel</p>
+  </div>
+</div>
 
     <section class="panel">
       <div class="tab-row">
@@ -497,12 +502,18 @@
 
       document.addEventListener('DOMContentLoaded', init);
 
-      async function init() {
-        bindEvents();
-        await loadOptions();
-        await loadData();
-      }
-
+    async function init() {
+  setLogo();
+  bindEvents();
+  await loadOptions();
+  await loadData();
+}
+function setLogo() {
+  const logo = U.$('#pageLogo');
+  if (logo) {
+    logo.src = window.APP_CONFIG.LOGO_URL;
+  }
+}
       function bindEvents() {
         U.$('#tabReport').addEventListener('click', () => setMode('report'));
         U.$('#tabStatus').addEventListener('click', () => setMode('status'));
