@@ -827,13 +827,18 @@ function setLogo() {
       }
 
       function bindDetailButtons() {
-        U.$all('[data-detail]').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const index = Number(btn.dataset.detail);
-            openDetail(currentItems[index]);
-          });
-        });
+  U.$all('[data-detail]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      try {
+        const index = Number(btn.dataset.detail);
+        openDetail(currentItems[index]);
+      } catch (err) {
+        U.toast(err.message || 'เปิดรายละเอียดไม่ได้', 'error');
+        console.error(err);
       }
+    });
+  });
+}
       function formatMonthValue(value) {
   const text = String(value || '').trim();
 
