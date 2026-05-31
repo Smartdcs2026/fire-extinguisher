@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html lang="th">
-<header class="app-header">
-  <div class="brand-mark brand-logo">
-    <img id="appLogo" alt="Fire Extinguisher Logo" />
-  </div>
-  <div class="brand-text">
-    <h1>Fire Extinguisher</h1>
-    <p>ระบบตรวจเช็คถังดับเพลิง</p>
-  </div>
-</header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#b91c1c" />
+  <title>Fire Extinguisher</title>
+
+  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.0.8" />
+</head>
 
 <body>
   <main class="app-shell">
     <header class="app-header">
-      <div class="brand-mark">FE</div>
+      <div class="brand-mark brand-logo">
+        <img id="appLogo" alt="Smart DC Logo" />
+      </div>
+
       <div class="brand-text">
         <h1>Fire Extinguisher</h1>
         <p>ระบบตรวจเช็คถังดับเพลิง</p>
@@ -85,12 +87,12 @@
     </section>
 
     <nav class="action-grid">
-      <a class="action-card" href="qrcode.html">
+      <a class="action-card" href="/fire-extinguisher/qrcode.html">
         <strong>พิมพ์ QR Code</strong>
         <span>เลือกถังและสร้างบัตร QR</span>
       </a>
 
-      <a class="action-card" href="report.html">
+      <a class="action-card" href="/fire-extinguisher/report.html">
         <strong>รายงานผลตรวจ</strong>
         <span>ดูตรวจแล้ว/ยังไม่ได้ตรวจ และ Export</span>
       </a>
@@ -104,14 +106,11 @@
     </section>
   </main>
 
-  <script src="/fire-extinguisher/js/config.js?v=1.0.6"></script>
-<script src="/fire-extinguisher/js/api.js?v=1.0.6"></script>
-<script src="/fire-extinguisher/js/utils.js?v=1.0.6"></script>
-
-<!-- ZXing fallback สำหรับ Browser ที่ไม่มี BarcodeDetector -->
-<script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
-
-<script src="/fire-extinguisher/js/scanner.js?v=1.0.6"></script>
+  <script src="/fire-extinguisher/js/config.js?v=1.0.8"></script>
+  <script src="/fire-extinguisher/js/api.js?v=1.0.8"></script>
+  <script src="/fire-extinguisher/js/utils.js?v=1.0.8"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
+  <script src="/fire-extinguisher/js/scanner.js?v=1.0.8"></script>
 
   <script>
     (function () {
@@ -131,17 +130,19 @@
       document.addEventListener('DOMContentLoaded', init);
 
       async function init() {
-  setLogo();
-  bindEvents();
-  await checkHealth();
-  await loadMonthStatus();
-}
+        setLogo();
+        bindEvents();
+        await checkHealth();
+        await loadMonthStatus();
+      }
+
       function setLogo() {
-  const logo = U.$('#appLogo');
-  if (logo) {
-    logo.src = window.APP_CONFIG.LOGO_URL;
-  }
-}
+        const logo = U.$('#appLogo');
+        if (logo) {
+          logo.src = window.APP_CONFIG.LOGO_URL;
+        }
+      }
+
       function bindEvents() {
         openScannerBtn.addEventListener('click', openScanner);
         closeScannerBtn.addEventListener('click', closeScanner);
@@ -198,20 +199,20 @@
           U.show(scannerPanel);
           U.setLoading(openScannerBtn, true, 'กำลังเปิดกล้อง...');
 
-         await Scanner.start({
-  video: scannerVideo,
-  onResult: (id) => {
-    U.toast(`พบหมายเลขถัง ${id}`, 'success');
-    setTimeout(() => U.goCheck(id), 300);
-  }
-});
+          await Scanner.start({
+            video: scannerVideo,
+            onResult: (id) => {
+              U.toast(`พบหมายเลขถัง ${id}`, 'success');
+              setTimeout(() => U.goCheck(id), 300);
+            }
+          });
 
-const mode = Scanner.getScanMode();
-if (mode === 'native') {
-  U.toast('เปิดกล้องสำเร็จ: Native Scanner', 'success');
-} else if (mode === 'zxing') {
-  U.toast('เปิดกล้องสำเร็จ: ZXing Scanner', 'success');
-}
+          const mode = Scanner.getScanMode();
+          if (mode === 'native') {
+            U.toast('เปิดกล้องสำเร็จ: Native Scanner', 'success');
+          } else if (mode === 'zxing') {
+            U.toast('เปิดกล้องสำเร็จ: ZXing Scanner', 'success');
+          }
         } catch (err) {
           U.hide(scannerPanel);
           U.toast(err.message || 'เปิดกล้องไม่ได้', 'error');
