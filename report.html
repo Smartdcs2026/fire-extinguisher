@@ -839,10 +839,10 @@ function setLogo() {
         if (!item) return;
 
         U.$('#modalTitle').textContent = item.extinguisherId || 'รายละเอียด';
-        U.$('#modalSubTitle').textContent = `${item.location || '-'} • ${item.timestamp || '-'}`;
+       U.$('#modalSubTitle').textContent = `${item.location || '-'} • ${item.timestamp || '-'}`;
 
         const fields = [
-          ['Timestamp', item.timestamp],
+         ['วันที่เวลา', item.timestamp],
           ['เดือน', formatMonthValue(item.month || item.timestamp)],
           ['หมายเลขถัง', item.extinguisherId],
           ['จุดติดตั้ง', item.location],
