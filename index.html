@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#b91c1c" />
   <title>Fire Extinguisher</title>
 
-  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.0.8" />
+  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.1.7" />
 </head>
 
 <body>
@@ -106,11 +106,11 @@
     </section>
   </main>
 
-  <script src="/fire-extinguisher/js/config.js?v=1.1.2"></script>
-<script src="/fire-extinguisher/js/api.js?v=1.1.2"></script>
-<script src="/fire-extinguisher/js/utils.js?v=1.1.2"></script>
-<script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
-<script src="/fire-extinguisher/js/scanner.js?v=1.1.2"></script>
+  <script src="/fire-extinguisher/js/config.js?v=1.1.7"></script>
+  <script src="/fire-extinguisher/js/api.js?v=1.1.7"></script>
+  <script src="/fire-extinguisher/js/utils.js?v=1.1.7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
+  <script src="/fire-extinguisher/js/scanner.js?v=1.1.7"></script>
 
   <script>
     (function () {
@@ -120,42 +120,64 @@
       const API = window.FireAPI;
       const Scanner = window.FireScanner;
 
-      const openScannerBtn = U.$('#openScannerBtn');
-      const closeScannerBtn = U.$('#closeScannerBtn');
-      const manualSearchBtn = U.$('#manualSearchBtn');
-      const manualId = U.$('#manualId');
-      const scannerPanel = U.$('#scannerPanel');
-      const scannerVideo = U.$('#scannerVideo');
+      let openScannerBtn;
+      let closeScannerBtn;
+      let manualSearchBtn;
+      let manualId;
+      let scannerPanel;
+      let scannerVideo;
 
       document.addEventListener('DOMContentLoaded', init);
 
       async function init() {
+        cacheElements();
         setLogo();
         bindEvents();
         await checkHealth();
         await loadMonthStatus();
       }
 
+      function cacheElements() {
+        openScannerBtn = U.$('#openScannerBtn');
+        closeScannerBtn = U.$('#closeScannerBtn');
+        manualSearchBtn = U.$('#manualSearchBtn');
+        manualId = U.$('#manualId');
+        scannerPanel = U.$('#scannerPanel');
+        scannerVideo = U.$('#scannerVideo');
+      }
+
       function setLogo() {
         const logo = U.$('#appLogo');
+
         if (logo) {
           logo.src = window.APP_CONFIG.LOGO_URL;
+          logo.loading = 'eager';
+          logo.decoding = 'async';
         }
       }
 
       function bindEvents() {
-        openScannerBtn.addEventListener('click', openScanner);
-        closeScannerBtn.addEventListener('click', closeScanner);
+        if (openScannerBtn) {
+          openScannerBtn.addEventListener('click', openScanner);
+        }
 
-        manualSearchBtn.addEventListener('click', () => {
-          U.goCheck(manualId.value);
-        });
+        if (closeScannerBtn) {
+          closeScannerBtn.addEventListener('click', closeScanner);
+        }
 
-        manualId.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') {
+        if (manualSearchBtn) {
+          manualSearchBtn.addEventListener('click', () => {
             U.goCheck(manualId.value);
-          }
-        });
+          });
+        }
+
+        if (manualId) {
+          manualId.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              U.goCheck(manualId.value);
+            }
+          });
+        }
 
         window.addEventListener('beforeunload', () => {
           Scanner.stop();
@@ -168,11 +190,12 @@
 
         try {
           const res = await API.health();
-          dot.className = 'status-dot ok';
-          text.textContent = `ระบบพร้อมใช้งาน • ${res.timestamp || ''}`;
+
+          if (dot) dot.className = 'status-dot ok';
+          if (text) text.textContent = `ระบบพร้อมใช้งาน • ${res.timestamp || ''}`;
         } catch (err) {
-          dot.className = 'status-dot fail';
-          text.textContent = err.message || 'เชื่อมต่อระบบไม่ได้';
+          if (dot) dot.className = 'status-dot fail';
+          if (text) text.textContent = err.message || 'เชื่อมต่อระบบไม่ได้';
         }
       }
 
@@ -191,6 +214,11 @@
           U.setText('#abnormalCount', s.abnormal ?? 0);
         } catch (err) {
           U.toast(err.message || 'โหลดสถานะเดือนไม่สำเร็จ', 'warning');
+
+          U.setText('#totalExtinguishers', 0);
+          U.setText('#checkedCount', 0);
+          U.setText('#uncheckedCount', 0);
+          U.setText('#abnormalCount', 0);
         }
       }
 
@@ -201,28 +229,27 @@
 
           await Scanner.start({
             video: scannerVideo,
-            onResult: (id) => {
+            onResult(id) {
               U.toast(`พบหมายเลขถัง ${id}`, 'success');
-              setTimeout(() => U.goCheck(id), 300);
+
+              setTimeout(() => {
+                U.goCheck(id);
+              }, 250);
             }
           });
-
-          const mode = Scanner.getScanMode();
-          if (mode === 'native') {
-            U.toast('เปิดกล้องสำเร็จ: Native Scanner', 'success');
-          } else if (mode === 'zxing') {
-            U.toast('เปิดกล้องสำเร็จ: ZXing Scanner', 'success');
-          }
         } catch (err) {
-          U.hide(scannerPanel);
-          U.toast(err.message || 'เปิดกล้องไม่ได้', 'error');
+          U.toast(err.message || 'เปิดกล้องไม่สำเร็จ', 'error');
+          closeScanner();
         } finally {
           U.setLoading(openScannerBtn, false);
         }
       }
 
       function closeScanner() {
-        Scanner.stop();
+        try {
+          Scanner.stop();
+        } catch (err) {}
+
         U.hide(scannerPanel);
       }
     })();
