@@ -187,13 +187,20 @@
           U.show(scannerPanel);
           U.setLoading(openScannerBtn, true, 'กำลังเปิดกล้อง...');
 
-          await Scanner.start({
-            video: scannerVideo,
-            onResult: (id) => {
-              U.toast(`พบหมายเลขถัง ${id}`, 'success');
-              setTimeout(() => U.goCheck(id), 300);
-            }
-          });
+         await Scanner.start({
+  video: scannerVideo,
+  onResult: (id) => {
+    U.toast(`พบหมายเลขถัง ${id}`, 'success');
+    setTimeout(() => U.goCheck(id), 300);
+  }
+});
+
+const mode = Scanner.getScanMode();
+if (mode === 'native') {
+  U.toast('เปิดกล้องสำเร็จ: Native Scanner', 'success');
+} else if (mode === 'zxing') {
+  U.toast('เปิดกล้องสำเร็จ: ZXing Scanner', 'success');
+}
         } catch (err) {
           U.hide(scannerPanel);
           U.toast(err.message || 'เปิดกล้องไม่ได้', 'error');
