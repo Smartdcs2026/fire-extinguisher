@@ -108,19 +108,22 @@
   }
 
   function normalizeParams(params = {}) {
-    return {
-      period: params.period || '',
-      start: params.start || '',
-      end: params.end || '',
-      inspector: params.inspector || 'all',
-      type: params.type || 'all',
-      status: params.status || 'all',
-      inspectionStatus: params.inspectionStatus || 'all',
-      extinguisherId: params.extinguisherId || params.id || '',
-      location: params.location || '',
-      mode: params.mode || ''
-    };
-  }
+  return {
+    period: params.period || '',
+    start: params.start || '',
+    end: params.end || '',
+    inspector: params.inspector || 'all',
+    type: params.type || 'all',
+    status: params.status || 'all',
+    inspectionStatus: params.inspectionStatus || 'all',
+    extinguisherId: params.extinguisherId || params.id || '',
+    location: params.location || '',
+    mode: params.mode || '',
+    exportDetail: params.exportDetail || '',
+    includeChecklist: params.includeChecklist || '',
+    includeNormalAbnormal: params.includeNormalAbnormal || ''
+  };
+}
 
   function downloadBase64(base64, fileName, mimeType) {
     if (!base64) {
