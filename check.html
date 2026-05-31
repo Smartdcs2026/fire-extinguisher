@@ -643,22 +643,34 @@
         U.setText('#yearMade', item.yearMade);
       }
 
-      function renderNames(items) {
-        const select = U.$('#inspectorSelect');
+     function renderNames(items) {
+  const select = U.$('#inspectorSelect');
 
-        if (!items.length) {
-          select.innerHTML = '<option value="">ไม่พบรายชื่อในชีท Name</option>';
-          return;
-        }
+  if (!select) return;
 
-        select.innerHTML = [
-          '<option value="">เลือกชื่อผู้บันทึก</option>',
-          ...items.map((item, index) => {
-            const label = U.escapeHtml(item.displayName || item.thaiName || item.englishName);
-            return `<option value="${index}">${label}</option>`;
-          })
-        ].join('');
-      }
+  const list = Array.isArray(items) ? items : [];
+
+  if (!list.length) {
+    select.innerHTML = '<option value="">ไม่พบรายชื่อในชีท Name</option>';
+    return;
+  }
+
+  select.innerHTML = [
+    '<option value="">เลือกชื่อผู้บันทึก</option>',
+    ...list.map((item, index) => {
+      const label = U.escapeHtml(
+        item.displayName ||
+        item.thaiName ||
+        item.englishName ||
+        item.name ||
+        item.Name ||
+        ''
+      );
+
+      return `<option value="${index}">${label}</option>`;
+    })
+  ].join('');
+}
 
       function renderHistory(items) {
         const box = U.$('#historyList');
