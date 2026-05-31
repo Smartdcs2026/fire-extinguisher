@@ -687,7 +687,7 @@ function setLogo() {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.4" />
+  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.5" />
 
   <style>
     body,
@@ -902,7 +902,7 @@ function setLogo() {
       color: #111827;
       border: 1px solid #111;
       box-sizing: border-box;
-      padding: 0.25cm;
+      padding: 0.22cm;
       display: flex;
       flex-direction: column;
       page-break-inside: avoid;
@@ -911,104 +911,124 @@ function setLogo() {
     }
 
     .qr-mini {
-      height: 5.15cm;
+      height: 5.28cm;
       width: 100%;
       box-sizing: border-box;
       display: grid;
-      grid-template-rows: auto auto 2.8cm auto auto;
-      justify-items: center;
-      align-content: start;
-      padding: 0.13cm 0.16cm;
-      text-align: center;
+      grid-template-columns: 0.48cm 2.82cm minmax(0, 1fr);
+      gap: 0.14cm;
+      align-items: center;
+      padding: 0.12cm;
       overflow: hidden;
+      position: relative;
     }
 
     .qr-mini + .qr-mini {
       border-top: 1px dashed #111;
-      margin-top: 0.1cm;
-      padding-top: 0.22cm;
+      margin-top: 0.08cm;
+      padding-top: 0.20cm;
     }
 
-    .qr-title {
+    .qr-side-title {
+      height: 100%;
       width: 100%;
-      font-size: 7.3px;
-      line-height: 1.05;
-      font-weight: 900;
-      color: #991b1b;
-      letter-spacing: 0.2px;
-      text-transform: uppercase;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-bottom: 0.04cm;
-    }
-
-    .qr-no {
-      width: 100%;
-      font-size: 18px;
+      display: grid;
+      place-items: center;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-size: 8px;
       line-height: 1;
       font-weight: 950;
-      letter-spacing: 0.2px;
-      color: #111827;
-      margin-bottom: 0.08cm;
+      letter-spacing: 0.7px;
+      color: #991b1b;
+      text-transform: uppercase;
+      border-right: 1px solid #e5e7eb;
+      padding-right: 0.04cm;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    }
+
+    .qr-box-wrap {
+      display: grid;
+      place-items: center;
+      width: 2.82cm;
+      height: 100%;
     }
 
     .qr-box {
-      width: 2.8cm;
-      height: 2.8cm;
+      width: 2.75cm;
+      height: 2.75cm;
       display: grid;
       place-items: center;
-      margin: 0 auto 0.08cm;
     }
 
     .qr-box canvas,
     .qr-box img {
-      width: 2.8cm !important;
-      height: 2.8cm !important;
+      width: 2.75cm !important;
+      height: 2.75cm !important;
       display: block;
     }
 
-    .qr-detail {
-      width: 100%;
+    .qr-info {
+      min-width: 0;
+      height: 100%;
       display: grid;
-      gap: 0.04cm;
-      font-size: 8.1px;
-      line-height: 1.16;
-      color: #111827;
-      margin-top: 0.03cm;
+      align-content: center;
+      gap: 0.07cm;
+      overflow: hidden;
     }
 
-    .qr-detail-line {
-      width: 100%;
+    .qr-no {
+      font-size: 18px;
+      line-height: 1;
+      font-weight: 950;
+      color: #111827;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: 0.1px;
+      padding-bottom: 0.03cm;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .qr-line {
+      font-size: 8.8px;
+      line-height: 1.18;
+      color: #111827;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .qr-detail-line b {
+    .qr-line b {
       font-weight: 950;
     }
 
-    .qr-detail-pair {
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.08cm;
-    }
-
     .qr-footer {
-      width: 100%;
-      margin-top: 0.07cm;
-      font-size: 7.2px;
+      margin-top: 0.04cm;
+      font-size: 7.4px;
       line-height: 1.1;
-      color: #4b5563;
+      color: #6b7280;
       font-weight: 800;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .qr-mini-empty {
+      grid-template-columns: 1fr;
+      border: 1px dashed #cbd5e1;
+      border-radius: 10px;
+      background: #f8fafc;
+    }
+
+    .empty-half {
+      display: grid;
+      place-items: center;
+      height: 100%;
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 800;
+      text-align: center;
     }
 
     .cut-note {
@@ -1134,7 +1154,7 @@ function setLogo() {
 
       <div class="page-title">
         <h1>พิมพ์ QR Code</h1>
-        <p>บัตร 7.2 x 11 ซม. / 1 บัตรมี QR 2 ชุด / แนวตั้ง</p>
+        <p>1 ใบเคลือบ 7.2 x 11 ซม. / 2 ถัง / 2 QR Code ไม่ซ้ำกัน</p>
       </div>
     </div>
 
@@ -1177,15 +1197,15 @@ function setLogo() {
       </div>
 
       <p class="cut-note no-print">
-        หมายเหตุ: 1 บัตรขนาด 7.2 x 11 ซม. มี QR Code 2 ชุด บน/ล่าง และมีเส้นประกลางสำหรับตัด
+        หมายเหตุ: 1 ใบเคลือบขนาด 7.2 x 11 ซม. มี 2 ข้อมูลถัง / 2 QR Code ไม่ซ้ำกัน พร้อมเส้นประกลางสำหรับตัด
       </p>
     </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script src="/fire-extinguisher/js/config.js?v=1.2.4"></script>
-  <script src="/fire-extinguisher/js/api.js?v=1.2.4"></script>
-  <script src="/fire-extinguisher/js/utils.js?v=1.2.4"></script>
+  <script src="/fire-extinguisher/js/config.js?v=1.2.5"></script>
+  <script src="/fire-extinguisher/js/api.js?v=1.2.5"></script>
+  <script src="/fire-extinguisher/js/utils.js?v=1.2.5"></script>
 
   <script>
     (function () {
@@ -1309,7 +1329,8 @@ function setLogo() {
       }
 
       function updateSelectedCount() {
-        U.$('#selectedCount').textContent = `เลือก ${selectedIds.size} รายการ`;
+        const cardCount = Math.ceil(selectedIds.size / 2);
+        U.$('#selectedCount').textContent = `เลือก ${selectedIds.size} รายการ / ${cardCount} ใบเคลือบ`;
       }
 
       function selectAllFiltered() {
@@ -1331,6 +1352,16 @@ function setLogo() {
         return allItems.filter(item => selectedIds.has(U.normalizeId(item.extinguisherId)));
       }
 
+      function chunkItems(items, size = 2) {
+        const chunks = [];
+
+        for (let i = 0; i < items.length; i += size) {
+          chunks.push(items.slice(i, i + size));
+        }
+
+        return chunks;
+      }
+
       function renderPreview() {
         const printArea = U.$('#printArea');
         const selected = getSelectedItems();
@@ -1340,22 +1371,29 @@ function setLogo() {
           return;
         }
 
-        printArea.innerHTML = selected.map((item, index) => {
-          return buildQrCardHtml(item, index);
+        const pairs = chunkItems(selected, 2);
+
+        printArea.innerHTML = pairs.map((pair, cardIndex) => {
+          return buildQrCardHtml(pair, cardIndex);
         }).join('');
 
-        selected.forEach((item, index) => {
-          const url = buildQrUrl(item.extinguisherId);
-          createQr(document.getElementById(`qr-${index}-top`), url);
-          createQr(document.getElementById(`qr-${index}-bottom`), url);
+        pairs.forEach((pair, cardIndex) => {
+          pair.forEach((item, itemIndex) => {
+            const qrId = `qr-${cardIndex}-${itemIndex}`;
+            const url = buildQrUrl(item.extinguisherId);
+            createQr(document.getElementById(qrId), url);
+          });
         });
       }
 
-      function buildQrCardHtml(item, index) {
+      function buildQrCardHtml(pair, cardIndex) {
+        const first = pair[0] || null;
+        const second = pair[1] || null;
+
         return `
           <article class="qr-card">
-            ${buildQrMiniHtml(item, `qr-${index}-top`)}
-            ${buildQrMiniHtml(item, `qr-${index}-bottom`)}
+            ${first ? buildQrMiniHtml(first, `qr-${cardIndex}-0`) : buildEmptyMiniHtml()}
+            ${second ? buildQrMiniHtml(second, `qr-${cardIndex}-1`) : buildEmptyMiniHtml()}
           </article>
         `;
       }
@@ -1363,36 +1401,29 @@ function setLogo() {
       function buildQrMiniHtml(item, qrId) {
         return `
           <div class="qr-mini">
-            <div class="qr-title">FIRE EXTINGUISHER CHECK</div>
+            <div class="qr-side-title">FIRE EXTINGUISHER</div>
 
-            <div class="qr-no">
-              ${U.escapeHtml(item.extinguisherId || '-')}
+            <div class="qr-box-wrap">
+              <div id="${qrId}" class="qr-box"></div>
             </div>
 
-            <div id="${qrId}" class="qr-box"></div>
-
-            <div class="qr-detail">
-              <div class="qr-detail-line">
-                <b>จุดติดตั้ง:</b> ${U.escapeHtml(item.location || '-')}
-              </div>
-
-              <div class="qr-detail-pair">
-                <div class="qr-detail-line">
-                  <b>ชนิด:</b> ${U.escapeHtml(item.type || '-')}
-                </div>
-
-                <div class="qr-detail-line">
-                  <b>ขนาด:</b> ${U.escapeHtml(item.size || '-')}
-                </div>
-              </div>
-
-              <div class="qr-detail-line">
-                <b>ปีผลิต:</b> ${U.escapeHtml(item.yearMade || '-')}
-              </div>
+            <div class="qr-info">
+              <div class="qr-no">${U.escapeHtml(item.extinguisherId || '-')}</div>
+              <div class="qr-line"><b>จุด:</b> ${U.escapeHtml(item.location || '-')}</div>
+              <div class="qr-line"><b>ชนิด:</b> ${U.escapeHtml(item.type || '-')}</div>
+              <div class="qr-line"><b>ขนาด:</b> ${U.escapeHtml(item.size || '-')}</div>
+              <div class="qr-line"><b>ปีผลิต:</b> ${U.escapeHtml(item.yearMade || '-')}</div>
+              <div class="qr-footer">Scan QR เพื่อตรวจเช็คถัง</div>
             </div>
+          </div>
+        `;
+      }
 
-            <div class="qr-footer">
-              Scan QR เพื่อตรวจเช็คถัง
+      function buildEmptyMiniHtml() {
+        return `
+          <div class="qr-mini qr-mini-empty">
+            <div class="empty-half">
+              ว่างสำหรับตัดแบ่ง
             </div>
           </div>
         `;
@@ -1410,8 +1441,8 @@ function setLogo() {
 
         new QRCode(element, {
           text,
-          width: 106,
-          height: 106,
+          width: 104,
+          height: 104,
           colorDark: '#111827',
           colorLight: '#ffffff',
           correctLevel: QRCode.CorrectLevel.M
