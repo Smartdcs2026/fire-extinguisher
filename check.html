@@ -4,55 +4,104 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#b91c1c" />
-  <title>ตรวจถังดับเพลิง | Fire Extinguisher</title>
+  <title>ข้อมูลถังดับเพลิง | Fire Extinguisher</title>
 
-  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.0.2" />
+  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.0" />
 
   <style>
+    .app-shell {
+      padding: 12px;
+      padding-bottom: calc(24px + env(safe-area-inset-bottom));
+    }
+
     .page-top {
-      display: flex;
+      display: grid;
+      grid-template-columns: 40px auto 1fr;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
+      gap: 8px;
+      margin-bottom: 10px;
     }
 
     .back-link {
-      width: 42px;
-      height: 42px;
+      width: 40px;
+      height: 40px;
       border-radius: 14px;
       background: #fff;
       border: 1px solid var(--line);
       display: grid;
       place-items: center;
       font-weight: 900;
-      box-shadow: var(--shadow);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+    }
+
+    .page-logo {
+      width: 70px;
+      height: 38px;
+      border-radius: 13px;
+      overflow: hidden;
+      padding: 5px 7px;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+      display: grid;
+      place-items: center;
+    }
+
+    .page-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .page-title {
+      min-width: 0;
     }
 
     .page-title h1 {
       margin: 0;
-      font-size: clamp(20px, 5vw, 30px);
-      line-height: 1.12;
+      font-size: clamp(17px, 4.8vw, 24px);
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .page-title p {
-      margin: 3px 0 0;
+      margin: 2px 0 0;
       color: var(--muted);
-      font-size: 13px;
+      font-size: 12px;
+      line-height: 1.3;
     }
 
+    .loading-box,
+    .not-found-box,
     .info-card,
+    .quick-card,
     .history-card,
     .form-card,
     .check-item {
       background: var(--card);
       border: 1px solid var(--line);
-      border-radius: var(--radius);
+      border-radius: 22px;
       box-shadow: var(--shadow);
     }
 
-    .info-card {
+    .loading-box,
+    .not-found-box {
       padding: 18px;
-      margin-bottom: 14px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.45;
+    }
+
+    .view-stack {
+      display: grid;
+      gap: 10px;
+    }
+
+    .info-card {
+      padding: 14px;
       position: relative;
       overflow: hidden;
     }
@@ -60,86 +109,228 @@
     .info-card::before {
       content: "";
       position: absolute;
-      inset: 0 auto 0 0;
-      width: 6px;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
       background: linear-gradient(180deg, var(--primary), var(--primary-dark));
     }
 
+    .id-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      padding-left: 4px;
+      margin-bottom: 10px;
+    }
+
+    .id-main {
+      min-width: 0;
+    }
+
+    .id-label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 2px;
+    }
+
     .ext-id {
-      font-size: 30px;
+      margin: 0;
+      font-size: clamp(28px, 9vw, 44px);
+      line-height: 0.95;
+      letter-spacing: 0.2px;
+      font-weight: 950;
+      color: #111827;
+      word-break: break-word;
+    }
+
+    .id-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      border-radius: 999px;
+      padding: 5px 10px;
+      background: #fee2e2;
+      color: #991b1b;
+      font-size: 12px;
       font-weight: 900;
-      letter-spacing: 0.3px;
-      margin: 0 0 10px;
-      padding-left: 6px;
+      white-space: nowrap;
     }
 
     .info-grid {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
     }
 
     .info-line {
+      min-width: 0;
       background: #f9fafb;
       border: 1px solid var(--line);
       border-radius: 16px;
-      padding: 10px 12px;
+      padding: 10px 10px;
+    }
+
+    .info-line.span-2 {
+      grid-column: 1 / -1;
     }
 
     .info-line span {
       display: block;
       color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 3px;
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 4px;
+      line-height: 1.2;
     }
 
     .info-line strong {
       display: block;
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 900;
+      word-break: break-word;
+    }
+
+    .quick-card {
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .quick-main strong {
+      display: block;
       font-size: 15px;
+      margin-bottom: 3px;
+    }
+
+    .quick-main span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
       line-height: 1.35;
     }
 
+    .inspect-soft-btn {
+      border: 1px solid rgba(185, 28, 28, 0.22);
+      background: rgba(185, 28, 28, 0.07);
+      color: var(--primary-dark);
+      border-radius: 999px;
+      padding: 9px 13px;
+      min-height: 38px;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .inspect-soft-btn:active {
+      transform: scale(0.98);
+    }
+
     .history-card {
-      padding: 16px;
-      margin-bottom: 14px;
+      padding: 13px;
     }
 
     .section-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
+      gap: 8px;
+      margin-bottom: 10px;
     }
 
     .section-head h2 {
       margin: 0;
-      font-size: 18px;
+      font-size: 17px;
+      line-height: 1.2;
+    }
+
+    .section-head small {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 2px;
     }
 
     .history-list {
       display: grid;
-      gap: 10px;
+      gap: 8px;
     }
 
     .history-item {
       border: 1px solid var(--line);
       background: #f9fafb;
-      border-radius: 16px;
-      padding: 12px;
+      border-radius: 17px;
+      padding: 11px;
     }
 
     .history-main {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      align-items: flex-start;
-      margin-bottom: 6px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: start;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+
+    .history-title {
+      min-width: 0;
+    }
+
+    .history-title strong {
+      display: block;
+      font-size: 14px;
+      line-height: 1.25;
     }
 
     .history-time {
       color: var(--muted);
-      font-size: 13px;
+      font-size: 12px;
+      line-height: 1.35;
+      margin-top: 2px;
+    }
+
+    .history-meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .history-meta div {
+      min-width: 0;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 7px 8px;
+    }
+
+    .history-meta span {
+      display: block;
+      font-size: 10.5px;
+      color: #9ca3af;
+      font-weight: 800;
+      margin-bottom: 2px;
+    }
+
+    .history-meta strong {
+      display: block;
+      color: #374151;
+      font-size: 12px;
+      font-weight: 850;
+      word-break: break-word;
+    }
+
+    .history-remark {
+      grid-column: 1 / -1;
     }
 
     .badge {
@@ -163,46 +354,79 @@
       color: #991b1b;
     }
 
-    .history-meta {
+    .empty-state {
       color: var(--muted);
-      font-size: 13px;
+      background: #f9fafb;
+      border: 1px dashed var(--line);
+      padding: 13px;
+      border-radius: 16px;
+      text-align: center;
       line-height: 1.45;
+      font-size: 13px;
     }
 
     .form-card {
-      padding: 16px;
-      margin-bottom: 20px;
+      padding: 13px;
+      margin-top: 2px;
     }
 
-    .form-card h2 {
-      margin: 0 0 14px;
-      font-size: 20px;
+    .form-card[hidden] {
+      display: none;
+    }
+
+    .form-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .form-head h2 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .form-head p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
     }
 
     .check-list {
       display: grid;
-      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
     }
 
     .check-item {
-      padding: 14px;
+      padding: 11px;
       box-shadow: none;
+      border-radius: 18px;
+    }
+
+    .check-item.full {
+      grid-column: 1 / -1;
     }
 
     .check-title {
       font-weight: 900;
-      margin-bottom: 10px;
-      font-size: 16px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      line-height: 1.25;
     }
 
     .option-row {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
+      gap: 6px;
     }
 
     .option-pill {
       position: relative;
+      min-width: 0;
     }
 
     .option-pill input {
@@ -214,35 +438,39 @@
     .option-pill span {
       display: grid;
       place-items: center;
-      min-height: 44px;
-      border-radius: 15px;
+      min-height: 38px;
+      border-radius: 13px;
       border: 1px solid var(--line);
       background: #fff;
-      font-weight: 800;
+      font-size: 13px;
+      font-weight: 850;
       color: var(--text);
       cursor: pointer;
+      text-align: center;
+      padding: 6px 4px;
     }
 
     .option-pill input:checked + span {
       border-color: rgba(185, 28, 28, 0.85);
       background: rgba(185, 28, 28, 0.09);
       color: var(--primary-dark);
-      box-shadow: 0 0 0 4px rgba(185, 28, 28, 0.08);
+      box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.08);
     }
 
     .note-field {
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
     .note-field textarea,
     .note-field input {
-      min-height: 46px;
+      min-height: 42px;
+      font-size: 13px;
     }
 
     .co2-box {
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 16px;
+      margin-top: 9px;
+      padding: 10px;
+      border-radius: 15px;
       background: #fff7ed;
       border: 1px solid #fed7aa;
     }
@@ -250,81 +478,183 @@
     .co2-box label {
       display: block;
       font-weight: 900;
-      margin-bottom: 8px;
+      margin-bottom: 7px;
       color: #9a3412;
+      font-size: 13px;
     }
 
     .field-group {
-      margin-top: 14px;
+      margin-top: 10px;
+    }
+
+    .field-group:first-child {
+      margin-top: 0;
     }
 
     .field-group label {
       display: block;
       font-weight: 900;
-      margin-bottom: 8px;
+      margin-bottom: 7px;
+      font-size: 13px;
+    }
+
+    input,
+    select,
+    textarea {
+      min-height: 42px;
+      border-radius: 14px;
+      font-size: 14px;
     }
 
     .submit-bar {
       position: sticky;
       bottom: 0;
-      margin: 16px -16px -16px;
-      padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
-      background: rgba(255, 255, 255, 0.92);
+      margin: 12px -13px -13px;
+      padding: 10px 13px calc(10px + env(safe-area-inset-bottom));
+      background: rgba(255, 255, 255, 0.94);
       border-top: 1px solid var(--line);
       backdrop-filter: blur(12px);
-      border-radius: 0 0 var(--radius) var(--radius);
+      border-radius: 0 0 22px 22px;
+      z-index: 10;
     }
 
-    .empty-state {
-      color: var(--muted);
-      background: #f9fafb;
-      border: 1px dashed var(--line);
-      padding: 14px;
-      border-radius: 16px;
-      text-align: center;
-      line-height: 1.45;
+    .bottom-action {
+      position: sticky;
+      bottom: 0;
+      z-index: 20;
+      padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+      background: linear-gradient(180deg, rgba(248, 250, 252, 0), rgba(248, 250, 252, 0.96) 35%, rgba(248, 250, 252, 1));
     }
 
-    .loading-box {
-      background: var(--card);
+    .bottom-action-inner {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.96);
       border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 18px;
-      box-shadow: var(--shadow);
+      border-radius: 20px;
+      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.14);
+      padding: 9px;
+      backdrop-filter: blur(12px);
+    }
+
+    .bottom-action-text {
+      min-width: 0;
+      padding-left: 4px;
+    }
+
+    .bottom-action-text strong {
+      display: block;
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    .bottom-action-text span {
+      display: block;
       color: var(--muted);
-      text-align: center;
+      font-size: 11px;
+      line-height: 1.25;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .hidden-action {
+      display: none !important;
     }
 
     @media (min-width: 720px) {
-      .info-grid {
-        grid-template-columns: repeat(2, 1fr);
+      .app-shell {
+        width: min(100%, 980px);
+        padding: 16px;
+      }
+
+      .page-top {
+        grid-template-columns: 42px auto 1fr;
+      }
+
+      .page-logo {
+        width: 92px;
+        height: 42px;
+      }
+
+      .view-stack {
+        grid-template-columns: 1.1fr 0.9fr;
+        align-items: start;
+      }
+
+      .info-card,
+      .quick-card {
+        grid-column: 1 / -1;
+      }
+
+      .history-card {
+        grid-column: 1 / -1;
       }
 
       .check-list {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .check-item.full {
-        grid-column: 1 / -1;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .submit-bar {
         position: static;
-        margin: 18px 0 0;
+        margin: 14px 0 0;
         padding: 0;
         background: transparent;
         border: 0;
         backdrop-filter: none;
       }
+
+      .bottom-action {
+        position: static;
+        padding: 0;
+        background: transparent;
+      }
     }
 
     @media (max-width: 380px) {
-      .ext-id {
-        font-size: 25px;
+      .app-shell {
+        padding: 10px;
+      }
+
+      .page-top {
+        grid-template-columns: 38px 58px 1fr;
+        gap: 7px;
+      }
+
+      .back-link {
+        width: 38px;
+        height: 38px;
+      }
+
+      .page-logo {
+        width: 58px;
+        height: 36px;
+      }
+
+      .info-grid,
+      .history-meta,
+      .check-list {
+        gap: 7px;
+      }
+
+      .info-line {
+        padding: 8px;
+      }
+
+      .info-line strong {
+        font-size: 13px;
       }
 
       .option-row {
         grid-template-columns: 1fr;
+      }
+
+      .inspect-soft-btn {
+        padding: 8px 10px;
+        font-size: 12px;
       }
     }
   </style>
@@ -333,22 +663,23 @@
 <body>
   <main class="app-shell">
     <div class="page-top">
-  <a class="back-link" href="/fire-extinguisher/">←</a>
+      <a class="back-link" href="/fire-extinguisher/">←</a>
 
-  <div class="page-logo">
-    <img id="pageLogo" alt="Smart DC Logo" />
-  </div>
+      <div class="page-logo">
+        <img id="pageLogo" alt="Smart DC Logo" />
+      </div>
 
-  <div class="page-title">
-    <h1>ตรวจถังดับเพลิง</h1>
-    <p>แสดงข้อมูลถัง ประวัติ และบันทึกผลตรวจ</p>
-  </div>
-</div>
+      <div class="page-title">
+        <h1>ข้อมูลถังดับเพลิง</h1>
+        <p>ดูข้อมูลถัง ประวัติ และบันทึกผลตรวจ</p>
+      </div>
+    </div>
+
     <section id="loadingBox" class="loading-box">
       กำลังโหลดข้อมูลถัง...
     </section>
 
-    <section id="notFoundBox" class="loading-box" hidden>
+    <section id="notFoundBox" class="not-found-box" hidden>
       ไม่พบข้อมูลถัง หรือ URL ไม่มีหมายเลขถัง
       <div style="margin-top:12px;">
         <a class="btn ghost" href="/fire-extinguisher/">กลับหน้าแรก</a>
@@ -356,198 +687,242 @@
     </section>
 
     <section id="contentBox" hidden>
-      <article class="info-card">
-        <h2 class="ext-id" id="extinguisherId">-</h2>
-
-        <div class="info-grid">
-          <div class="info-line">
-            <span>จุดติดตั้ง</span>
-            <strong id="location">-</strong>
+      <div class="view-stack">
+        <article class="info-card">
+          <div class="id-row">
+            <div class="id-main">
+              <span class="id-label">หมายเลขถัง</span>
+              <h2 class="ext-id" id="extinguisherId">-</h2>
+            </div>
+            <span class="id-badge" id="typeBadge">-</span>
           </div>
 
-          <div class="info-line">
-            <span>ชนิดถังดับเพลิง</span>
-            <strong id="type">-</strong>
-          </div>
-
-          <div class="info-line">
-            <span>ขนาด</span>
-            <strong id="size">-</strong>
-          </div>
-
-          <div class="info-line">
-            <span>ปีผลิดถัง</span>
-            <strong id="yearMade">-</strong>
-          </div>
-        </div>
-      </article>
-
-      <section class="history-card">
-        <div class="section-head">
-          <h2>ประวัติล่าสุด</h2>
-          <button class="btn ghost small" id="refreshHistoryBtn" type="button">รีเฟรช</button>
-        </div>
-
-        <div class="history-list" id="historyList">
-          <div class="empty-state">ยังไม่มีประวัติการตรวจ</div>
-        </div>
-      </section>
-
-      <form class="form-card" id="inspectionForm">
-        <h2>แบบฟอร์มตรวจ</h2>
-
-        <div class="check-list">
-          <div class="check-item">
-            <div class="check-title">ความสะอาด</div>
-            <div class="option-row">
-              <label class="option-pill">
-                <input type="radio" name="cleanliness" value="สะอาด" checked />
-                <span>สะอาด</span>
-              </label>
-              <label class="option-pill">
-                <input type="radio" name="cleanliness" value="ไม่สะอาด" />
-                <span>ไม่สะอาด</span>
-              </label>
+          <div class="info-grid">
+            <div class="info-line span-2">
+              <span>จุดติดตั้ง</span>
+              <strong id="location">-</strong>
             </div>
-            <div class="note-field" data-note-for="cleanliness" hidden>
-              <textarea name="cleanlinessNote" rows="2" placeholder="ระบุรายละเอียดความไม่สะอาด"></textarea>
+
+            <div class="info-line">
+              <span>ชนิดถัง</span>
+              <strong id="type">-</strong>
+            </div>
+
+            <div class="info-line">
+              <span>ขนาด</span>
+              <strong id="size">-</strong>
+            </div>
+
+            <div class="info-line">
+              <span>ปีผลิตถัง</span>
+              <strong id="yearMade">-</strong>
+            </div>
+
+            <div class="info-line">
+              <span>สถานะล่าสุด</span>
+              <strong id="lastStatusText">-</strong>
             </div>
           </div>
+        </article>
 
-          <div class="check-item">
-            <div class="check-title">สภาพถัง</div>
-            <div class="option-row">
-              <label class="option-pill">
-                <input type="radio" name="bodyStatus" value="ปกติ" checked />
-                <span>ปกติ</span>
-              </label>
-              <label class="option-pill">
-                <input type="radio" name="bodyStatus" value="ผิดปกติ" />
-                <span>ผิดปกติ</span>
-              </label>
-            </div>
-            <div class="note-field" data-note-for="bodyStatus" hidden>
-              <textarea name="bodyNote" rows="2" placeholder="เช่น ถังบุบ เป็นสนิม รั่ว สีหลุด"></textarea>
-            </div>
+        <section class="quick-card" id="quickCard">
+          <div class="quick-main">
+            <strong>สำหรับเจ้าหน้าที่ตรวจ</strong>
+            <span id="quickHint">ตรวจสอบข้อมูลถังและประวัติก่อนเริ่มบันทึกผล</span>
           </div>
-
-          <div class="check-item">
-            <div class="check-title">แรงดัน</div>
-            <div class="option-row">
-              <label class="option-pill">
-                <input type="radio" name="pressureStatus" value="ปกติ" checked />
-                <span>ปกติ</span>
-              </label>
-              <label class="option-pill">
-                <input type="radio" name="pressureStatus" value="ผิดปกติ" />
-                <span>ผิดปกติ</span>
-              </label>
-            </div>
-            <div class="note-field" data-note-for="pressureStatus" hidden>
-              <textarea name="pressureNote" rows="2" placeholder="เช่น เข็มไม่อยู่โซนเขียว แรงดันต่ำ"></textarea>
-            </div>
-          </div>
-
-          <div class="check-item">
-            <div class="check-title">เกจวัด/น้ำหนัก</div>
-            <div class="option-row">
-              <label class="option-pill">
-                <input type="radio" name="gaugeWeightStatus" value="ปกติ" checked />
-                <span>ปกติ</span>
-              </label>
-              <label class="option-pill">
-                <input type="radio" name="gaugeWeightStatus" value="ผิดปกติ" />
-                <span>ผิดปกติ</span>
-              </label>
-            </div>
-            <div class="note-field" data-note-for="gaugeWeightStatus" hidden>
-              <textarea name="gaugeWeightNote" rows="2" placeholder="ระบุปัญหาเกจวัดหรือน้ำหนัก"></textarea>
-            </div>
-
-            <div class="co2-box" id="co2Box" hidden>
-              <label for="co2Weight">น้ำหนักถัง CO2 ที่ชั่งได้ (kg)</label>
-              <input id="co2Weight" name="co2Weight" type="number" step="0.01" inputmode="decimal" placeholder="เช่น 8.50" />
-            </div>
-          </div>
-
-          <div class="check-item">
-            <div class="check-title">สาย/กระบอกฉีด</div>
-            <div class="option-row">
-              <label class="option-pill">
-                <input type="radio" name="hoseStatus" value="ปกติ" checked />
-                <span>ปกติ</span>
-              </label>
-              <label class="option-pill">
-                <input type="radio" name="hoseStatus" value="ผิดปกติ" />
-                <span>ผิดปกติ</span>
-              </label>
-            </div>
-            <div class="note-field" data-note-for="hoseStatus" hidden>
-              <textarea name="hoseNote" rows="2" placeholder="เช่น สายแตก หัวฉีดตัน หัวฉีดหลวม"></textarea>
-            </div>
-          </div>
-
-          <div class="check-item">
-            <div class="check-title">สายรัดสลัก</div>
-            <div class="option-row">
-              <label class="option-pill">
-                <input type="radio" name="pinSealStatus" value="ปกติ" checked />
-                <span>ปกติ</span>
-              </label>
-              <label class="option-pill">
-                <input type="radio" name="pinSealStatus" value="ผิดปกติ" />
-                <span>ผิดปกติ</span>
-              </label>
-            </div>
-            <div class="note-field" data-note-for="pinSealStatus" hidden>
-              <textarea name="pinSealNote" rows="2" placeholder="เช่น ซีลขาด สลักหาย สายรัดหลวม"></textarea>
-            </div>
-          </div>
-
-          <div class="check-item">
-            <div class="check-title">คันบังคับ</div>
-            <div class="option-row">
-              <label class="option-pill">
-                <input type="radio" name="handleStatus" value="ปกติ" checked />
-                <span>ปกติ</span>
-              </label>
-              <label class="option-pill">
-                <input type="radio" name="handleStatus" value="ผิดปกติ" />
-                <span>ผิดปกติ</span>
-              </label>
-            </div>
-            <div class="note-field" data-note-for="handleStatus" hidden>
-              <textarea name="handleNote" rows="2" placeholder="เช่น คันบังคับหัก หลวม ค้าง เป็นสนิม"></textarea>
-            </div>
-          </div>
-
-          <div class="check-item full">
-            <div class="field-group">
-              <label for="inspectorSelect">ชื่อผู้บันทึก</label>
-              <select id="inspectorSelect" name="inspector" required>
-                <option value="">กำลังโหลดรายชื่อ...</option>
-              </select>
-            </div>
-
-            <div class="field-group">
-              <label for="remark">หมายเหตุเพิ่มเติม</label>
-              <textarea id="remark" name="remark" rows="3" placeholder="หมายเหตุเพิ่มเติม ถ้ามี"></textarea>
-            </div>
-          </div>
-        </div>
-
-        <div class="submit-bar">
-          <button class="btn primary full" id="submitBtn" type="submit">
-            บันทึกผลตรวจ
+          <button class="inspect-soft-btn" id="openFormBtn" type="button">
+            ตรวจเช็คถัง
           </button>
+        </section>
+
+        <section class="history-card">
+          <div class="section-head">
+            <div>
+              <h2>ประวัติการตรวจล่าสุด</h2>
+              <small>แสดงรายการล่าสุดของถังนี้</small>
+            </div>
+            <button class="btn ghost small" id="refreshHistoryBtn" type="button">รีเฟรช</button>
+          </div>
+
+          <div class="history-list" id="historyList">
+            <div class="empty-state">ยังไม่มีประวัติการตรวจ</div>
+          </div>
+        </section>
+
+        <form class="form-card" id="inspectionForm" hidden>
+          <div class="form-head">
+            <div>
+              <h2>แบบฟอร์มตรวจถัง</h2>
+              <p>เลือกปกติ/ผิดปกติ และกรอกหมายเหตุเฉพาะรายการที่ผิดปกติ</p>
+            </div>
+            <button class="btn ghost small" id="closeFormBtn" type="button">ซ่อน</button>
+          </div>
+
+          <div class="check-list">
+            <div class="check-item">
+              <div class="check-title">ความสะอาด</div>
+              <div class="option-row">
+                <label class="option-pill">
+                  <input type="radio" name="cleanliness" value="สะอาด" checked />
+                  <span>สะอาด</span>
+                </label>
+                <label class="option-pill">
+                  <input type="radio" name="cleanliness" value="ไม่สะอาด" />
+                  <span>ไม่สะอาด</span>
+                </label>
+              </div>
+              <div class="note-field" data-note-for="cleanliness" hidden>
+                <textarea name="cleanlinessNote" rows="2" placeholder="ระบุรายละเอียดความไม่สะอาด"></textarea>
+              </div>
+            </div>
+
+            <div class="check-item">
+              <div class="check-title">สภาพถัง</div>
+              <div class="option-row">
+                <label class="option-pill">
+                  <input type="radio" name="bodyStatus" value="ปกติ" checked />
+                  <span>ปกติ</span>
+                </label>
+                <label class="option-pill">
+                  <input type="radio" name="bodyStatus" value="ผิดปกติ" />
+                  <span>ผิดปกติ</span>
+                </label>
+              </div>
+              <div class="note-field" data-note-for="bodyStatus" hidden>
+                <textarea name="bodyNote" rows="2" placeholder="เช่น ถังบุบ เป็นสนิม รั่ว สีหลุด"></textarea>
+              </div>
+            </div>
+
+            <div class="check-item">
+              <div class="check-title">แรงดัน</div>
+              <div class="option-row">
+                <label class="option-pill">
+                  <input type="radio" name="pressureStatus" value="ปกติ" checked />
+                  <span>ปกติ</span>
+                </label>
+                <label class="option-pill">
+                  <input type="radio" name="pressureStatus" value="ผิดปกติ" />
+                  <span>ผิดปกติ</span>
+                </label>
+              </div>
+              <div class="note-field" data-note-for="pressureStatus" hidden>
+                <textarea name="pressureNote" rows="2" placeholder="เช่น เข็มไม่อยู่โซนเขียว แรงดันต่ำ"></textarea>
+              </div>
+            </div>
+
+            <div class="check-item">
+              <div class="check-title">เกจวัด/น้ำหนัก</div>
+              <div class="option-row">
+                <label class="option-pill">
+                  <input type="radio" name="gaugeWeightStatus" value="ปกติ" checked />
+                  <span>ปกติ</span>
+                </label>
+                <label class="option-pill">
+                  <input type="radio" name="gaugeWeightStatus" value="ผิดปกติ" />
+                  <span>ผิดปกติ</span>
+                </label>
+              </div>
+              <div class="note-field" data-note-for="gaugeWeightStatus" hidden>
+                <textarea name="gaugeWeightNote" rows="2" placeholder="ระบุปัญหาเกจวัดหรือน้ำหนัก"></textarea>
+              </div>
+
+              <div class="co2-box" id="co2Box" hidden>
+                <label for="co2Weight">น้ำหนักถัง CO2 ที่ชั่งได้ (kg)</label>
+                <input id="co2Weight" name="co2Weight" type="number" step="0.01" inputmode="decimal" placeholder="เช่น 8.50" />
+              </div>
+            </div>
+
+            <div class="check-item">
+              <div class="check-title">สาย/กระบอกฉีด</div>
+              <div class="option-row">
+                <label class="option-pill">
+                  <input type="radio" name="hoseStatus" value="ปกติ" checked />
+                  <span>ปกติ</span>
+                </label>
+                <label class="option-pill">
+                  <input type="radio" name="hoseStatus" value="ผิดปกติ" />
+                  <span>ผิดปกติ</span>
+                </label>
+              </div>
+              <div class="note-field" data-note-for="hoseStatus" hidden>
+                <textarea name="hoseNote" rows="2" placeholder="เช่น สายแตก หัวฉีดตัน หัวฉีดหลวม"></textarea>
+              </div>
+            </div>
+
+            <div class="check-item">
+              <div class="check-title">สายรัดสลัก</div>
+              <div class="option-row">
+                <label class="option-pill">
+                  <input type="radio" name="pinSealStatus" value="ปกติ" checked />
+                  <span>ปกติ</span>
+                </label>
+                <label class="option-pill">
+                  <input type="radio" name="pinSealStatus" value="ผิดปกติ" />
+                  <span>ผิดปกติ</span>
+                </label>
+              </div>
+              <div class="note-field" data-note-for="pinSealStatus" hidden>
+                <textarea name="pinSealNote" rows="2" placeholder="เช่น ซีลขาด สลักหาย สายรัดหลวม"></textarea>
+              </div>
+            </div>
+
+            <div class="check-item">
+              <div class="check-title">คันบังคับ</div>
+              <div class="option-row">
+                <label class="option-pill">
+                  <input type="radio" name="handleStatus" value="ปกติ" checked />
+                  <span>ปกติ</span>
+                </label>
+                <label class="option-pill">
+                  <input type="radio" name="handleStatus" value="ผิดปกติ" />
+                  <span>ผิดปกติ</span>
+                </label>
+              </div>
+              <div class="note-field" data-note-for="handleStatus" hidden>
+                <textarea name="handleNote" rows="2" placeholder="เช่น คันบังคับหัก หลวม ค้าง เป็นสนิม"></textarea>
+              </div>
+            </div>
+
+            <div class="check-item full">
+              <div class="field-group">
+                <label for="inspectorSelect">ชื่อผู้บันทึก</label>
+                <select id="inspectorSelect" name="inspector" required>
+                  <option value="">กำลังโหลดรายชื่อ...</option>
+                </select>
+              </div>
+
+              <div class="field-group">
+                <label for="remark">หมายเหตุเพิ่มเติม</label>
+                <textarea id="remark" name="remark" rows="3" placeholder="หมายเหตุเพิ่มเติม ถ้ามี"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="submit-bar">
+            <button class="btn primary full" id="submitBtn" type="submit">
+              บันทึกผลตรวจ
+            </button>
+          </div>
+        </form>
+
+        <div class="bottom-action" id="bottomAction">
+          <div class="bottom-action-inner">
+            <div class="bottom-action-text">
+              <strong>ข้อมูลถังและประวัติพร้อมแล้ว</strong>
+              <span>เจ้าหน้าที่สามารถเริ่มตรวจเช็คถังนี้ได้</span>
+            </div>
+            <button class="inspect-soft-btn" id="bottomOpenFormBtn" type="button">
+              ตรวจเช็คถัง
+            </button>
+          </div>
         </div>
-      </form>
+      </div>
     </section>
   </main>
 
-  <script src="/fire-extinguisher/js/config.js?v=1.0.2"></script>
-  <script src="/fire-extinguisher/js/api.js?v=1.0.2"></script>
-  <script src="/fire-extinguisher/js/utils.js?v=1.0.2"></script>
+  <script src="/fire-extinguisher/js/config.js?v=1.2.0"></script>
+  <script src="/fire-extinguisher/js/api.js?v=1.2.0"></script>
+  <script src="/fire-extinguisher/js/utils.js?v=1.2.0"></script>
 
   <script>
     (function () {
@@ -562,24 +937,28 @@
       document.addEventListener('DOMContentLoaded', init);
 
       async function init() {
-  setLogo();
-  bindEvents();
+        setLogo();
+        bindEvents();
 
-  const id = U.normalizeId(U.getParam('id'));
+        const id = U.normalizeId(U.getParam('id'));
 
-  if (!id) {
-    showNotFound();
-    return;
-  }
+        if (!id) {
+          showNotFound();
+          return;
+        }
 
-  await loadData(id);
-}
-    function setLogo() {
-  const logo = U.$('#pageLogo');
-  if (logo) {
-    logo.src = window.APP_CONFIG.LOGO_URL;
-  }
-}
+        await loadData(id);
+      }
+
+      function setLogo() {
+        const logo = U.$('#pageLogo');
+
+        if (logo) {
+          logo.src = window.APP_CONFIG.LOGO_URL;
+          logo.loading = 'eager';
+          logo.decoding = 'async';
+        }
+      }
 
       function bindEvents() {
         U.$('#refreshHistoryBtn').addEventListener('click', async () => {
@@ -587,6 +966,10 @@
             await loadHistory(currentExtinguisher.extinguisherId);
           }
         });
+
+        U.$('#openFormBtn').addEventListener('click', openInspectionForm);
+        U.$('#bottomOpenFormBtn').addEventListener('click', openInspectionForm);
+        U.$('#closeFormBtn').addEventListener('click', closeInspectionForm);
 
         U.$('#inspectionForm').addEventListener('change', handleFormChange);
         U.$('#inspectionForm').addEventListener('submit', handleSubmit);
@@ -604,7 +987,7 @@
           ]);
 
           currentExtinguisher = extRes.item;
-          names = namesRes.items || [];
+          names = Array.isArray(namesRes.items) ? namesRes.items : [];
 
           renderExtinguisher(currentExtinguisher);
           renderNames(names);
@@ -636,69 +1019,134 @@
       }
 
       function renderExtinguisher(item) {
+        if (!item) {
+          showNotFound();
+          return;
+        }
+
         U.setText('#extinguisherId', item.extinguisherId);
         U.setText('#location', item.location);
         U.setText('#type', item.type);
         U.setText('#size', item.size);
         U.setText('#yearMade', item.yearMade);
+        U.setText('#typeBadge', item.type);
       }
 
-  function renderNames(items) {
-  const select = U.$('#inspectorSelect');
+      function renderNames(items) {
+        const select = U.$('#inspectorSelect');
+        const list = Array.isArray(items) ? items : [];
 
-  if (!select) return;
+        if (!select) return;
 
-  const list = Array.isArray(items) ? items : [];
-
-  if (!list.length) {
-    select.innerHTML = '<option value="">ไม่พบรายชื่อในชีท Name</option>';
-    return;
-  }
-
-  select.innerHTML = [
-    '<option value="">เลือกชื่อผู้บันทึก</option>',
-    ...list.map((item, index) => {
-      const label = U.escapeHtml(
-        item.displayName ||
-        item.thaiName ||
-        item.englishName ||
-        item.name ||
-        item.Name ||
-        ''
-      );
-
-      return `<option value="${index}">${label}</option>`;
-    })
-  ].join('');
-}
-
-      function renderHistory(items) {
-        const box = U.$('#historyList');
-
-        if (!items.length) {
-          box.innerHTML = '<div class="empty-state">ยังไม่มีประวัติการตรวจ</div>';
+        if (!list.length) {
+          select.innerHTML = '<option value="">ไม่พบรายชื่อในชีท Name</option>';
           return;
         }
 
-        box.innerHTML = items.map(item => {
-          const isOk = item.overallStatus === 'ปกติ';
+        select.innerHTML = [
+          '<option value="">เลือกชื่อผู้บันทึก</option>',
+          ...list.map((item, index) => {
+            const label = U.escapeHtml(
+              item.displayName ||
+              buildNameDisplay(item.thaiName, item.englishName) ||
+              item.name ||
+              item.Name ||
+              ''
+            );
+
+            return `<option value="${index}">${label}</option>`;
+          })
+        ].join('');
+      }
+
+      function buildNameDisplay(thaiName, englishName) {
+        thaiName = String(thaiName || '').trim();
+        englishName = String(englishName || '').trim();
+
+        if (thaiName && englishName) return `${thaiName} / ${englishName}`;
+        return thaiName || englishName || '';
+      }
+
+      function renderHistory(items) {
+        const box = U.$('#historyList');
+        const list = Array.isArray(items) ? items : [];
+
+        if (!list.length) {
+          box.innerHTML = '<div class="empty-state">ยังไม่มีประวัติการตรวจถังนี้</div>';
+          U.setText('#lastStatusText', 'ยังไม่มีประวัติ');
+          U.$('#quickHint').textContent = 'ยังไม่มีประวัติ เจ้าหน้าที่สามารถเริ่มตรวจครั้งแรกได้';
+          return;
+        }
+
+        const latest = list[0] || {};
+        U.setText('#lastStatusText', latest.overallStatus || '-');
+
+        U.$('#quickHint').textContent = latest.timestamp
+          ? `ตรวจล่าสุด: ${latest.timestamp}`
+          : 'ตรวจสอบข้อมูลก่อนเริ่มบันทึกผล';
+
+        box.innerHTML = list.map(item => {
+          const isOk = String(item.overallStatus || '').trim() === 'ปกติ';
 
           return `
             <article class="history-item">
               <div class="history-main">
-                <div>
-                  <strong>${U.escapeHtml(item.extinguisherId)}</strong>
-                  <div class="history-time">${U.escapeHtml(item.timestamp)}</div>
+                <div class="history-title">
+                  <strong>${U.escapeHtml(item.timestamp || '-')}</strong>
+                  <div class="history-time">หมายเลขถัง: ${U.escapeHtml(item.extinguisherId || currentExtinguisher.extinguisherId || '-')}</div>
                 </div>
                 <span class="badge ${isOk ? 'ok' : 'bad'}">${U.escapeHtml(item.overallStatus || '-')}</span>
               </div>
+
               <div class="history-meta">
-                ผู้บันทึก: ${U.escapeHtml(item.inspectorThai || '-')}
-                ${item.remark ? `<br>หมายเหตุ: ${U.escapeHtml(item.remark)}` : ''}
+                <div>
+                  <span>ผู้บันทึก</span>
+                  <strong>${U.escapeHtml(item.inspectorThai || item.inspectorEnglish || '-')}</strong>
+                </div>
+
+                <div>
+                  <span>ผลตรวจ</span>
+                  <strong>${U.escapeHtml(item.overallStatus || '-')}</strong>
+                </div>
+
+                ${item.remark ? `
+                  <div class="history-remark">
+                    <span>หมายเหตุ</span>
+                    <strong>${U.escapeHtml(item.remark)}</strong>
+                  </div>
+                ` : ''}
               </div>
             </article>
           `;
         }).join('');
+      }
+
+      function openInspectionForm() {
+        const form = U.$('#inspectionForm');
+        const bottomAction = U.$('#bottomAction');
+
+        form.hidden = false;
+        bottomAction.classList.add('hidden-action');
+
+        setTimeout(() => {
+          form.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }, 50);
+      }
+
+      function closeInspectionForm() {
+        const form = U.$('#inspectionForm');
+        const bottomAction = U.$('#bottomAction');
+
+        form.hidden = true;
+        bottomAction.classList.remove('hidden-action');
+
+        U.$('#quickCard').scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
       }
 
       function handleFormChange() {
@@ -728,13 +1176,18 @@
       }
 
       function updateCo2Visibility() {
+        const box = U.$('#co2Box');
+        if (!box) return;
+
         const isCo2 = currentExtinguisher && isCo2Type(currentExtinguisher.type);
-        U.$('#co2Box').hidden = !isCo2;
+        box.hidden = !isCo2;
       }
 
       function isCo2Type(type) {
         const text = String(type || '').toLowerCase();
+
         return text.includes('co2') ||
+          text.includes('co₂') ||
           text.includes('carbon dioxide') ||
           text.includes('คาร์บอนไดออกไซด์');
       }
@@ -742,6 +1195,11 @@
       function getRadioValue(name) {
         const el = document.querySelector(`input[name="${name}"]:checked`);
         return el ? el.value : '';
+      }
+
+      function getValue(name) {
+        const el = document.querySelector(`[name="${name}"]`);
+        return el ? String(el.value || '').trim() : '';
       }
 
       function getFormPayload() {
@@ -774,16 +1232,11 @@
           handleStatus: getRadioValue('handleStatus'),
           handleNote: getValue('handleNote'),
 
-          inspectorThai: inspector.thaiName || '',
-          inspectorEnglish: inspector.englishName || '',
+          inspectorThai: inspector.thaiName || inspector['ชื่อ'] || '',
+          inspectorEnglish: inspector.englishName || inspector.Name || '',
 
           remark: getValue('remark')
         };
-      }
-
-      function getValue(name) {
-        const el = document.querySelector(`[name="${name}"]`);
-        return el ? String(el.value || '').trim() : '';
       }
 
       function validateClient(payload) {
@@ -842,6 +1295,7 @@
           updateCo2Visibility();
 
           await loadHistory(currentExtinguisher.extinguisherId);
+          closeInspectionForm();
         } catch (err) {
           U.toast(err.message || 'บันทึกไม่สำเร็จ', 'error');
         } finally {
