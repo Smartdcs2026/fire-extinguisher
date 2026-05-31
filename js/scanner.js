@@ -19,14 +19,17 @@
     }
 
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      throw new Error('อุปกรณ์นี้ไม่รองรับการเปิดกล้องผ่าน Browser');
+      throw new Error('Browser นี้ไม่อนุญาตให้เปิดกล้อง กรุณาเปิดผ่าน Chrome/Safari หรือกรอกหมายเลขถังแทน');
     }
 
     stop();
-
     scanning = true;
 
-    if ('BarcodeDetector' in window) {
+    const hasNative = 'BarcodeDetector' in window;
+    const hasZxing = window.ZXing && window.ZXing.BrowserQRCodeReader;
+
+    // 1) ใช้ BarcodeDetector ก่อน ถ้ามี
+    if (hasNative) {
       try {
         scanMode = 'native';
         await startNativeCamera();
@@ -34,17 +37,27 @@
         scanWithBarcodeDetector();
         return;
       } catch (err) {
-        stop();
+        console.warn('Native scanner failed, fallback to ZXing:', err);
+        stopSoft_();
       }
     }
 
-    if (window.ZXing && window.ZXing.BrowserQRCodeReader) {
-      scanMode = 'zxing';
-      await startZxingScanner();
-      return;
+    // 2) ใช้ ZXing fallback
+    if (hasZxing) {
+      try {
+        scanMode = 'zxing';
+        await startZxingScanner();
+        return;
+      } catch (err) {
+        console.warn('ZXing scanner failed:', err);
+        stop();
+        throw new Error('เปิดกล้องไม่สำเร็จ กรุณาตรวจสอบสิทธิ์กล้อง หรือกรอกหมายเลขถังแทน');
+      }
     }
 
-    throw new Error('Browser นี้ยังไม่รองรับการสแกน QR Code กรุณากรอกหมายเลขถังแทน');
+    // 3) ถ้าไม่มีตัวอ่าน QR แต่ยังขอเปิดกล้องได้ ให้แจ้งตรง ๆ
+    stop();
+    throw new Error('ไม่พบตัวอ่าน QR Code ใน Browser นี้ กรุณากรอกหมายเลขถังแทน');
   }
 
   async function startNativeCamera() {
@@ -68,27 +81,34 @@
   async function startZxingScanner() {
     zxingReader = new ZXing.BrowserQRCodeReader();
 
-    const devices = await ZXing.BrowserCodeReader.listVideoInputDevices();
-    let selectedDeviceId = '';
+    let selectedDeviceId = null;
 
-    if (devices && devices.length) {
-      const backCamera = devices.find(device => {
-        const label = String(device.label || '').toLowerCase();
-        return (
-          label.includes('back') ||
-          label.includes('rear') ||
-          label.includes('environment') ||
-          label.includes('หลัง')
-        );
-      });
+    try {
+      const devices = await zxingReader.listVideoInputDevices();
 
-      selectedDeviceId = backCamera ? backCamera.deviceId : devices[devices.length - 1].deviceId;
+      if (devices && devices.length) {
+        const backCamera = devices.find(device => {
+          const label = String(device.label || '').toLowerCase();
+          return (
+            label.includes('back') ||
+            label.includes('rear') ||
+            label.includes('environment') ||
+            label.includes('หลัง')
+          );
+        });
+
+        selectedDeviceId = backCamera
+          ? backCamera.deviceId
+          : devices[devices.length - 1].deviceId;
+      }
+    } catch (err) {
+      selectedDeviceId = null;
     }
 
     await zxingReader.decodeFromVideoDevice(
-      selectedDeviceId || null,
+      selectedDeviceId,
       videoEl,
-      (result, err) => {
+      function (result, err) {
         if (!scanning) return;
 
         if (result && result.text) {
@@ -96,6 +116,34 @@
         }
       }
     );
+  }
+
+  function stopSoft_() {
+    scanning = false;
+
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+
+    if (stream) {
+      stream.getTracks().forEach(track => {
+        try {
+          track.stop();
+        } catch (err) {}
+      });
+      stream = null;
+    }
+
+    if (videoEl) {
+      try {
+        videoEl.pause();
+        videoEl.srcObject = null;
+      } catch (err) {}
+    }
+
+    detector = null;
+    scanning = true;
   }
 
   function stop() {
