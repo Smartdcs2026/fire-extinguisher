@@ -131,11 +131,11 @@
       document.addEventListener('DOMContentLoaded', init);
 
       async function init() {
-        bindEvents();
-        await checkHealth();
-        await loadMonthStatus();
-      }
-
+  setLogo();
+  bindEvents();
+  await checkHealth();
+  await loadMonthStatus();
+}
       function bindEvents() {
         openScannerBtn.addEventListener('click', openScanner);
         closeScannerBtn.addEventListener('click', closeScanner);
