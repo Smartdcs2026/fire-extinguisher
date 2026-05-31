@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#b91c1c" />
   <title>พิมพ์ QR Code | Fire Extinguisher</title>
 
-  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.0.3" />
+  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.0.9" />
 
   <style>
     .page-top {
@@ -349,6 +349,43 @@
         page-break-after: always;
       }
     }
+    .page-logo {
+  width: 96px;
+  height: 44px;
+  border-radius: 14px;
+  overflow: hidden;
+  padding: 6px 8px;
+  background: #fff;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.page-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain !important;
+  object-position: center center;
+  display: block;
+}
+
+@media (max-width: 420px) {
+  .page-logo {
+    width: 78px;
+    height: 38px;
+    padding: 5px 7px;
+  }
+}
+
+@media print {
+  .page-logo,
+  .page-top,
+  .no-print {
+    display: none !important;
+  }
+}
   </style>
 </head>
 
