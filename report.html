@@ -3,66 +3,144 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#b91c1c" />
+  <meta name="theme-color" content="#991b1b" />
   <title>รายงานผลตรวจ | Fire Extinguisher</title>
 
-  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.2" />
 
   <style>
+    :root {
+      --primary: #b91c1c;
+      --primary-dark: #7f1d1d;
+      --green: #16a34a;
+      --blue: #2563eb;
+      --amber: #d97706;
+      --red: #dc2626;
+      --slate: #0f172a;
+      --muted2: #64748b;
+      --card2: rgba(255, 255, 255, 0.96);
+      --line2: rgba(148, 163, 184, 0.35);
+      --shadow2: 0 16px 38px rgba(15, 23, 42, 0.10);
+    }
+
+    body,
+    button,
+    input,
+    select,
+    textarea {
+      font-family: "Noto Sans Thai", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top left, rgba(254, 226, 226, 0.9), transparent 34%),
+        radial-gradient(circle at top right, rgba(255, 237, 213, 0.72), transparent 32%),
+        linear-gradient(180deg, #fff7ed 0%, #f8fafc 48%, #eef2ff 100%);
+      color: #111827;
+    }
+
+    .app-shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 12px 10px 28px;
+    }
+
     .page-top {
-      display: flex;
+      display: grid;
+      grid-template-columns: auto auto minmax(0, 1fr);
       align-items: center;
       gap: 10px;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
+      padding: 12px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, #991b1b 0%, #b91c1c 52%, #ea580c 100%);
+      color: #fff;
+      box-shadow: 0 16px 34px rgba(185, 28, 28, 0.24);
     }
 
     .back-link {
-      width: 42px;
-      height: 42px;
+      width: 40px;
+      height: 40px;
       border-radius: 14px;
-      background: #fff;
-      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.95);
+      color: #7f1d1d;
       display: grid;
       place-items: center;
-      font-weight: 900;
-      box-shadow: var(--shadow);
+      font-weight: 950;
+      text-decoration: none;
+      box-shadow: 0 8px 18px rgba(127, 29, 29, 0.18);
+    }
+
+    .page-logo {
+      width: 70px;
+      height: 44px;
+      border-radius: 16px;
+      overflow: hidden;
+      padding: 6px 8px;
+      background: #fff;
+      display: grid;
+      place-items: center;
+      box-sizing: border-box;
+    }
+
+    .page-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .page-title {
+      min-width: 0;
     }
 
     .page-title h1 {
       margin: 0;
       font-size: clamp(20px, 5vw, 30px);
-      line-height: 1.12;
+      line-height: 1.08;
+      font-weight: 950;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .page-title p {
-      margin: 3px 0 0;
-      color: var(--muted);
-      font-size: 13px;
+      margin: 4px 0 0;
+      color: rgba(255, 255, 255, 0.92);
+      font-size: 12px;
+      line-height: 1.35;
+      font-weight: 750;
     }
 
     .panel {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 16px;
-      margin-bottom: 14px;
+      background: var(--card2);
+      border: 1px solid var(--line2);
+      border-radius: 22px;
+      box-shadow: var(--shadow2);
+      padding: 12px;
+      margin-bottom: 10px;
     }
 
     .tab-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .tab-btn {
-      border: 1px solid var(--line);
+      border: 1px solid #e2e8f0;
       background: #fff;
       border-radius: 16px;
-      padding: 12px;
-      font-weight: 900;
+      padding: 11px 9px;
+      font-weight: 950;
       cursor: pointer;
+      color: #334155;
+      min-height: 44px;
     }
 
     .tab-btn.active {
@@ -74,39 +152,210 @@
 
     .filter-grid {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+    }
+
+    .field {
+      min-width: 0;
     }
 
     .field label {
       display: block;
-      font-weight: 900;
-      margin-bottom: 7px;
-      font-size: 14px;
+      font-weight: 950;
+      margin-bottom: 6px;
+      font-size: 12.5px;
+      color: #334155;
     }
 
-    .date-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
+    .field.wide {
+      grid-column: 1 / -1;
+    }
+
+    .field input,
+    .field select {
+      min-height: 42px;
+      border-radius: 14px;
+      font-size: 13.5px;
+      font-weight: 800;
     }
 
     .action-row {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px;
-      margin-top: 14px;
+      margin-top: 12px;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 15px;
+      min-height: 42px;
+      padding: 9px 12px;
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 950;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.02);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, #991b1b, #dc2626);
+      color: #fff;
+      box-shadow: 0 10px 22px rgba(185, 28, 28, 0.2);
+    }
+
+    .btn.ghost {
+      background: #f1f5f9;
+      color: #0f172a;
+      border: 1px solid #e2e8f0;
+    }
+
+    .btn.danger {
+      background: linear-gradient(135deg, #c2410c, #f97316);
+      color: #fff;
+      box-shadow: 0 10px 22px rgba(234, 88, 12, 0.18);
+    }
+
+    .btn.small,
+    .btn.ghost.small {
+      min-height: 34px;
+      padding: 7px 11px;
+      border-radius: 12px;
+      font-size: 12px;
+    }
+
+    .round-note {
+      margin-top: 10px;
+      padding: 9px 10px;
+      border-radius: 16px;
+      background: #fff7ed;
+      border: 1px solid rgba(251, 146, 60, 0.35);
+      color: #7c2d12;
+      font-size: 12px;
+      line-height: 1.35;
+      font-weight: 850;
     }
 
     .summary-grid.report-summary {
-      margin-top: 0;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
     }
 
-    .summary-card small {
-      display: block;
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 4px;
+    .summary-card {
+      min-height: 76px;
+      padding: 10px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+      border: 1px solid var(--line2);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.07);
+      display: grid;
+      align-content: center;
+      gap: 3px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .summary-card span {
+      color: var(--muted2);
+      font-size: 11px;
+      line-height: 1.25;
+      font-weight: 900;
+      z-index: 1;
+    }
+
+    .summary-card strong {
+      font-size: clamp(22px, 7vw, 36px);
+      line-height: 1;
+      font-weight: 950;
+      color: var(--blue);
+      z-index: 1;
+    }
+
+    .summary-card.success strong {
+      color: var(--green);
+    }
+
+    .summary-card.warning strong {
+      color: var(--amber);
+    }
+
+    .summary-card.danger strong {
+      color: var(--red);
+    }
+
+    .round-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .round-card {
+      padding: 10px;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid var(--line2);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+      display: grid;
+      gap: 7px;
+    }
+
+    .round-card h3 {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 950;
+      color: #0f172a;
+    }
+
+    .round-line {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .mini-stat {
+      padding: 7px 5px;
+      border-radius: 13px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      text-align: center;
+      display: grid;
+      gap: 2px;
+    }
+
+    .mini-stat span {
+      color: var(--muted2);
+      font-size: 10px;
+      line-height: 1.1;
+      font-weight: 850;
+    }
+
+    .mini-stat strong {
+      color: #0f172a;
+      font-size: 19px;
+      line-height: 1;
+      font-weight: 950;
+    }
+
+    .mini-stat.ok strong {
+      color: var(--green);
+    }
+
+    .mini-stat.wait strong {
+      color: var(--amber);
     }
 
     .toolbar {
@@ -114,17 +363,32 @@
       justify-content: space-between;
       align-items: center;
       gap: 12px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .toolbar h2 {
       margin: 0;
-      font-size: 18px;
+      font-size: 17px;
+      font-weight: 950;
+    }
+
+    .count-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      border-radius: 999px;
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 5px 11px;
+      font-weight: 950;
+      font-size: 12px;
+      white-space: nowrap;
     }
 
     .table-wrap {
       overflow: auto;
-      border: 1px solid var(--line);
+      border: 1px solid var(--line2);
       border-radius: 18px;
       background: #fff;
     }
@@ -132,22 +396,22 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 760px;
+      min-width: 940px;
     }
 
     th,
     td {
-      padding: 11px 12px;
-      border-bottom: 1px solid var(--line);
+      padding: 10px 11px;
+      border-bottom: 1px solid #e5e7eb;
       text-align: left;
       vertical-align: top;
-      font-size: 13px;
+      font-size: 12.5px;
       white-space: nowrap;
     }
 
     th {
-      background: #f9fafb;
-      font-weight: 900;
+      background: #f8fafc;
+      font-weight: 950;
       color: #374151;
     }
 
@@ -160,9 +424,10 @@
       align-items: center;
       justify-content: center;
       border-radius: 999px;
-      padding: 5px 10px;
-      font-size: 12px;
-      font-weight: 900;
+      padding: 5px 9px;
+      font-size: 11.5px;
+      line-height: 1;
+      font-weight: 950;
       white-space: nowrap;
     }
 
@@ -181,47 +446,64 @@
       color: #92400e;
     }
 
+    .badge.info {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
     .mobile-list {
       display: none;
-      gap: 10px;
+      gap: 9px;
     }
 
     .result-card {
-      border: 1px solid var(--line);
+      border: 1px solid var(--line2);
       background: #fff;
       border-radius: 18px;
-      padding: 14px;
+      padding: 12px;
       box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+      display: grid;
+      gap: 7px;
     }
 
     .result-card h3 {
-      margin: 0 0 6px;
-      font-size: 18px;
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.15;
+      font-weight: 950;
     }
 
     .result-card p {
-      margin: 3px 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
+      margin: 0;
+      color: var(--muted2);
+      font-size: 12.5px;
+      line-height: 1.35;
+      font-weight: 700;
     }
 
-    .result-card .card-foot {
-      margin-top: 10px;
+    .card-status-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .card-foot {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 10px;
+      margin-top: 2px;
     }
 
     .empty-state {
-      color: var(--muted);
+      color: var(--muted2);
       background: #f9fafb;
-      border: 1px dashed var(--line);
+      border: 1px dashed #cbd5e1;
       padding: 14px;
       border-radius: 16px;
       text-align: center;
       line-height: 1.45;
+      font-weight: 800;
     }
 
     .detail-modal {
@@ -230,7 +512,7 @@
       z-index: 9998;
       display: none;
       background: rgba(15, 23, 42, 0.55);
-      padding: 16px;
+      padding: 14px;
       overflow: auto;
     }
 
@@ -246,7 +528,7 @@
       background: #fff;
       border-radius: 24px;
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.24);
-      padding: 18px;
+      padding: 16px;
     }
 
     .modal-head {
@@ -260,6 +542,7 @@
     .modal-head h2 {
       margin: 0;
       font-size: 20px;
+      font-weight: 950;
     }
 
     .detail-grid {
@@ -269,7 +552,7 @@
     }
 
     .detail-item {
-      border: 1px solid var(--line);
+      border: 1px solid #e5e7eb;
       border-radius: 14px;
       padding: 10px 12px;
       background: #f9fafb;
@@ -278,19 +561,25 @@
     .detail-item span {
       display: block;
       font-size: 12px;
-      color: var(--muted);
+      color: var(--muted2);
       margin-bottom: 3px;
+      font-weight: 800;
     }
 
     .detail-item strong {
       display: block;
       font-size: 14px;
       line-height: 1.4;
+      font-weight: 900;
     }
 
-    @media (min-width: 720px) {
+    @media (min-width: 760px) {
+      .app-shell {
+        padding: 18px 14px 30px;
+      }
+
       .filter-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
       }
 
       .field.wide {
@@ -307,7 +596,7 @@
       }
     }
 
-    @media (max-width: 680px) {
+    @media (max-width: 720px) {
       .table-wrap {
         display: none;
       }
@@ -315,27 +604,118 @@
       .mobile-list {
         display: grid;
       }
-
-      .tab-row {
-        grid-template-columns: 1fr;
-      }
-
-      .date-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .action-row {
-        grid-template-columns: 1fr;
-      }
     }
 
-    @media (max-width: 380px) {
+    @media (max-width: 480px) {
       .app-shell {
-        padding: 12px;
+        padding: 10px 8px 24px;
+      }
+
+      .page-top {
+        grid-template-columns: auto minmax(0, 1fr);
+      }
+
+      .page-logo {
+        display: none;
+      }
+
+      .page-title h1 {
+        font-size: 20px;
+      }
+
+      .page-title p {
+        font-size: 11.5px;
       }
 
       .panel {
+        padding: 10px;
+        border-radius: 20px;
+      }
+
+      .tab-row {
+        gap: 6px;
+      }
+
+      .tab-btn {
+        min-height: 40px;
+        padding: 9px 7px;
+        border-radius: 14px;
+        font-size: 12.5px;
+      }
+
+      .filter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 7px;
+      }
+
+      .field label {
+        font-size: 11.5px;
+      }
+
+      .field input,
+      .field select {
+        min-height: 40px;
+        font-size: 12.5px;
+        border-radius: 13px;
+      }
+
+      .action-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 7px;
+      }
+
+      .btn {
+        min-height: 40px;
+        font-size: 12px;
+        padding: 8px 7px;
+      }
+
+      .summary-grid.report-summary {
+        gap: 7px;
+      }
+
+      .summary-card {
+        min-height: 68px;
+        padding: 8px;
+        border-radius: 16px;
+      }
+
+      .summary-card span {
+        font-size: 10px;
+      }
+
+      .summary-card strong {
+        font-size: 23px;
+      }
+
+      .round-summary-grid {
+        gap: 7px;
+      }
+
+      .round-card {
+        padding: 9px;
+        border-radius: 16px;
+      }
+
+      .round-card h3 {
+        font-size: 12px;
+      }
+
+      .mini-stat {
+        padding: 6px 4px;
+      }
+
+      .mini-stat span {
+        font-size: 9.5px;
+      }
+
+      .mini-stat strong {
+        font-size: 18px;
+      }
+
+      .modal-box {
         padding: 13px;
+        border-radius: 20px;
       }
     }
   </style>
@@ -344,17 +724,17 @@
 <body>
   <main class="app-shell">
     <div class="page-top">
-  <a class="back-link" href="/fire-extinguisher/">←</a>
+      <a class="back-link" href="/fire-extinguisher/">←</a>
 
-  <div class="page-logo">
-    <img id="pageLogo" alt="Fire Extinguisher Logo" />
-  </div>
+      <div class="page-logo">
+        <img id="pageLogo" alt="Fire Extinguisher Logo" />
+      </div>
 
-  <div class="page-title">
-    <h1>รายงานผลตรวจ</h1>
-    <p>กรองข้อมูล ตรวจแล้ว/ยังไม่ได้ตรวจ และ Export CSV/Excel</p>
-  </div>
-</div>
+      <div class="page-title">
+        <h1>รายงานผลตรวจ</h1>
+        <p>ตรวจครบ 2 รอบ / รอบต้นเดือน / รอบปลายเดือน / Export CSV-Excel</p>
+      </div>
+    </div>
 
     <section class="panel">
       <div class="tab-row">
@@ -362,7 +742,7 @@
           รายการผลตรวจ
         </button>
         <button class="tab-btn" id="tabStatus" type="button" data-mode="status">
-          สถานะตรวจแล้ว/ยังไม่ได้ตรวจ
+          สถานะประจำเดือน
         </button>
       </div>
 
@@ -410,10 +790,6 @@
           <label for="statusSelect">ผลตรวจ/สถานะ</label>
           <select id="statusSelect">
             <option value="all">ทั้งหมด</option>
-            <option value="ปกติ">ปกติ</option>
-            <option value="ผิดปกติ">ผิดปกติ</option>
-            <option value="ตรวจแล้ว">ตรวจแล้ว</option>
-            <option value="ยังไม่ได้ตรวจ">ยังไม่ได้ตรวจ</option>
           </select>
         </div>
 
@@ -421,6 +797,10 @@
           <label for="searchInput">ค้นหา</label>
           <input id="searchInput" type="search" placeholder="หมายเลขถัง / จุดติดตั้ง" />
         </div>
+      </div>
+
+      <div class="round-note" id="roundNote">
+        รอบ 1: วันที่ 1-10 • รอบ 2: วันที่ 11-สิ้นเดือน ระบบนับถังละ 1 ครั้งต่อรอบ
       </div>
 
       <div class="action-row">
@@ -437,19 +817,49 @@
         <strong id="sum1">-</strong>
       </article>
 
-      <article class="summary-card">
-        <span id="sumLabel2">ถังที่ตรวจแล้ว</span>
+      <article class="summary-card success">
+        <span id="sumLabel2">ครบ 2 รอบ</span>
         <strong id="sum2">-</strong>
       </article>
 
       <article class="summary-card warning">
-        <span id="sumLabel3">ยังไม่ได้ตรวจ</span>
+        <span id="sumLabel3">ยังไม่ครบ</span>
         <strong id="sum3">-</strong>
       </article>
 
       <article class="summary-card danger">
         <span id="sumLabel4">ผิดปกติ</span>
         <strong id="sum4">-</strong>
+      </article>
+    </section>
+
+    <section class="round-summary-grid" id="roundSummaryGrid">
+      <article class="round-card">
+        <h3>รอบต้นเดือน</h3>
+        <div class="round-line">
+          <div class="mini-stat ok">
+            <span>ตรวจแล้ว</span>
+            <strong id="earlyChecked">-</strong>
+          </div>
+          <div class="mini-stat wait">
+            <span>ยังไม่ตรวจ</span>
+            <strong id="earlyUnchecked">-</strong>
+          </div>
+        </div>
+      </article>
+
+      <article class="round-card">
+        <h3>รอบปลายเดือน</h3>
+        <div class="round-line">
+          <div class="mini-stat ok">
+            <span>ตรวจแล้ว</span>
+            <strong id="lateChecked">-</strong>
+          </div>
+          <div class="mini-stat wait">
+            <span>ยังไม่ตรวจ</span>
+            <strong id="lateUnchecked">-</strong>
+          </div>
+        </div>
       </article>
     </section>
 
@@ -475,7 +885,7 @@
       <div class="modal-head">
         <div>
           <h2 id="modalTitle">รายละเอียด</h2>
-          <p style="margin:4px 0 0;color:var(--muted);font-size:13px;" id="modalSubTitle"></p>
+          <p style="margin:4px 0 0;color:var(--muted2);font-size:13px;" id="modalSubTitle"></p>
         </div>
         <button class="btn ghost small" id="closeModalBtn" type="button">ปิด</button>
       </div>
@@ -484,630 +894,645 @@
     </div>
   </div>
 
-  <script src="/fire-extinguisher/js/config.js?v=1.1.4"></script>
-<script src="/fire-extinguisher/js/api.js?v=1.1.4"></script>
-<script src="/fire-extinguisher/js/utils.js?v=1.1.4"></script>
+  <script src="/fire-extinguisher/js/config.js?v=1.2.2"></script>
+  <script src="/fire-extinguisher/js/api.js?v=1.2.2"></script>
+  <script src="/fire-extinguisher/js/utils.js?v=1.2.2"></script>
 
-<script>
-  (function () {
-    'use strict';
+  <script>
+    (function () {
+      'use strict';
 
-    const U = window.FireUtils;
-    const API = window.FireAPI;
+      const U = window.FireUtils;
+      const API = window.FireAPI;
 
-    let mode = 'report';
-    let currentItems = [];
-    let names = [];
-    let extinguishers = [];
+      let mode = 'report';
+      let currentItems = [];
+      let names = [];
+      let extinguishers = [];
 
-    document.addEventListener('DOMContentLoaded', init);
+      document.addEventListener('DOMContentLoaded', init);
 
-    async function init() {
-      setLogo();
-      bindEvents();
-      setStatusOptions();
-      await loadOptions();
-      await loadData();
-    }
-
-    function setLogo() {
-      const logo = U.$('#pageLogo');
-      if (logo) {
-        logo.src = window.APP_CONFIG.LOGO_URL;
-        logo.loading = 'eager';
-        logo.decoding = 'async';
+      async function init() {
+        setLogo();
+        bindEvents();
+        setStatusOptions();
+        await loadOptions();
+        await loadData();
       }
-    }
 
-    function bindEvents() {
-      U.$('#tabReport').addEventListener('click', () => setMode('report'));
-      U.$('#tabStatus').addEventListener('click', () => setMode('status'));
-      U.$('#periodSelect').addEventListener('change', toggleCustomDate);
-      U.$('#loadBtn').addEventListener('click', loadData);
-      U.$('#clearBtn').addEventListener('click', clearFilters);
-      U.$('#csvBtn').addEventListener('click', () => exportFile('csv'));
-      U.$('#excelBtn').addEventListener('click', () => exportFile('excel'));
-      U.$('#closeModalBtn').addEventListener('click', closeModal);
+      function setLogo() {
+        const logo = U.$('#pageLogo');
+        if (logo) {
+          logo.src = window.APP_CONFIG.LOGO_URL;
+          logo.loading = 'eager';
+          logo.decoding = 'async';
+        }
+      }
 
-      U.$('#detailModal').addEventListener('click', (e) => {
-        if (e.target.id === 'detailModal') closeModal();
-      });
+      function bindEvents() {
+        U.$('#tabReport').addEventListener('click', () => setMode('report'));
+        U.$('#tabStatus').addEventListener('click', () => setMode('status'));
+        U.$('#periodSelect').addEventListener('change', toggleCustomDate);
+        U.$('#loadBtn').addEventListener('click', loadData);
+        U.$('#clearBtn').addEventListener('click', clearFilters);
+        U.$('#csvBtn').addEventListener('click', () => exportFile('csv'));
+        U.$('#excelBtn').addEventListener('click', () => exportFile('excel'));
+        U.$('#closeModalBtn').addEventListener('click', closeModal);
 
-      U.$('#tableBody').addEventListener('click', handleDetailClick);
-      U.$('#mobileList').addEventListener('click', handleDetailClick);
-    }
+        U.$('#detailModal').addEventListener('click', (e) => {
+          if (e.target.id === 'detailModal') closeModal();
+        });
 
-    function handleDetailClick(e) {
-      const btn = e.target.closest('[data-detail]');
-      if (!btn) return;
+        U.$('#tableBody').addEventListener('click', handleDetailClick);
+        U.$('#mobileList').addEventListener('click', handleDetailClick);
+      }
 
-      try {
+      function handleDetailClick(e) {
+        const btn = e.target.closest('[data-detail]');
+        if (!btn) return;
+
         const index = Number(btn.dataset.detail);
         openDetail(currentItems[index]);
-      } catch (err) {
-        console.error(err);
-        U.toast(err.message || 'เปิดรายละเอียดไม่ได้', 'error');
-      }
-    }
-
-    function setMode(nextMode) {
-      mode = nextMode;
-
-      U.$('#tabReport').classList.toggle('active', mode === 'report');
-      U.$('#tabStatus').classList.toggle('active', mode === 'status');
-
-      U.$('#resultTitle').textContent = mode === 'report'
-        ? 'รายการผลตรวจ'
-        : 'สถานะตรวจแล้ว/ยังไม่ได้ตรวจ';
-
-      setStatusOptions();
-      loadData();
-    }
-
-    function setStatusOptions() {
-      const select = U.$('#statusSelect');
-
-      if (mode === 'status') {
-        select.innerHTML = `
-          <option value="all">ทั้งหมด</option>
-          <option value="ตรวจแล้ว">ตรวจแล้ว</option>
-          <option value="ยังไม่ได้ตรวจ">ยังไม่ได้ตรวจ</option>
-          <option value="ปกติ">ผลล่าสุดปกติ</option>
-          <option value="ผิดปกติ">ผลล่าสุดผิดปกติ</option>
-        `;
-      } else {
-        select.innerHTML = `
-          <option value="all">ทั้งหมด</option>
-          <option value="ปกติ">ปกติ</option>
-          <option value="ผิดปกติ">ผิดปกติ</option>
-        `;
-      }
-    }
-
-    async function loadOptions() {
-      names = [];
-      extinguishers = [];
-
-      let reportFallbackItems = [];
-
-      const results = await Promise.allSettled([
-        API.getNames(),
-        API.getExtinguishers(),
-        API.getReport({
-          period: U.$('#periodSelect').value || 'thisMonth',
-          inspector: 'all',
-          type: 'all',
-          status: 'all'
-        })
-      ]);
-
-      const namesResult = results[0];
-      const extResult = results[1];
-      const reportResult = results[2];
-
-      if (namesResult.status === 'fulfilled' && namesResult.value && Array.isArray(namesResult.value.items)) {
-        names = normalizeNameItems(namesResult.value.items);
-      } else {
-        console.warn('โหลดรายชื่อจากชีท Name ไม่สำเร็จ:', namesResult.reason);
       }
 
-      if (extResult.status === 'fulfilled' && extResult.value && Array.isArray(extResult.value.items)) {
-        extinguishers = extResult.value.items || [];
-      } else {
-        console.warn('โหลดรายการถังจาก Sheet1 ไม่สำเร็จ:', extResult.reason);
+      function setMode(nextMode) {
+        mode = nextMode;
+
+        U.$('#tabReport').classList.toggle('active', mode === 'report');
+        U.$('#tabStatus').classList.toggle('active', mode === 'status');
+
+        U.$('#resultTitle').textContent = mode === 'report'
+          ? 'รายการผลตรวจ'
+          : 'สถานะประจำเดือน';
+
+        setStatusOptions();
+        loadData();
       }
 
-      if (reportResult.status === 'fulfilled' && reportResult.value && Array.isArray(reportResult.value.items)) {
-        reportFallbackItems = reportResult.value.items || [];
-      } else {
-        console.warn('โหลดข้อมูล Data สำหรับ fallback ไม่สำเร็จ:', reportResult.reason);
+      function setStatusOptions() {
+        const select = U.$('#statusSelect');
+
+        if (mode === 'status') {
+          select.innerHTML = `
+            <option value="all">ทั้งหมด</option>
+            <option value="ครบ 2 รอบ">ครบ 2 รอบ</option>
+            <option value="ยังไม่ครบ 2 รอบ">ยังไม่ครบ 2 รอบ</option>
+            <option value="ตรวจแล้ว">ตรวจแล้วอย่างน้อย 1 ครั้ง</option>
+            <option value="ยังไม่ได้ตรวจ">ยังไม่เคยตรวจในเดือน</option>
+            <option value="ปกติ">ผลล่าสุดปกติ</option>
+            <option value="ผิดปกติ">ผลล่าสุดผิดปกติ</option>
+          `;
+        } else {
+          select.innerHTML = `
+            <option value="all">ทั้งหมด</option>
+            <option value="ปกติ">ปกติ</option>
+            <option value="ผิดปกติ">ผิดปกติ</option>
+          `;
+        }
       }
 
-      if (!names.length && reportFallbackItems.length) {
-        names = buildNamesFromReport(reportFallbackItems);
+      async function loadOptions() {
+        names = [];
+        extinguishers = [];
+
+        let reportFallbackItems = [];
+
+        const results = await Promise.allSettled([
+          API.getNames(),
+          API.getExtinguishers(),
+          API.getReport({
+            period: U.$('#periodSelect').value || 'thisMonth',
+            inspector: 'all',
+            type: 'all',
+            status: 'all'
+          })
+        ]);
+
+        if (results[0].status === 'fulfilled' && Array.isArray(results[0].value.items)) {
+          names = normalizeNameItems(results[0].value.items);
+        }
+
+        if (results[1].status === 'fulfilled' && Array.isArray(results[1].value.items)) {
+          extinguishers = results[1].value.items || [];
+        }
+
+        if (results[2].status === 'fulfilled' && Array.isArray(results[2].value.items)) {
+          reportFallbackItems = results[2].value.items || [];
+        }
+
+        if (!names.length && reportFallbackItems.length) {
+          names = buildNamesFromReport(reportFallbackItems);
+        }
+
+        if (!extinguishers.length && reportFallbackItems.length) {
+          extinguishers = buildExtinguishersFromReport(reportFallbackItems);
+        }
+
+        renderInspectorOptions();
+        renderTypeOptions();
       }
 
-      if (!extinguishers.length && reportFallbackItems.length) {
-        extinguishers = buildExtinguishersFromReport(reportFallbackItems);
-      }
+      function normalizeNameItems(items) {
+        const map = new Map();
 
-      renderInspectorOptions();
-      renderTypeOptions();
+        items.forEach(item => {
+          const thaiName = String(item.thaiName || item['ชื่อ'] || '').trim();
+          const englishName = String(item.englishName || item.Name || '').trim();
+          const displayName = String(item.displayName || buildNameDisplay(thaiName, englishName)).trim();
 
-      if (!names.length) {
-        U.toast('ไม่พบรายชื่อผู้บันทึกใน Name หรือ Data', 'warning');
-      }
-    }
+          const key = `${thaiName}|${englishName}|${displayName}`;
+          if (!displayName || map.has(key)) return;
 
-    function normalizeNameItems(items) {
-      const map = new Map();
-
-      items.forEach(item => {
-        const thaiName = String(item.thaiName || item['ชื่อ'] || '').trim();
-        const englishName = String(item.englishName || item.Name || '').trim();
-        const displayName = String(item.displayName || buildNameDisplay(thaiName, englishName)).trim();
-
-        const key = `${thaiName}|${englishName}|${displayName}`;
-        if (!displayName || map.has(key)) return;
-
-        map.set(key, {
-          thaiName,
-          englishName,
-          displayName
-        });
-      });
-
-      return Array.from(map.values());
-    }
-
-    function buildNamesFromReport(items) {
-      const map = new Map();
-
-      items.forEach(item => {
-        const thaiName = String(item.inspectorThai || item['ชื่อผู้บันทึก'] || '').trim();
-        const englishName = String(item.inspectorEnglish || item.Name || '').trim();
-        const displayName = buildNameDisplay(thaiName, englishName);
-
-        if (!displayName) return;
-
-        const key = `${thaiName}|${englishName}`;
-        if (!map.has(key)) {
           map.set(key, {
             thaiName,
             englishName,
             displayName
           });
-        }
-      });
-
-      return Array.from(map.values());
-    }
-
-    function buildNameDisplay(thaiName, englishName) {
-      if (thaiName && englishName) return `${thaiName} / ${englishName}`;
-      return thaiName || englishName || '';
-    }
-
-    function buildExtinguishersFromReport(items) {
-      const map = new Map();
-
-      items.forEach(item => {
-        const id = String(item.extinguisherId || '').trim();
-        if (!id || map.has(id)) return;
-
-        map.set(id, {
-          extinguisherId: id,
-          location: item.location || '',
-          type: item.type || '',
-          size: item.size || '',
-          yearMade: item.yearMade || ''
         });
-      });
 
-      return Array.from(map.values());
-    }
-
-    function renderInspectorOptions() {
-      const select = U.$('#inspectorSelect');
-      if (!select) return;
-
-      if (!names.length) {
-        select.innerHTML = '<option value="all">ทั้งหมด</option>';
-        return;
+        return Array.from(map.values());
       }
 
-      select.innerHTML = '<option value="all">ทั้งหมด</option>' + names.map(item => {
-        const label = item.displayName || item.thaiName || item.englishName || '';
-        const value = item.thaiName || item.englishName || label;
-        return `<option value="${U.escapeHtml(value)}">${U.escapeHtml(label)}</option>`;
-      }).join('');
-    }
+      function buildNamesFromReport(items) {
+        const map = new Map();
 
-    function renderTypeOptions() {
-      const select = U.$('#typeSelect');
-      if (!select) return;
+        items.forEach(item => {
+          const thaiName = String(item.inspectorThai || item['ชื่อผู้บันทึก'] || '').trim();
+          const englishName = String(item.inspectorEnglish || item.Name || '').trim();
+          const displayName = buildNameDisplay(thaiName, englishName);
 
-      const types = [
-        ...new Set(
-          extinguishers
-            .map(item => String(item.type || '').trim())
-            .filter(Boolean)
-        )
-      ];
+          if (!displayName) return;
 
-      if (!types.length) {
-        select.innerHTML = '<option value="all">ทั้งหมด</option>';
-        return;
+          const key = `${thaiName}|${englishName}`;
+          if (!map.has(key)) {
+            map.set(key, {
+              thaiName,
+              englishName,
+              displayName
+            });
+          }
+        });
+
+        return Array.from(map.values());
       }
 
-      select.innerHTML = '<option value="all">ทั้งหมด</option>' + types.map(type => {
-        return `<option value="${U.escapeHtml(type)}">${U.escapeHtml(type)}</option>`;
-      }).join('');
-    }
-
-    function toggleCustomDate() {
-      const isCustom = U.$('#periodSelect').value === 'custom';
-      U.$all('.date-field').forEach(el => {
-        el.hidden = !isCustom;
-      });
-    }
-
-    function clearFilters() {
-      U.$('#periodSelect').value = 'thisMonth';
-      U.$('#startDate').value = '';
-      U.$('#endDate').value = '';
-      U.$('#inspectorSelect').value = 'all';
-      U.$('#typeSelect').value = 'all';
-      setStatusOptions();
-      U.$('#statusSelect').value = 'all';
-      U.$('#searchInput').value = '';
-      toggleCustomDate();
-      loadData();
-    }
-
-    function buildParams() {
-      const period = U.$('#periodSelect').value;
-      const search = U.$('#searchInput').value.trim();
-
-      const params = {
-        period,
-        inspector: U.$('#inspectorSelect').value || 'all',
-        type: U.$('#typeSelect').value || 'all',
-        status: U.$('#statusSelect').value || 'all'
-      };
-
-      if (period === 'custom') {
-        params.start = U.$('#startDate').value;
-        params.end = U.$('#endDate').value;
+      function buildNameDisplay(thaiName, englishName) {
+        if (thaiName && englishName) return `${thaiName} / ${englishName}`;
+        return thaiName || englishName || '';
       }
 
-      if (search) {
-        if (search.toUpperCase().startsWith('FE') || /^[0-9]+$/.test(search)) {
-          params.extinguisherId = search;
-        } else {
-          params.location = search;
-        }
+      function buildExtinguishersFromReport(items) {
+        const map = new Map();
+
+        items.forEach(item => {
+          const id = String(item.extinguisherId || '').trim();
+          if (!id || map.has(id)) return;
+
+          map.set(id, {
+            extinguisherId: id,
+            location: item.location || '',
+            type: item.type || '',
+            size: item.size || '',
+            yearMade: item.yearMade || ''
+          });
+        });
+
+        return Array.from(map.values());
       }
 
-      return params;
-    }
+      function renderInspectorOptions() {
+        const select = U.$('#inspectorSelect');
+        if (!select) return;
 
-    async function loadData() {
-      const btn = U.$('#loadBtn');
-
-      try {
-        U.setLoading(btn, true, 'กำลังโหลด...');
-
-        const params = buildParams();
-        let res;
-
-        if (mode === 'status') {
-          res = await API.getInspectionStatus(params);
-        } else {
-          res = await API.getReport(params);
-        }
-
-        currentItems = res.items || [];
-
-        renderSummary(res.summary || {});
-        renderResults(currentItems);
-
-        if (mode === 'report') {
-          refreshOptionsFromCurrentItems(currentItems);
-        }
-      } catch (err) {
-        U.toast(err.message || 'โหลดข้อมูลไม่สำเร็จ', 'error');
-        currentItems = [];
-        renderSummary({});
-        renderResults([]);
-      } finally {
-        U.setLoading(btn, false);
-      }
-    }
-
-    function refreshOptionsFromCurrentItems(items) {
-      let changed = false;
-
-      if (!names.length && items.length) {
-        names = buildNamesFromReport(items);
-        renderInspectorOptions();
-        changed = true;
+        select.innerHTML = '<option value="all">ทั้งหมด</option>' + names.map(item => {
+          const label = item.displayName || item.thaiName || item.englishName || '';
+          const value = item.thaiName || item.englishName || label;
+          return `<option value="${U.escapeHtml(value)}">${U.escapeHtml(label)}</option>`;
+        }).join('');
       }
 
-      if (!extinguishers.length && items.length) {
-        extinguishers = buildExtinguishersFromReport(items);
-        renderTypeOptions();
-        changed = true;
+      function renderTypeOptions() {
+        const select = U.$('#typeSelect');
+        if (!select) return;
+
+        const types = [
+          ...new Set(
+            extinguishers
+              .map(item => String(item.type || '').trim())
+              .filter(Boolean)
+          )
+        ];
+
+        select.innerHTML = '<option value="all">ทั้งหมด</option>' + types.map(type => {
+          return `<option value="${U.escapeHtml(type)}">${U.escapeHtml(type)}</option>`;
+        }).join('');
       }
 
-      if (changed) {
-        console.log('Options refreshed from current report items.');
-      }
-    }
-
-    function renderSummary(summary) {
-      if (mode === 'status') {
-        U.setText('#sumLabel1', 'ถังทั้งหมด');
-        U.setText('#sumLabel2', 'ตรวจแล้ว');
-        U.setText('#sumLabel3', 'ยังไม่ได้ตรวจ');
-        U.setText('#sumLabel4', 'ผิดปกติ');
-
-        U.setText('#sum1', summary.totalExtinguishers ?? 0);
-        U.setText('#sum2', summary.checked ?? 0);
-        U.setText('#sum3', summary.unchecked ?? 0);
-        U.setText('#sum4', summary.abnormal ?? 0);
-      } else {
-        U.setText('#sumLabel1', 'รายการทั้งหมด');
-        U.setText('#sumLabel2', 'ถังที่ตรวจแล้ว');
-        U.setText('#sumLabel3', 'ผลปกติ');
-        U.setText('#sumLabel4', 'ผลผิดปกติ');
-
-        U.setText('#sum1', summary.totalRecords ?? 0);
-        U.setText('#sum2', summary.checkedExtinguishers ?? 0);
-        U.setText('#sum3', summary.normalRecords ?? 0);
-        U.setText('#sum4', summary.abnormalRecords ?? 0);
-      }
-    }
-
-    function renderResults(items) {
-      U.$('#resultCount').textContent = `${items.length} รายการ`;
-
-      if (mode === 'status') {
-        renderStatusTable(items);
-        renderStatusCards(items);
-      } else {
-        renderReportTable(items);
-        renderReportCards(items);
-      }
-    }
-
-    function renderReportTable(items) {
-      U.$('#tableHead').innerHTML = `
-        <tr>
-          <th>วันที่ตรวจ</th>
-          <th>หมายเลขถัง</th>
-          <th>จุดติดตั้ง</th>
-          <th>ชนิด</th>
-          <th>ผลตรวจ</th>
-          <th>ผู้บันทึก</th>
-          <th>รายละเอียด</th>
-        </tr>
-      `;
-
-      if (!items.length) {
-        U.$('#tableBody').innerHTML = '<tr><td colspan="7">ไม่พบข้อมูล</td></tr>';
-        return;
+      function toggleCustomDate() {
+        const isCustom = U.$('#periodSelect').value === 'custom';
+        U.$all('.date-field').forEach(el => {
+          el.hidden = !isCustom;
+        });
       }
 
-      U.$('#tableBody').innerHTML = items.map((item, index) => {
-        return `
-          <tr>
-            <td>${U.escapeHtml(item.timestamp || '-')}</td>
-            <td><strong>${U.escapeHtml(item.extinguisherId || '-')}</strong></td>
-            <td>${U.escapeHtml(item.location || '-')}</td>
-            <td>${U.escapeHtml(item.type || '-')}</td>
-            <td>${renderBadge(item.overallStatus)}</td>
-            <td>${U.escapeHtml(item.inspectorThai || item.inspectorEnglish || '-')}</td>
-            <td><button class="btn ghost small" type="button" data-detail="${index}">ดู</button></td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function renderStatusTable(items) {
-      U.$('#tableHead').innerHTML = `
-        <tr>
-          <th>หมายเลขถัง</th>
-          <th>จุดติดตั้ง</th>
-          <th>ชนิด</th>
-          <th>สถานะ</th>
-          <th>ตรวจล่าสุด</th>
-          <th>ผลล่าสุด</th>
-          <th>จำนวนครั้ง</th>
-          <th>ผู้ตรวจล่าสุด</th>
-        </tr>
-      `;
-
-      if (!items.length) {
-        U.$('#tableBody').innerHTML = '<tr><td colspan="8">ไม่พบข้อมูล</td></tr>';
-        return;
+      function clearFilters() {
+        U.$('#periodSelect').value = 'thisMonth';
+        U.$('#startDate').value = '';
+        U.$('#endDate').value = '';
+        U.$('#inspectorSelect').value = 'all';
+        U.$('#typeSelect').value = 'all';
+        setStatusOptions();
+        U.$('#statusSelect').value = 'all';
+        U.$('#searchInput').value = '';
+        toggleCustomDate();
+        loadData();
       }
 
-      U.$('#tableBody').innerHTML = items.map(item => {
-        return `
-          <tr>
-            <td><strong>${U.escapeHtml(item.extinguisherId || '-')}</strong></td>
-            <td>${U.escapeHtml(item.location || '-')}</td>
-            <td>${U.escapeHtml(item.type || '-')}</td>
-            <td>${renderStatusBadge(item.inspectionStatus)}</td>
-            <td>${U.escapeHtml(item.lastCheckedAt || '-')}</td>
-            <td>${item.lastResult ? renderBadge(item.lastResult) : '-'}</td>
-            <td>${U.escapeHtml(item.checkCount ?? 0)}</td>
-            <td>${U.escapeHtml(item.lastInspectorThai || item.lastInspectorEnglish || '-')}</td>
-          </tr>
-        `;
-      }).join('');
-    }
+      function buildParams() {
+        const period = U.$('#periodSelect').value;
+        const search = U.$('#searchInput').value.trim();
 
-    function renderReportCards(items) {
-      const box = U.$('#mobileList');
-
-      if (!items.length) {
-        box.innerHTML = '<div class="empty-state">ไม่พบข้อมูล</div>';
-        return;
-      }
-
-      box.innerHTML = items.map((item, index) => {
-        return `
-          <article class="result-card">
-            <h3>${U.escapeHtml(item.extinguisherId || '-')}</h3>
-            <p>${U.escapeHtml(item.location || '-')}</p>
-            <p>${U.escapeHtml(item.type || '-')} / ${U.escapeHtml(item.size || '-')}</p>
-            <p>${U.escapeHtml(item.timestamp || '-')}</p>
-            <p>ผู้บันทึก: ${U.escapeHtml(item.inspectorThai || item.inspectorEnglish || '-')}</p>
-            <div class="card-foot">
-              ${renderBadge(item.overallStatus)}
-              <button class="btn ghost small" type="button" data-detail="${index}">ดูรายละเอียด</button>
-            </div>
-          </article>
-        `;
-      }).join('');
-    }
-
-    function renderStatusCards(items) {
-      const box = U.$('#mobileList');
-
-      if (!items.length) {
-        box.innerHTML = '<div class="empty-state">ไม่พบข้อมูล</div>';
-        return;
-      }
-
-      box.innerHTML = items.map(item => {
-        return `
-          <article class="result-card">
-            <h3>${U.escapeHtml(item.extinguisherId || '-')}</h3>
-            <p>${U.escapeHtml(item.location || '-')}</p>
-            <p>${U.escapeHtml(item.type || '-')} / ${U.escapeHtml(item.size || '-')}</p>
-            <div class="card-foot">
-              ${renderStatusBadge(item.inspectionStatus)}
-              <span>${item.lastResult ? renderBadge(item.lastResult) : ''}</span>
-            </div>
-            <p>ตรวจล่าสุด: ${U.escapeHtml(item.lastCheckedAt || '-')}</p>
-            <p>จำนวนครั้ง: ${U.escapeHtml(item.checkCount ?? 0)}</p>
-            <p>ผู้ตรวจล่าสุด: ${U.escapeHtml(item.lastInspectorThai || item.lastInspectorEnglish || '-')}</p>
-          </article>
-        `;
-      }).join('');
-    }
-
-    function renderBadge(status) {
-      const text = String(status || '-').trim();
-      const isOk = text === 'ปกติ';
-      return `<span class="badge ${isOk ? 'ok' : 'bad'}">${U.escapeHtml(text)}</span>`;
-    }
-
-    function renderStatusBadge(status) {
-      if (status === 'ตรวจแล้ว') {
-        return '<span class="badge ok">ตรวจแล้ว</span>';
-      }
-      return '<span class="badge wait">ยังไม่ได้ตรวจ</span>';
-    }
-
-    function formatMonthValue(value) {
-      const text = String(value || '').trim();
-
-      if (!text || text === '-') return '-';
-
-      const ym = text.match(/^(\d{4})-(\d{2})$/);
-      if (ym) return `${ym[1]}-${ym[2]}`;
-
-      const thDate = text.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
-      if (thDate) return `${thDate[3]}-${thDate[2]}`;
-
-      const iso = text.match(/^(\d{4})-(\d{2})-(\d{2})/);
-      if (iso) return `${iso[1]}-${iso[2]}`;
-
-      const d = new Date(text);
-      if (!Number.isNaN(d.getTime())) {
-        const y = d.getFullYear();
-        const m = String(d.getMonth() + 1).padStart(2, '0');
-        return `${y}-${m}`;
-      }
-
-      return text;
-    }
-
-    function openDetail(item) {
-      if (!item) return;
-
-      U.$('#modalTitle').textContent = item.extinguisherId || 'รายละเอียด';
-      U.$('#modalSubTitle').textContent = `${item.location || '-'} • ${item.timestamp || '-'}`;
-
-      const fields = [
-        ['วันที่เวลา', item.timestamp],
-        ['เดือน', formatMonthValue(item.month || item.timestamp)],
-        ['หมายเลขถัง', item.extinguisherId],
-        ['จุดติดตั้ง', item.location],
-        ['ชนิดถังดับเพลิง', item.type],
-        ['ขนาด', item.size],
-        ['ปีผลิดถัง', item.yearMade],
-        ['ความสะอาด', item.cleanliness],
-        ['หมายเหตุความสะอาด', item.cleanlinessNote],
-        ['สภาพถัง', item.bodyStatus],
-        ['หมายเหตุสภาพถัง', item.bodyNote],
-        ['แรงดัน', item.pressureStatus],
-        ['หมายเหตุแรงดัน', item.pressureNote],
-        ['เกจวัด/น้ำหนัก', item.gaugeWeightStatus],
-        ['หมายเหตุเกจวัด/น้ำหนัก', item.gaugeWeightNote],
-        ['น้ำหนักถัง CO2', item.co2Weight],
-        ['สาย/กระบอกฉีด', item.hoseStatus],
-        ['หมายเหตุสาย/กระบอกฉีด', item.hoseNote],
-        ['สายรัดสลัก', item.pinSealStatus],
-        ['หมายเหตุสายรัดสลัก', item.pinSealNote],
-        ['คันบังคับ', item.handleStatus],
-        ['หมายเหตุคันบังคับ', item.handleNote],
-        ['ผลตรวจรวม', item.overallStatus],
-        ['ชื่อผู้บันทึก', item.inspectorThai],
-        ['Name', item.inspectorEnglish],
-        ['หมายเหตุเพิ่มเติม', item.remark]
-      ];
-
-      U.$('#detailGrid').innerHTML = fields.map(([label, value]) => {
-        return `
-          <div class="detail-item">
-            <span>${U.escapeHtml(label)}</span>
-            <strong>${U.escapeHtml(value || '-')}</strong>
-          </div>
-        `;
-      }).join('');
-
-      U.$('#detailModal').classList.add('show');
-    }
-
-    function closeModal() {
-      U.$('#detailModal').classList.remove('show');
-    }
-
-    async function exportFile(type) {
-      try {
         const params = {
-          ...buildParams(),
-          mode
+          period,
+          inspector: U.$('#inspectorSelect').value || 'all',
+          type: U.$('#typeSelect').value || 'all',
+          status: U.$('#statusSelect').value || 'all'
         };
 
-        U.toast(`กำลังสร้างไฟล์ ${type.toUpperCase()}...`, 'info');
+        if (period === 'custom') {
+          params.start = U.$('#startDate').value;
+          params.end = U.$('#endDate').value;
+        }
 
-        const res = type === 'csv'
-          ? await API.exportCsv(params)
-          : await API.exportExcel(params);
+        if (search) {
+          if (search.toUpperCase().startsWith('FE') || /^[0-9]+$/.test(search)) {
+            params.extinguisherId = search;
+          } else {
+            params.location = search;
+          }
+        }
 
-        U.downloadBase64File(res.base64, res.fileName, res.mimeType);
-        U.toast('Export สำเร็จ', 'success');
-      } catch (err) {
-        U.toast(err.message || 'Export ไม่สำเร็จ', 'error');
+        return params;
       }
-    }
-  })();
-</script>
+
+      async function loadData() {
+        const btn = U.$('#loadBtn');
+
+        try {
+          U.setLoading(btn, true, 'กำลังโหลด...');
+
+          const params = buildParams();
+          const res = mode === 'status'
+            ? await API.getInspectionStatus(params)
+            : await API.getReport(params);
+
+          currentItems = res.items || [];
+
+          renderRoundNote(res.summary || {}, res.roundMeta || {});
+          renderSummary(res.summary || {});
+          renderResults(currentItems);
+
+          if (mode === 'report') {
+            refreshOptionsFromCurrentItems(currentItems);
+          }
+        } catch (err) {
+          U.toast(err.message || 'โหลดข้อมูลไม่สำเร็จ', 'error');
+          currentItems = [];
+          renderSummary({});
+          renderResults([]);
+        } finally {
+          U.setLoading(btn, false);
+        }
+      }
+
+      function renderRoundNote(summary, roundMeta) {
+        const rule = summary.shortRuleText || roundMeta.shortRuleText || 'รอบ 1: วันที่ 1-10 • รอบ 2: วันที่ 11-สิ้นเดือน';
+        U.setText('#roundNote', `${rule} ระบบนับถังละ 1 ครั้งต่อรอบ`);
+      }
+
+      function refreshOptionsFromCurrentItems(items) {
+        let changed = false;
+
+        if (!names.length && items.length) {
+          names = buildNamesFromReport(items);
+          renderInspectorOptions();
+          changed = true;
+        }
+
+        if (!extinguishers.length && items.length) {
+          extinguishers = buildExtinguishersFromReport(items);
+          renderTypeOptions();
+          changed = true;
+        }
+
+        if (changed) {
+          console.log('Options refreshed from current report items.');
+        }
+      }
+
+      function renderSummary(summary) {
+        if (mode === 'status') {
+          U.setText('#sumLabel1', 'ถังทั้งหมด');
+          U.setText('#sumLabel2', 'ครบ 2 รอบ');
+          U.setText('#sumLabel3', 'ยังไม่ครบ');
+          U.setText('#sumLabel4', 'ผิดปกติ');
+
+          U.setText('#sum1', summary.totalExtinguishers ?? 0);
+          U.setText('#sum2', summary.completedBothRounds ?? 0);
+          U.setText('#sum3', summary.incompleteBothRounds ?? 0);
+          U.setText('#sum4', summary.abnormal ?? 0);
+
+          U.setText('#earlyChecked', summary.earlyChecked ?? 0);
+          U.setText('#earlyUnchecked', summary.earlyUnchecked ?? 0);
+          U.setText('#lateChecked', summary.lateChecked ?? 0);
+          U.setText('#lateUnchecked', summary.lateUnchecked ?? 0);
+        } else {
+          U.setText('#sumLabel1', 'รายการทั้งหมด');
+          U.setText('#sumLabel2', 'ถังที่ตรวจแล้ว');
+          U.setText('#sumLabel3', 'ผลปกติ');
+          U.setText('#sumLabel4', 'ผลผิดปกติ');
+
+          U.setText('#sum1', summary.totalRecords ?? 0);
+          U.setText('#sum2', summary.checkedExtinguishers ?? 0);
+          U.setText('#sum3', summary.normalRecords ?? 0);
+          U.setText('#sum4', summary.abnormalRecords ?? 0);
+
+          U.setText('#earlyChecked', '-');
+          U.setText('#earlyUnchecked', '-');
+          U.setText('#lateChecked', '-');
+          U.setText('#lateUnchecked', '-');
+        }
+      }
+
+      function renderResults(items) {
+        U.$('#resultCount').textContent = `${items.length} รายการ`;
+
+        if (mode === 'status') {
+          renderStatusTable(items);
+          renderStatusCards(items);
+        } else {
+          renderReportTable(items);
+          renderReportCards(items);
+        }
+      }
+
+      function renderReportTable(items) {
+        U.$('#tableHead').innerHTML = `
+          <tr>
+            <th>วันที่ตรวจ</th>
+            <th>หมายเลขถัง</th>
+            <th>จุดติดตั้ง</th>
+            <th>ชนิด</th>
+            <th>ผลตรวจ</th>
+            <th>ผู้บันทึก</th>
+            <th>รายละเอียด</th>
+          </tr>
+        `;
+
+        if (!items.length) {
+          U.$('#tableBody').innerHTML = '<tr><td colspan="7">ไม่พบข้อมูล</td></tr>';
+          return;
+        }
+
+        U.$('#tableBody').innerHTML = items.map((item, index) => {
+          return `
+            <tr>
+              <td>${U.escapeHtml(item.timestamp || '-')}</td>
+              <td><strong>${U.escapeHtml(item.extinguisherId || '-')}</strong></td>
+              <td>${U.escapeHtml(item.location || '-')}</td>
+              <td>${U.escapeHtml(item.type || '-')}</td>
+              <td>${renderBadge(item.overallStatus)}</td>
+              <td>${U.escapeHtml(item.inspectorThai || item.inspectorEnglish || '-')}</td>
+              <td><button class="btn ghost small" type="button" data-detail="${index}">ดู</button></td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      function renderStatusTable(items) {
+        U.$('#tableHead').innerHTML = `
+          <tr>
+            <th>หมายเลขถัง</th>
+            <th>จุดติดตั้ง</th>
+            <th>ชนิด</th>
+            <th>สถานะเดือน</th>
+            <th>รอบ 1</th>
+            <th>รอบ 2</th>
+            <th>ตรวจล่าสุด</th>
+            <th>ผลล่าสุด</th>
+            <th>จำนวนครั้ง</th>
+            <th>ผู้ตรวจล่าสุด</th>
+          </tr>
+        `;
+
+        if (!items.length) {
+          U.$('#tableBody').innerHTML = '<tr><td colspan="10">ไม่พบข้อมูล</td></tr>';
+          return;
+        }
+
+        U.$('#tableBody').innerHTML = items.map(item => {
+          return `
+            <tr>
+              <td><strong>${U.escapeHtml(item.extinguisherId || '-')}</strong></td>
+              <td>${U.escapeHtml(item.location || '-')}</td>
+              <td>${U.escapeHtml(item.type || '-')}</td>
+              <td>${renderMonthlyBadge(item.monthlyStatus)}</td>
+              <td>${renderRoundBadge(item.earlyRoundStatus)}</td>
+              <td>${renderRoundBadge(item.lateRoundStatus)}</td>
+              <td>${U.escapeHtml(item.lastCheckedAt || '-')}</td>
+              <td>${item.lastResult ? renderBadge(item.lastResult) : '-'}</td>
+              <td>${U.escapeHtml(item.checkCount ?? 0)}</td>
+              <td>${U.escapeHtml(item.lastInspectorThai || item.lastInspectorEnglish || '-')}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      function renderReportCards(items) {
+        const box = U.$('#mobileList');
+
+        if (!items.length) {
+          box.innerHTML = '<div class="empty-state">ไม่พบข้อมูล</div>';
+          return;
+        }
+
+        box.innerHTML = items.map((item, index) => {
+          return `
+            <article class="result-card">
+              <h3>${U.escapeHtml(item.extinguisherId || '-')}</h3>
+              <p>${U.escapeHtml(item.location || '-')}</p>
+              <p>${U.escapeHtml(item.type || '-')} / ${U.escapeHtml(item.size || '-')}</p>
+              <p>${U.escapeHtml(item.timestamp || '-')}</p>
+              <p>ผู้บันทึก: ${U.escapeHtml(item.inspectorThai || item.inspectorEnglish || '-')}</p>
+              <div class="card-foot">
+                ${renderBadge(item.overallStatus)}
+                <button class="btn ghost small" type="button" data-detail="${index}">ดูรายละเอียด</button>
+              </div>
+            </article>
+          `;
+        }).join('');
+      }
+
+      function renderStatusCards(items) {
+        const box = U.$('#mobileList');
+
+        if (!items.length) {
+          box.innerHTML = '<div class="empty-state">ไม่พบข้อมูล</div>';
+          return;
+        }
+
+        box.innerHTML = items.map(item => {
+          return `
+            <article class="result-card">
+              <h3>${U.escapeHtml(item.extinguisherId || '-')}</h3>
+              <p>${U.escapeHtml(item.location || '-')}</p>
+              <p>${U.escapeHtml(item.type || '-')} / ${U.escapeHtml(item.size || '-')}</p>
+
+              <div class="card-status-grid">
+                ${renderMonthlyBadge(item.monthlyStatus)}
+                ${item.lastResult ? renderBadge(item.lastResult) : '<span class="badge wait">ยังไม่มีผล</span>'}
+                ${renderRoundBadge(item.earlyRoundStatus || (item.earlyChecked ? 'ตรวจแล้ว' : 'ยังไม่ได้ตรวจ'))}
+                ${renderRoundBadge(item.lateRoundStatus || (item.lateChecked ? 'ตรวจแล้ว' : 'ยังไม่ได้ตรวจ'))}
+              </div>
+
+              <p>ตรวจล่าสุด: ${U.escapeHtml(item.lastCheckedAt || '-')}</p>
+              <p>จำนวนครั้ง: ${U.escapeHtml(item.checkCount ?? 0)}</p>
+              <p>ผู้ตรวจล่าสุด: ${U.escapeHtml(item.lastInspectorThai || item.lastInspectorEnglish || '-')}</p>
+            </article>
+          `;
+        }).join('');
+      }
+
+      function renderBadge(status) {
+        const text = String(status || '-').trim();
+        const isOk = text === 'ปกติ';
+        return `<span class="badge ${isOk ? 'ok' : 'bad'}">${U.escapeHtml(text)}</span>`;
+      }
+
+      function renderMonthlyBadge(status) {
+        if (status === 'ครบ 2 รอบ') {
+          return '<span class="badge ok">ครบ 2 รอบ</span>';
+        }
+        return '<span class="badge wait">ยังไม่ครบ 2 รอบ</span>';
+      }
+
+      function renderRoundBadge(status) {
+        if (status === 'ตรวจแล้ว') {
+          return '<span class="badge ok">ตรวจแล้ว</span>';
+        }
+        return '<span class="badge wait">ยังไม่ตรวจ</span>';
+      }
+
+      function formatMonthValue(value) {
+        const text = String(value || '').trim();
+
+        if (!text || text === '-') return '-';
+
+        const ym = text.match(/^(\d{4})-(\d{2})$/);
+        if (ym) return `${ym[1]}-${ym[2]}`;
+
+        const thDate = text.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+        if (thDate) return `${thDate[3]}-${thDate[2]}`;
+
+        const iso = text.match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (iso) return `${iso[1]}-${iso[2]}`;
+
+        const d = new Date(text);
+        if (!Number.isNaN(d.getTime())) {
+          const y = d.getFullYear();
+          const m = String(d.getMonth() + 1).padStart(2, '0');
+          return `${y}-${m}`;
+        }
+
+        return text;
+      }
+
+      function openDetail(item) {
+        if (!item) return;
+
+        U.$('#modalTitle').textContent = item.extinguisherId || 'รายละเอียด';
+        U.$('#modalSubTitle').textContent = `${item.location || '-'} • ${item.timestamp || item.lastCheckedAt || '-'}`;
+
+        const fields = mode === 'status'
+          ? [
+              ['หมายเลขถัง', item.extinguisherId],
+              ['จุดติดตั้ง', item.location],
+              ['ชนิดถังดับเพลิง', item.type],
+              ['ขนาด', item.size],
+              ['ปีผลิดถัง', item.yearMade],
+              ['สถานะเดือน', item.monthlyStatus],
+              ['รอบต้นเดือน', item.earlyRoundStatus],
+              ['รอบปลายเดือน', item.lateRoundStatus],
+              ['ตรวจล่าสุด', item.lastCheckedAt],
+              ['ผลล่าสุด', item.lastResult],
+              ['จำนวนครั้งในช่วงที่เลือก', item.checkCount],
+              ['ผู้ตรวจล่าสุด', item.lastInspectorThai || item.lastInspectorEnglish]
+            ]
+          : [
+              ['วันที่เวลา', item.timestamp],
+              ['เดือน', formatMonthValue(item.month || item.timestamp)],
+              ['หมายเลขถัง', item.extinguisherId],
+              ['จุดติดตั้ง', item.location],
+              ['ชนิดถังดับเพลิง', item.type],
+              ['ขนาด', item.size],
+              ['ปีผลิดถัง', item.yearMade],
+              ['ความสะอาด', item.cleanliness],
+              ['หมายเหตุความสะอาด', item.cleanlinessNote],
+              ['สภาพถัง', item.bodyStatus],
+              ['หมายเหตุสภาพถัง', item.bodyNote],
+              ['แรงดัน', item.pressureStatus],
+              ['หมายเหตุแรงดัน', item.pressureNote],
+              ['เกจวัด/น้ำหนัก', item.gaugeWeightStatus],
+              ['หมายเหตุเกจวัด/น้ำหนัก', item.gaugeWeightNote],
+              ['น้ำหนักถัง CO2', item.co2Weight],
+              ['สาย/กระบอกฉีด', item.hoseStatus],
+              ['หมายเหตุสาย/กระบอกฉีด', item.hoseNote],
+              ['สายรัดสลัก', item.pinSealStatus],
+              ['หมายเหตุสายรัดสลัก', item.pinSealNote],
+              ['คันบังคับ', item.handleStatus],
+              ['หมายเหตุคันบังคับ', item.handleNote],
+              ['ผลตรวจรวม', item.overallStatus],
+              ['ชื่อผู้บันทึก', item.inspectorThai],
+              ['Name', item.inspectorEnglish],
+              ['หมายเหตุเพิ่มเติม', item.remark]
+            ];
+
+        U.$('#detailGrid').innerHTML = fields.map(([label, value]) => {
+          return `
+            <div class="detail-item">
+              <span>${U.escapeHtml(label)}</span>
+              <strong>${U.escapeHtml(value || '-')}</strong>
+            </div>
+          `;
+        }).join('');
+
+        U.$('#detailModal').classList.add('show');
+      }
+
+      function closeModal() {
+        U.$('#detailModal').classList.remove('show');
+      }
+
+      async function exportFile(type) {
+        try {
+          const params = {
+            ...buildParams(),
+            mode
+          };
+
+          U.toast(`กำลังสร้างไฟล์ ${type.toUpperCase()}...`, 'info');
+
+          const res = type === 'csv'
+            ? await API.exportCsv(params)
+            : await API.exportExcel(params);
+
+          U.downloadBase64File(res.base64, res.fileName, res.mimeType);
+          U.toast('Export สำเร็จ', 'success');
+        } catch (err) {
+          U.toast(err.message || 'Export ไม่สำเร็จ', 'error');
+        }
+      }
+    })();
+  </script>
 </body>
 </html>
