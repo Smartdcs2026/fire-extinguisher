@@ -80,15 +80,21 @@
     return String(value || '').trim().toUpperCase();
   }
 
-  function goCheck(id) {
-    id = normalizeId(id);
-    if (!id) {
-      toast('กรุณากรอกหมายเลขถัง', 'warning');
-      return;
-    }
+ function goCheck(id) {
+  id = normalizeId(id);
 
-    location.href = `check.html?id=${encodeURIComponent(id)}`;
+  if (!id) {
+    toast('กรุณากรอกหมายเลขถัง', 'warning');
+    return;
   }
+
+  if (id.startsWith('HTTP://') || id.startsWith('HTTPS://')) {
+    toast('QR Code นี้ไม่มีหมายเลขถัง กรุณาสแกน QR ของถังดับเพลิง', 'warning');
+    return;
+  }
+
+  location.href = `/fire-extinguisher/check.html?id=${encodeURIComponent(id)}`;
+}
 
   function downloadBase64File(base64, fileName, mimeType) {
     const byteCharacters = atob(base64);
