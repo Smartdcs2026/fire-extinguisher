@@ -484,9 +484,9 @@
     </div>
   </div>
 
-  <script src="/fire-extinguisher/js/config.js?v=1.1.0"></script>
-<script src="/fire-extinguisher/js/api.js?v=1.1.0"></script>
-<script src="/fire-extinguisher/js/utils.js?v=1.1.0"></script>
+  <script src="/fire-extinguisher/js/config.js?v=1.1.3"></script>
+<script src="/fire-extinguisher/js/api.js?v=1.1.3"></script>
+<script src="/fire-extinguisher/js/utils.js?v=1.1.3"></script>
 
   <script>
     (function () {
@@ -542,40 +542,74 @@ function setLogo() {
       }
 
       async function loadOptions() {
-        try {
-          const [namesRes, extRes] = await Promise.all([
-            API.getNames(),
-            API.getExtinguishers()
-          ]);
+  names = [];
+  extinguishers = [];
 
-          names = namesRes.items || [];
-          extinguishers = extRes.items || [];
+  const results = await Promise.allSettled([
+    API.getNames(),
+    API.getExtinguishers()
+  ]);
 
-          renderInspectorOptions();
-          renderTypeOptions();
-        } catch (err) {
-          U.toast(err.message || 'โหลดตัวเลือกไม่สำเร็จ', 'warning');
-        }
-      }
+  const namesResult = results[0];
+  const extResult = results[1];
 
-      function renderInspectorOptions() {
-        const select = U.$('#inspectorSelect');
+  if (namesResult.status === 'fulfilled') {
+    names = namesResult.value.items || [];
+  } else {
+    console.warn('โหลดรายชื่อไม่สำเร็จ:', namesResult.reason);
+    U.toast('โหลดรายชื่อผู้บันทึกไม่สำเร็จ แต่ยังใช้งานรายงานได้', 'warning');
+  }
 
-        select.innerHTML = '<option value="all">ทั้งหมด</option>' + names.map(item => {
-          const label = item.displayName || item.thaiName || item.englishName || '';
-          const value = item.thaiName || item.englishName || '';
-          return `<option value="${U.escapeHtml(value)}">${U.escapeHtml(label)}</option>`;
-        }).join('');
-      }
+  if (extResult.status === 'fulfilled') {
+    extinguishers = extResult.value.items || [];
+  } else {
+    console.warn('โหลดประเภทถังไม่สำเร็จ:', extResult.reason);
+    U.toast('โหลดประเภทถังไม่สำเร็จ แต่ยังใช้งานรายงานได้', 'warning');
+  }
 
-      function renderTypeOptions() {
-        const select = U.$('#typeSelect');
-        const types = [...new Set(extinguishers.map(x => x.type).filter(Boolean))];
+  renderInspectorOptions();
+  renderTypeOptions();
+}
 
-        select.innerHTML = '<option value="all">ทั้งหมด</option>' + types.map(type => {
-          return `<option value="${U.escapeHtml(type)}">${U.escapeHtml(type)}</option>`;
-        }).join('');
-      }
+     function renderInspectorOptions() {
+  const select = U.$('#inspectorSelect');
+
+  if (!select) return;
+
+  if (!names.length) {
+    select.innerHTML = '<option value="all">ทั้งหมด</option>';
+    return;
+  }
+
+  select.innerHTML = '<option value="all">ทั้งหมด</option>' + names.map(item => {
+    const label = item.displayName || item.thaiName || item.englishName || '';
+    const value = item.thaiName || item.englishName || '';
+    return `<option value="${U.escapeHtml(value)}">${U.escapeHtml(label)}</option>`;
+  }).join('');
+}
+
+     function renderTypeOptions() {
+  const select = U.$('#typeSelect');
+
+  if (!select) return;
+
+  const types = [
+    ...new Set(
+      extinguishers
+        .map(item => String(item.type || '').trim())
+        .filter(Boolean)
+    )
+  ];
+
+  if (!types.length) {
+    select.innerHTML = '<option value="all">ทั้งหมด</option>';
+    return;
+  }
+
+  select.innerHTML = '<option value="all">ทั้งหมด</option>' + types.map(type => {
+    return `<option value="${U.escapeHtml(type)}">${U.escapeHtml(type)}</option>`;
+  }).join('');
+}
 
       function toggleCustomDate() {
         const isCustom = U.$('#periodSelect').value === 'custom';
