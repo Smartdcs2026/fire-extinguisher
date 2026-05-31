@@ -1,9 +1,15 @@
 (function () {
   'use strict';
 
-  const API_BASE = window.APP_CONFIG.API_BASE;
+  const API_BASE = window.APP_CONFIG && window.APP_CONFIG.API_BASE
+    ? window.APP_CONFIG.API_BASE
+    : '';
 
   async function request(path, options = {}) {
+    if (!API_BASE) {
+      throw new Error('ไม่พบค่า API_BASE กรุณาตรวจสอบไฟล์ config.js');
+    }
+
     const url = `${API_BASE}${path}`;
 
     const headers = {
