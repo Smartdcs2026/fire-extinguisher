@@ -28,7 +28,6 @@
     const hasNative = 'BarcodeDetector' in window;
     const hasZxing = window.ZXing && window.ZXing.BrowserQRCodeReader;
 
-    // 1) ใช้ BarcodeDetector ก่อน ถ้ามี
     if (hasNative) {
       try {
         scanMode = 'native';
@@ -42,7 +41,6 @@
       }
     }
 
-    // 2) ใช้ ZXing fallback
     if (hasZxing) {
       try {
         scanMode = 'zxing';
@@ -55,7 +53,6 @@
       }
     }
 
-    // 3) ถ้าไม่มีตัวอ่าน QR แต่ยังขอเปิดกล้องได้ ให้แจ้งตรง ๆ
     stop();
     throw new Error('ไม่พบตัวอ่าน QR Code ใน Browser นี้ กรุณากรอกหมายเลขถังแทน');
   }
@@ -89,6 +86,7 @@
       if (devices && devices.length) {
         const backCamera = devices.find(device => {
           const label = String(device.label || '').toLowerCase();
+
           return (
             label.includes('back') ||
             label.includes('rear') ||
@@ -132,6 +130,7 @@
           track.stop();
         } catch (err) {}
       });
+
       stream = null;
     }
 
@@ -158,6 +157,7 @@
       try {
         zxingReader.reset();
       } catch (err) {}
+
       zxingReader = null;
     }
 
@@ -167,6 +167,7 @@
           track.stop();
         } catch (err) {}
       });
+
       stream = null;
     }
 
@@ -206,6 +207,7 @@
       if (window.FireUtils) {
         window.FireUtils.toast('QR Code ไม่ใช่ของระบบนี้', 'warning');
       }
+
       return;
     }
 
@@ -216,40 +218,35 @@
     }
   }
 
- function extractIdFromQr(value) {
-  value = String(value || '').trim();
+  function extractIdFromQr(value) {
+    value = String(value || '').trim();
 
-  if (!value) return '';
+    if (!value) return '';
 
-  // กรณี QR เป็น URL
-  try {
-    const url = new URL(value);
+    try {
+      const url = new URL(value);
 
-    const id =
-      url.searchParams.get('id') ||
-      url.searchParams.get('extinguisherId') ||
-      '';
+      const id =
+        url.searchParams.get('id') ||
+        url.searchParams.get('extinguisherId') ||
+        '';
 
-    // ถ้า URL มี id ให้ใช้ id
-    if (id) return normalizeId(id);
+      if (id) return normalizeId(id);
 
-    // ถ้าเป็น URL แต่ไม่มี id ห้ามเอา URL ทั้งก้อนไปค้นหา
-    return '';
-  } catch (err) {}
+      return '';
+    } catch (err) {}
 
-  // กรณี QR เป็นรหัสถังโดยตรง เช่น 9, 001, FE-001
-  const text = normalizeId(value);
+    const text = normalizeId(value);
 
-  // ป้องกันกรณีเป็น URL แต่ parse ไม่ผ่าน
-  if (text.startsWith('HTTP://') || text.startsWith('HTTPS://')) {
-    return '';
+    if (text.startsWith('HTTP://') || text.startsWith('HTTPS://')) {
+      return '';
+    }
+
+    return text;
   }
 
-  return text;
-}
-
   function normalizeId(value) {
-    if (window.FireUtils && typeof window.FireUtils.normalizeId === 'function') {
+    if (window.FireUtils && window.FireUtils.normalizeId) {
       return window.FireUtils.normalizeId(value);
     }
 
@@ -257,7 +254,7 @@
   }
 
   function getScanMode() {
-    return scanMode || '';
+    return scanMode;
   }
 
   window.FireScanner = {
