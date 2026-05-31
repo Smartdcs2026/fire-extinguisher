@@ -136,6 +136,12 @@
   await checkHealth();
   await loadMonthStatus();
 }
+      function setLogo() {
+  const logo = U.$('#appLogo');
+  if (logo) {
+    logo.src = window.APP_CONFIG.LOGO_URL;
+  }
+}
       function bindEvents() {
         openScannerBtn.addEventListener('click', openScanner);
         closeScannerBtn.addEventListener('click', closeScanner);
