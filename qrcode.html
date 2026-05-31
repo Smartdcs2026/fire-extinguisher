@@ -639,10 +639,10 @@
               <input type="checkbox" data-id="${U.escapeHtml(id)}" ${checked} />
               <div class="ext-main">
                 <strong>${U.escapeHtml(item.extinguisherId || '-')}</strong>
-                <span>จุดติดตั้ง: ${U.escapeHtml(item.location || '-')}</span>
-                <span>ชนิด: ${U.escapeHtml(item.type || '-')}</span>
-                <span>ขนาด: ${U.escapeHtml(item.size || '-')}</span>
-                <span>ปีผลิต: ${U.escapeHtml(item.yearMade || '-')}</span>
+                <span>${U.escapeHtml(item.location || '-')}</span>
+                <span>${U.escapeHtml(item.type || '-')}</span>
+                <span>${U.escapeHtml(item.size || '-')}</span>
+                <span>ปี:${U.escapeHtml(item.yearMade || '-')}</span>
               </div>
             </label>
           `;
