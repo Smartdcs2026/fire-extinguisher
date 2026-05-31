@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
@@ -653,6 +653,765 @@ function setLogo() {
           text,
           width: 114,
           height: 114,
+          colorDark: '#111827',
+          colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      }
+
+      function handlePrint() {
+        if (!selectedIds.size) {
+          U.toast('กรุณาเลือกถังที่ต้องการพิมพ์', 'warning');
+          return;
+        }
+
+        renderPreview();
+
+        setTimeout(() => {
+          window.print();
+        }, 300);
+      }
+    })();
+  </script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#b91c1c" />
+  <title>พิมพ์ QR Code | Fire Extinguisher</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.4" />
+
+  <style>
+    body,
+    button,
+    input,
+    select,
+    textarea {
+      font-family: "Noto Sans Thai", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .page-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .back-link {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      box-shadow: var(--shadow);
+      flex: 0 0 auto;
+    }
+
+    .page-logo {
+      width: 96px;
+      height: 44px;
+      border-radius: 14px;
+      overflow: hidden;
+      padding: 6px 8px;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+    }
+
+    .page-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain !important;
+      object-position: center center;
+      display: block;
+    }
+
+    .page-title {
+      min-width: 0;
+    }
+
+    .page-title h1 {
+      margin: 0;
+      font-size: clamp(20px, 5vw, 30px);
+      line-height: 1.12;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .page-title p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .tool-card,
+    .list-card,
+    .preview-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .button-row.three {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .list-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .list-head h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .count-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 32px;
+      border-radius: 999px;
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 6px 12px;
+      font-weight: 900;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .ext-list {
+      display: grid;
+      gap: 10px;
+      max-height: 62vh;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .ext-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      align-items: start;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px;
+      background: #f9fafb;
+      cursor: pointer;
+    }
+
+    .ext-row input {
+      width: 22px;
+      height: 22px;
+      margin-top: 3px;
+      accent-color: var(--primary);
+    }
+
+    .ext-main {
+      min-width: 0;
+    }
+
+    .ext-main strong {
+      display: block;
+      font-size: 17px;
+      margin-bottom: 4px;
+      word-break: break-word;
+    }
+
+    .ext-main span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .empty-state {
+      color: var(--muted);
+      background: #f9fafb;
+      border: 1px dashed var(--line);
+      padding: 14px;
+      border-radius: 16px;
+      text-align: center;
+      line-height: 1.45;
+    }
+
+    .preview-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .preview-toolbar h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .print-area {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      justify-items: center;
+      background: #f3f4f6;
+      border-radius: 20px;
+      padding: 16px;
+      overflow: auto;
+    }
+
+    .qr-card {
+      width: 7.2cm;
+      height: 11cm;
+      background: #fff;
+      color: #111827;
+      border: 1px solid #111;
+      box-sizing: border-box;
+      padding: 0.25cm;
+      display: flex;
+      flex-direction: column;
+      page-break-inside: avoid;
+      break-inside: avoid;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.18);
+    }
+
+    .qr-mini {
+      height: 5.15cm;
+      width: 100%;
+      box-sizing: border-box;
+      display: grid;
+      grid-template-rows: auto auto 2.8cm auto auto;
+      justify-items: center;
+      align-content: start;
+      padding: 0.13cm 0.16cm;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .qr-mini + .qr-mini {
+      border-top: 1px dashed #111;
+      margin-top: 0.1cm;
+      padding-top: 0.22cm;
+    }
+
+    .qr-title {
+      width: 100%;
+      font-size: 7.3px;
+      line-height: 1.05;
+      font-weight: 900;
+      color: #991b1b;
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 0.04cm;
+    }
+
+    .qr-no {
+      width: 100%;
+      font-size: 18px;
+      line-height: 1;
+      font-weight: 950;
+      letter-spacing: 0.2px;
+      color: #111827;
+      margin-bottom: 0.08cm;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .qr-box {
+      width: 2.8cm;
+      height: 2.8cm;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 0.08cm;
+    }
+
+    .qr-box canvas,
+    .qr-box img {
+      width: 2.8cm !important;
+      height: 2.8cm !important;
+      display: block;
+    }
+
+    .qr-detail {
+      width: 100%;
+      display: grid;
+      gap: 0.04cm;
+      font-size: 8.1px;
+      line-height: 1.16;
+      color: #111827;
+      margin-top: 0.03cm;
+    }
+
+    .qr-detail-line {
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .qr-detail-line b {
+      font-weight: 950;
+    }
+
+    .qr-detail-pair {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.08cm;
+    }
+
+    .qr-footer {
+      width: 100%;
+      margin-top: 0.07cm;
+      font-size: 7.2px;
+      line-height: 1.1;
+      color: #4b5563;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cut-note {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 10px;
+      line-height: 1.45;
+    }
+
+    @media (min-width: 760px) {
+      .tool-grid {
+        grid-template-columns: 1fr auto;
+        align-items: end;
+      }
+
+      .button-row {
+        margin-top: 0;
+      }
+
+      .print-area {
+        grid-template-columns: repeat(2, minmax(0, auto));
+      }
+    }
+
+    @media (min-width: 1120px) {
+      .print-area {
+        grid-template-columns: repeat(3, minmax(0, auto));
+      }
+    }
+
+    @media (max-width: 420px) {
+      .page-logo {
+        width: 78px;
+        height: 38px;
+        padding: 5px 7px;
+      }
+
+      .button-row,
+      .button-row.three {
+        grid-template-columns: 1fr;
+      }
+
+      .print-area {
+        padding: 10px;
+      }
+
+      .qr-card {
+        transform: scale(0.92);
+        transform-origin: top center;
+        margin-bottom: -0.8cm;
+      }
+    }
+
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 1cm;
+      }
+
+      html,
+      body {
+        background: #fff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      body * {
+        visibility: hidden !important;
+      }
+
+      #printArea,
+      #printArea * {
+        visibility: visible !important;
+      }
+
+      #printArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        display: grid !important;
+        grid-template-columns: repeat(2, 7.2cm);
+        justify-content: center;
+        align-content: start;
+        gap: 0.8cm 1cm;
+        background: #fff !important;
+        padding: 0 !important;
+        overflow: visible !important;
+      }
+
+      .qr-card {
+        width: 7.2cm !important;
+        height: 11cm !important;
+        box-shadow: none !important;
+        transform: none !important;
+        margin: 0 !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      .qr-card:nth-child(4n) {
+        page-break-after: always;
+      }
+
+      .page-logo,
+      .page-top,
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app-shell">
+    <div class="page-top no-print">
+      <a class="back-link" href="/fire-extinguisher/">←</a>
+
+      <div class="page-logo">
+        <img id="pageLogo" alt="Fire Extinguisher Logo" />
+      </div>
+
+      <div class="page-title">
+        <h1>พิมพ์ QR Code</h1>
+        <p>บัตร 7.2 x 11 ซม. / 1 บัตรมี QR 2 ชุด / แนวตั้ง</p>
+      </div>
+    </div>
+
+    <section class="tool-card no-print">
+      <div class="tool-grid">
+        <div>
+          <label for="searchInput" style="display:block;font-weight:900;margin-bottom:8px;">
+            ค้นหาถังดับเพลิง
+          </label>
+          <input id="searchInput" type="search" placeholder="ค้นหา หมายเลขถัง / จุดติดตั้ง / ชนิดถัง" />
+        </div>
+
+        <div class="button-row three">
+          <button class="btn ghost" id="selectAllBtn" type="button">เลือกทั้งหมด</button>
+          <button class="btn ghost" id="clearAllBtn" type="button">ล้าง</button>
+          <button class="btn primary" id="printBtn" type="button">พิมพ์</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="list-card no-print">
+      <div class="list-head">
+        <h2>รายการถัง</h2>
+        <span class="count-badge" id="selectedCount">เลือก 0 รายการ</span>
+      </div>
+
+      <div id="extList" class="ext-list">
+        <div class="empty-state">กำลังโหลดรายการถัง...</div>
+      </div>
+    </section>
+
+    <section class="preview-card">
+      <div class="preview-toolbar no-print">
+        <h2>Preview QR Card</h2>
+        <button class="btn ghost small" id="refreshPreviewBtn" type="button">รีเฟรช Preview</button>
+      </div>
+
+      <div id="printArea" class="print-area">
+        <div class="empty-state no-print">เลือกถังที่ต้องการพิมพ์ QR Code</div>
+      </div>
+
+      <p class="cut-note no-print">
+        หมายเหตุ: 1 บัตรขนาด 7.2 x 11 ซม. มี QR Code 2 ชุด บน/ล่าง และมีเส้นประกลางสำหรับตัด
+      </p>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="/fire-extinguisher/js/config.js?v=1.2.4"></script>
+  <script src="/fire-extinguisher/js/api.js?v=1.2.4"></script>
+  <script src="/fire-extinguisher/js/utils.js?v=1.2.4"></script>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const U = window.FireUtils;
+      const API = window.FireAPI;
+
+      let allItems = [];
+      let filteredItems = [];
+      let selectedIds = new Set();
+
+      document.addEventListener('DOMContentLoaded', init);
+
+      async function init() {
+        setLogo();
+        bindEvents();
+        await loadExtinguishers();
+      }
+
+      function setLogo() {
+        const logo = U.$('#pageLogo');
+
+        if (logo) {
+          logo.src = window.APP_CONFIG.LOGO_URL;
+          logo.loading = 'eager';
+          logo.decoding = 'async';
+        }
+      }
+
+      function bindEvents() {
+        U.$('#searchInput').addEventListener('input', handleSearch);
+        U.$('#selectAllBtn').addEventListener('click', selectAllFiltered);
+        U.$('#clearAllBtn').addEventListener('click', clearAll);
+        U.$('#printBtn').addEventListener('click', handlePrint);
+        U.$('#refreshPreviewBtn').addEventListener('click', renderPreview);
+      }
+
+      async function loadExtinguishers() {
+        const list = U.$('#extList');
+
+        try {
+          list.innerHTML = '<div class="empty-state">กำลังโหลดรายการถัง...</div>';
+
+          const res = await API.getExtinguishers();
+          allItems = Array.isArray(res.items) ? res.items : [];
+          filteredItems = [...allItems];
+
+          renderList();
+          renderPreview();
+        } catch (err) {
+          list.innerHTML = `<div class="empty-state">${U.escapeHtml(err.message || 'โหลดข้อมูลไม่สำเร็จ')}</div>`;
+        }
+      }
+
+      function handleSearch() {
+        const keyword = U.$('#searchInput').value.trim().toLowerCase();
+
+        if (!keyword) {
+          filteredItems = [...allItems];
+        } else {
+          filteredItems = allItems.filter(item => {
+            const text = [
+              item.extinguisherId,
+              item.location,
+              item.type,
+              item.size,
+              item.yearMade
+            ].join(' ').toLowerCase();
+
+            return text.includes(keyword);
+          });
+        }
+
+        renderList();
+      }
+
+      function renderList() {
+        const list = U.$('#extList');
+
+        if (!filteredItems.length) {
+          list.innerHTML = '<div class="empty-state">ไม่พบข้อมูลถังที่ค้นหา</div>';
+          updateSelectedCount();
+          return;
+        }
+
+        list.innerHTML = filteredItems.map(item => {
+          const id = U.normalizeId(item.extinguisherId);
+          const checked = selectedIds.has(id) ? 'checked' : '';
+
+          return `
+            <label class="ext-row">
+              <input type="checkbox" data-id="${U.escapeHtml(id)}" ${checked} />
+              <div class="ext-main">
+                <strong>${U.escapeHtml(item.extinguisherId || '-')}</strong>
+                <span>จุดติดตั้ง: ${U.escapeHtml(item.location || '-')}</span>
+                <span>ชนิด: ${U.escapeHtml(item.type || '-')}</span>
+                <span>ขนาด: ${U.escapeHtml(item.size || '-')}</span>
+                <span>ปีผลิต: ${U.escapeHtml(item.yearMade || '-')}</span>
+              </div>
+            </label>
+          `;
+        }).join('');
+
+        list.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+          cb.addEventListener('change', () => {
+            const id = U.normalizeId(cb.dataset.id);
+
+            if (cb.checked) {
+              selectedIds.add(id);
+            } else {
+              selectedIds.delete(id);
+            }
+
+            updateSelectedCount();
+            renderPreview();
+          });
+        });
+
+        updateSelectedCount();
+      }
+
+      function updateSelectedCount() {
+        U.$('#selectedCount').textContent = `เลือก ${selectedIds.size} รายการ`;
+      }
+
+      function selectAllFiltered() {
+        filteredItems.forEach(item => {
+          selectedIds.add(U.normalizeId(item.extinguisherId));
+        });
+
+        renderList();
+        renderPreview();
+      }
+
+      function clearAll() {
+        selectedIds.clear();
+        renderList();
+        renderPreview();
+      }
+
+      function getSelectedItems() {
+        return allItems.filter(item => selectedIds.has(U.normalizeId(item.extinguisherId)));
+      }
+
+      function renderPreview() {
+        const printArea = U.$('#printArea');
+        const selected = getSelectedItems();
+
+        if (!selected.length) {
+          printArea.innerHTML = '<div class="empty-state no-print">เลือกถังที่ต้องการพิมพ์ QR Code</div>';
+          return;
+        }
+
+        printArea.innerHTML = selected.map((item, index) => {
+          return buildQrCardHtml(item, index);
+        }).join('');
+
+        selected.forEach((item, index) => {
+          const url = buildQrUrl(item.extinguisherId);
+          createQr(document.getElementById(`qr-${index}-top`), url);
+          createQr(document.getElementById(`qr-${index}-bottom`), url);
+        });
+      }
+
+      function buildQrCardHtml(item, index) {
+        return `
+          <article class="qr-card">
+            ${buildQrMiniHtml(item, `qr-${index}-top`)}
+            ${buildQrMiniHtml(item, `qr-${index}-bottom`)}
+          </article>
+        `;
+      }
+
+      function buildQrMiniHtml(item, qrId) {
+        return `
+          <div class="qr-mini">
+            <div class="qr-title">FIRE EXTINGUISHER CHECK</div>
+
+            <div class="qr-no">
+              ${U.escapeHtml(item.extinguisherId || '-')}
+            </div>
+
+            <div id="${qrId}" class="qr-box"></div>
+
+            <div class="qr-detail">
+              <div class="qr-detail-line">
+                <b>จุดติดตั้ง:</b> ${U.escapeHtml(item.location || '-')}
+              </div>
+
+              <div class="qr-detail-pair">
+                <div class="qr-detail-line">
+                  <b>ชนิด:</b> ${U.escapeHtml(item.type || '-')}
+                </div>
+
+                <div class="qr-detail-line">
+                  <b>ขนาด:</b> ${U.escapeHtml(item.size || '-')}
+                </div>
+              </div>
+
+              <div class="qr-detail-line">
+                <b>ปีผลิต:</b> ${U.escapeHtml(item.yearMade || '-')}
+              </div>
+            </div>
+
+            <div class="qr-footer">
+              Scan QR เพื่อตรวจเช็คถัง
+            </div>
+          </div>
+        `;
+      }
+
+      function buildQrUrl(extinguisherId) {
+        const id = U.normalizeId(extinguisherId);
+        return `${window.APP_CONFIG.GITHUB_BASE}/check.html?id=${encodeURIComponent(id)}`;
+      }
+
+      function createQr(element, text) {
+        if (!element) return;
+
+        element.innerHTML = '';
+
+        new QRCode(element, {
+          text,
+          width: 106,
+          height: 106,
           colorDark: '#111827',
           colorLight: '#ffffff',
           correctLevel: QRCode.CorrectLevel.M
