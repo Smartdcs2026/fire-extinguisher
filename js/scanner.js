@@ -7,6 +7,8 @@
   let videoEl = null;
   let onResultCallback = null;
   let scanning = false;
+  let zxingReader = null;
+  let scanMode = '';
 
   async function start(options = {}) {
     videoEl = options.video;
@@ -22,6 +24,30 @@
 
     stop();
 
+    scanning = true;
+
+    if ('BarcodeDetector' in window) {
+      try {
+        scanMode = 'native';
+        await startNativeCamera();
+        detector = new BarcodeDetector({ formats: ['qr_code'] });
+        scanWithBarcodeDetector();
+        return;
+      } catch (err) {
+        stop();
+      }
+    }
+
+    if (window.ZXing && window.ZXing.BrowserQRCodeReader) {
+      scanMode = 'zxing';
+      await startZxingScanner();
+      return;
+    }
+
+    throw new Error('Browser นี้ยังไม่รองรับการสแกน QR Code กรุณากรอกหมายเลขถังแทน');
+  }
+
+  async function startNativeCamera() {
     stream = await navigator.mediaDevices.getUserMedia({
       video: {
         facingMode: { ideal: 'environment' },
@@ -34,23 +60,42 @@
     videoEl.srcObject = stream;
     videoEl.setAttribute('playsinline', 'true');
     videoEl.setAttribute('webkit-playsinline', 'true');
+    videoEl.muted = true;
 
     await videoEl.play();
+  }
 
-    scanning = true;
+  async function startZxingScanner() {
+    zxingReader = new ZXing.BrowserQRCodeReader();
 
-    if ('BarcodeDetector' in window) {
-      try {
-        detector = new BarcodeDetector({
-          formats: ['qr_code']
-        });
-        scanWithBarcodeDetector();
-      } catch (err) {
-        scanWithCanvasFallback();
-      }
-    } else {
-      scanWithCanvasFallback();
+    const devices = await ZXing.BrowserCodeReader.listVideoInputDevices();
+    let selectedDeviceId = '';
+
+    if (devices && devices.length) {
+      const backCamera = devices.find(device => {
+        const label = String(device.label || '').toLowerCase();
+        return (
+          label.includes('back') ||
+          label.includes('rear') ||
+          label.includes('environment') ||
+          label.includes('หลัง')
+        );
+      });
+
+      selectedDeviceId = backCamera ? backCamera.deviceId : devices[devices.length - 1].deviceId;
     }
+
+    await zxingReader.decodeFromVideoDevice(
+      selectedDeviceId || null,
+      videoEl,
+      (result, err) => {
+        if (!scanning) return;
+
+        if (result && result.text) {
+          handleDetected(result.text);
+        }
+      }
+    );
   }
 
   function stop() {
@@ -61,70 +106,58 @@
       rafId = null;
     }
 
+    if (zxingReader) {
+      try {
+        zxingReader.reset();
+      } catch (err) {}
+      zxingReader = null;
+    }
+
     if (stream) {
-      stream.getTracks().forEach(track => track.stop());
+      stream.getTracks().forEach(track => {
+        try {
+          track.stop();
+        } catch (err) {}
+      });
       stream = null;
     }
 
     if (videoEl) {
-      videoEl.pause();
-      videoEl.srcObject = null;
+      try {
+        videoEl.pause();
+        videoEl.srcObject = null;
+      } catch (err) {}
     }
+
+    detector = null;
+    scanMode = '';
   }
 
   async function scanWithBarcodeDetector() {
     if (!scanning || !videoEl || !detector) return;
 
     try {
-      const codes = await detector.detect(videoEl);
+      if (videoEl.readyState >= 2) {
+        const codes = await detector.detect(videoEl);
 
-      if (codes && codes.length) {
-        const raw = codes[0].rawValue || '';
-        handleDetected(raw);
-        return;
+        if (codes && codes.length) {
+          const raw = codes[0].rawValue || '';
+          handleDetected(raw);
+          return;
+        }
       }
-    } catch (err) {
-      // Continue scanning
-    }
+    } catch (err) {}
 
     rafId = requestAnimationFrame(scanWithBarcodeDetector);
-  }
-
-  function scanWithCanvasFallback() {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-
-    const loop = () => {
-      if (!scanning || !videoEl) return;
-
-      try {
-        const w = videoEl.videoWidth;
-        const h = videoEl.videoHeight;
-
-        if (w && h) {
-          canvas.width = w;
-          canvas.height = h;
-          ctx.drawImage(videoEl, 0, 0, w, h);
-
-          /**
-           * หมายเหตุ:
-           * ตัว fallback จริงด้วย ZXing จะใส่ในรอบถัดไป
-           * รอบนี้ใช้ BarcodeDetector เป็นหลัก
-           */
-        }
-      } catch (err) {}
-
-      rafId = requestAnimationFrame(loop);
-    };
-
-    loop();
   }
 
   function handleDetected(rawValue) {
     const id = extractIdFromQr(rawValue);
 
     if (!id) {
-      window.FireUtils.toast('QR Code ไม่ใช่ของระบบนี้', 'warning');
+      if (window.FireUtils) {
+        window.FireUtils.toast('QR Code ไม่ใช่ของระบบนี้', 'warning');
+      }
       return;
     }
 
@@ -143,15 +176,28 @@
     try {
       const url = new URL(value);
       const id = url.searchParams.get('id') || '';
-      if (id) return window.FireUtils.normalizeId(id);
+      if (id) return normalizeId(id);
     } catch (err) {}
 
-    return window.FireUtils.normalizeId(value);
+    return normalizeId(value);
+  }
+
+  function normalizeId(value) {
+    if (window.FireUtils && typeof window.FireUtils.normalizeId === 'function') {
+      return window.FireUtils.normalizeId(value);
+    }
+
+    return String(value || '').trim().toUpperCase();
+  }
+
+  function getScanMode() {
+    return scanMode || '';
   }
 
   window.FireScanner = {
     start,
     stop,
-    extractIdFromQr
+    extractIdFromQr,
+    getScanMode
   };
 })();
