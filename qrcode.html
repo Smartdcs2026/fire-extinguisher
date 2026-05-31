@@ -354,13 +354,18 @@
 
 <body>
   <main class="app-shell">
-    <div class="page-top no-print">
-      <a class="back-link" href="/fire-extinguisher/">←</a>
-      <div class="page-title">
-        <h1>พิมพ์ QR Code</h1>
-        <p>บัตร 7.2 x 11 ซม. / 1 บัตรมี QR 2 ชุด พร้อมเส้นตัด</p>
-      </div>
-    </div>
+ <div class="page-top no-print">
+  <a class="back-link" href="/fire-extinguisher/">←</a>
+
+  <div class="page-logo">
+    <img id="pageLogo" alt="Fire Extinguisher Logo" />
+  </div>
+
+  <div class="page-title">
+    <h1>พิมพ์ QR Code</h1>
+    <p>บัตร 7.2 x 11 ซม. / 1 บัตรมี QR 2 ชุด พร้อมเส้นตัด</p>
+  </div>
+</div>
 
     <section class="tool-card no-print">
       <div class="tool-grid">
@@ -425,10 +430,16 @@
       document.addEventListener('DOMContentLoaded', init);
 
       async function init() {
-        bindEvents();
-        await loadExtinguishers();
-      }
-
+  setLogo();
+  bindEvents();
+  await loadExtinguishers();
+}
+function setLogo() {
+  const logo = U.$('#pageLogo');
+  if (logo) {
+    logo.src = window.APP_CONFIG.LOGO_URL;
+  }
+}
       function bindEvents() {
         U.$('#searchInput').addEventListener('input', handleSearch);
         U.$('#selectAllBtn').addEventListener('click', selectAllFiltered);
