@@ -6,9 +6,21 @@
   <meta name="theme-color" content="#b91c1c" />
   <title>ข้อมูลถังดับเพลิง | Fire Extinguisher</title>
 
-  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.2" />
 
   <style>
+    body,
+    button,
+    input,
+    select,
+    textarea {
+      font-family: "Noto Sans Thai", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
     .app-shell {
       padding: 12px;
       padding-bottom: calc(24px + env(safe-area-inset-bottom));
@@ -215,6 +227,7 @@
       display: block;
       font-size: 15px;
       margin-bottom: 3px;
+      line-height: 1.25;
     }
 
     .quick-main span {
@@ -227,21 +240,26 @@
       text-overflow: ellipsis;
     }
 
-    .inspect-soft-btn {
-      border: 1px solid rgba(185, 28, 28, 0.22);
-      background: rgba(185, 28, 28, 0.07);
+    .toggle-view-btn {
+      border: 1px solid rgba(185, 28, 28, 0.24);
+      background: linear-gradient(135deg, rgba(185, 28, 28, 0.10), rgba(127, 29, 29, 0.06));
       color: var(--primary-dark);
       border-radius: 999px;
-      padding: 9px 13px;
-      min-height: 38px;
+      padding: 9px 14px;
+      min-height: 40px;
       font-size: 13px;
       font-weight: 900;
       cursor: pointer;
       white-space: nowrap;
+      box-shadow: 0 8px 18px rgba(185, 28, 28, 0.08);
     }
 
-    .inspect-soft-btn:active {
+    .toggle-view-btn:active {
       transform: scale(0.98);
+    }
+
+    .view-hidden {
+      display: none !important;
     }
 
     .history-card {
@@ -497,53 +515,6 @@
       z-index: 10;
     }
 
-    .bottom-action {
-      position: sticky;
-      bottom: 0;
-      z-index: 20;
-      padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
-      background: linear-gradient(180deg, rgba(248, 250, 252, 0), rgba(248, 250, 252, 0.96) 35%, rgba(248, 250, 252, 1));
-    }
-
-    .bottom-action-inner {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 8px;
-      align-items: center;
-      background: rgba(255, 255, 255, 0.96);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.14);
-      padding: 9px;
-      backdrop-filter: blur(12px);
-    }
-
-    .bottom-action-text {
-      min-width: 0;
-      padding-left: 4px;
-    }
-
-    .bottom-action-text strong {
-      display: block;
-      font-size: 13px;
-      line-height: 1.25;
-    }
-
-    .bottom-action-text span {
-      display: block;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.25;
-      margin-top: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .hidden-action {
-      display: none !important;
-    }
-
     @media (min-width: 720px) {
       .app-shell {
         width: min(100%, 980px);
@@ -565,10 +536,7 @@
       }
 
       .info-card,
-      .quick-card {
-        grid-column: 1 / -1;
-      }
-
+      .quick-card,
       .history-card {
         grid-column: 1 / -1;
       }
@@ -584,12 +552,6 @@
         background: transparent;
         border: 0;
         backdrop-filter: none;
-      }
-
-      .bottom-action {
-        position: static;
-        padding: 0;
-        background: transparent;
       }
     }
 
@@ -646,7 +608,7 @@
         grid-template-columns: 1fr;
       }
 
-      .inspect-soft-btn {
+      .toggle-view-btn {
         padding: 8px 10px;
         font-size: 12px;
       }
@@ -721,16 +683,16 @@
 
         <section class="quick-card" id="quickCard">
           <div class="quick-main">
-            <strong>สำหรับเจ้าหน้าที่ตรวจ</strong>
+            <strong id="quickTitle">ข้อมูลถังและประวัติพร้อมแล้ว</strong>
             <span id="quickHint">ตรวจสอบข้อมูลถังและประวัติก่อนเริ่มบันทึกผล</span>
           </div>
 
-          <button class="inspect-soft-btn" id="openFormBtn" type="button">
+          <button class="toggle-view-btn" id="toggleInspectBtn" type="button">
             ตรวจเช็คถัง
           </button>
         </section>
 
-        <section class="history-card">
+        <section class="history-card" id="historyCard">
           <div class="section-head">
             <div>
               <h2>ประวัติการตรวจล่าสุด</h2>
@@ -755,7 +717,7 @@
             </div>
 
             <button class="btn ghost small" id="closeFormBtn" type="button">
-              ซ่อน
+              ดูประวัติ
             </button>
           </div>
 
@@ -919,26 +881,13 @@
             </button>
           </div>
         </form>
-
-        <div class="bottom-action" id="bottomAction">
-          <div class="bottom-action-inner">
-            <div class="bottom-action-text">
-              <strong>ข้อมูลถังและประวัติพร้อมแล้ว</strong>
-              <span>เจ้าหน้าที่สามารถเริ่มตรวจเช็คถังนี้ได้</span>
-            </div>
-
-            <button class="inspect-soft-btn" id="bottomOpenFormBtn" type="button">
-              ตรวจเช็คถัง
-            </button>
-          </div>
-        </div>
       </div>
     </section>
   </main>
 
-  <script src="/fire-extinguisher/js/config.js?v=1.2.1"></script>
-  <script src="/fire-extinguisher/js/api.js?v=1.2.1"></script>
-  <script src="/fire-extinguisher/js/utils.js?v=1.2.1"></script>
+  <script src="/fire-extinguisher/js/config.js?v=1.2.2"></script>
+  <script src="/fire-extinguisher/js/api.js?v=1.2.2"></script>
+  <script src="/fire-extinguisher/js/utils.js?v=1.2.2"></script>
 
   <script>
     (function () {
@@ -983,9 +932,8 @@
           }
         });
 
-        U.$('#openFormBtn').addEventListener('click', openInspectionForm);
-        U.$('#bottomOpenFormBtn').addEventListener('click', openInspectionForm);
-        U.$('#closeFormBtn').addEventListener('click', closeInspectionForm);
+        U.$('#toggleInspectBtn').addEventListener('click', toggleInspectView);
+        U.$('#closeFormBtn').addEventListener('click', showHistoryView);
 
         U.$('#inspectionForm').addEventListener('change', handleFormChange);
         U.$('#inspectionForm').addEventListener('submit', handleSubmit);
@@ -1093,8 +1041,10 @@
           box.innerHTML = '<div class="empty-state">ยังไม่มีประวัติการตรวจถังนี้</div>';
           U.setText('#lastStatusText', 'ยังไม่มีประวัติ');
 
+          const form = U.$('#inspectionForm');
           const quickHint = U.$('#quickHint');
-          if (quickHint) {
+
+          if (form && form.hidden && quickHint) {
             quickHint.textContent = 'ยังไม่มีประวัติ เจ้าหน้าที่สามารถเริ่มตรวจครั้งแรกได้';
           }
 
@@ -1104,8 +1054,10 @@
         const latest = list[0] || {};
         U.setText('#lastStatusText', latest.overallStatus || '-');
 
+        const form = U.$('#inspectionForm');
         const quickHint = U.$('#quickHint');
-        if (quickHint) {
+
+        if (form && form.hidden && quickHint) {
           quickHint.textContent = latest.timestamp
             ? `ตรวจล่าสุด: ${latest.timestamp}`
             : 'ตรวจสอบข้อมูลก่อนเริ่มบันทึกผล';
@@ -1144,12 +1096,29 @@
         }).join('');
       }
 
-      function openInspectionForm() {
+      function toggleInspectView() {
         const form = U.$('#inspectionForm');
-        const bottomAction = U.$('#bottomAction');
+
+        if (form.hidden) {
+          showInspectView();
+        } else {
+          showHistoryView();
+        }
+      }
+
+      function showInspectView() {
+        const form = U.$('#inspectionForm');
+        const historyCard = U.$('#historyCard');
+        const btn = U.$('#toggleInspectBtn');
+        const quickTitle = U.$('#quickTitle');
+        const quickHint = U.$('#quickHint');
 
         form.hidden = false;
-        bottomAction.classList.add('hidden-action');
+        historyCard.classList.add('view-hidden');
+
+        btn.textContent = 'ดูประวัติการตรวจ';
+        quickTitle.textContent = 'กำลังตรวจเช็คถัง';
+        quickHint.textContent = 'กรอกผลตรวจให้ครบถ้วน แล้วกดบันทึกผลตรวจ';
 
         setTimeout(() => {
           form.scrollIntoView({
@@ -1159,12 +1128,22 @@
         }, 50);
       }
 
-      function closeInspectionForm() {
+      function showHistoryView() {
         const form = U.$('#inspectionForm');
-        const bottomAction = U.$('#bottomAction');
+        const historyCard = U.$('#historyCard');
+        const btn = U.$('#toggleInspectBtn');
+        const quickTitle = U.$('#quickTitle');
+        const quickHint = U.$('#quickHint');
 
         form.hidden = true;
-        bottomAction.classList.remove('hidden-action');
+        historyCard.classList.remove('view-hidden');
+
+        btn.textContent = 'ตรวจเช็คถัง';
+        quickTitle.textContent = 'ข้อมูลถังและประวัติพร้อมแล้ว';
+
+        if (currentExtinguisher) {
+          quickHint.textContent = 'ตรวจสอบข้อมูลถังและประวัติก่อนเริ่มบันทึกผล';
+        }
 
         U.$('#quickCard').scrollIntoView({
           behavior: 'smooth',
@@ -1318,7 +1297,7 @@
           updateCo2Visibility();
 
           await loadHistory(currentExtinguisher.extinguisherId);
-          closeInspectionForm();
+          showHistoryView();
         } catch (err) {
           U.toast(err.message || 'บันทึกไม่สำเร็จ', 'error');
         } finally {
