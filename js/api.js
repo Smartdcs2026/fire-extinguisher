@@ -5,11 +5,11 @@
     ? window.APP_CONFIG.API_BASE
     : '';
 
-  async function request(path, options = {}) {
-    if (!API_BASE) {
-      throw new Error('ไม่พบค่า API_BASE กรุณาตรวจสอบไฟล์ config.js');
-    }
+  if (!API_BASE) {
+    console.error('ไม่พบ APP_CONFIG.API_BASE กรุณาโหลด config.js ก่อน api.js');
+  }
 
+  async function request(path, options = {}) {
     const url = `${API_BASE}${path}`;
 
     const headers = {
