@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.3.3" />
+  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.3.4" />
 
   <style>
     body,
@@ -214,13 +214,15 @@
 
     .print-area {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 11cm), 11cm));
       gap: 16px;
+      justify-content: center;
       justify-items: center;
       background: #f3f4f6;
       border-radius: 20px;
       padding: 16px;
-      overflow: auto;
+      overflow-x: auto;
+      overflow-y: visible;
     }
 
     .qr-card {
@@ -236,6 +238,7 @@
       page-break-inside: avoid;
       break-inside: avoid;
       box-shadow: 0 12px 30px rgba(15, 23, 42, 0.18);
+      flex: 0 0 auto;
     }
 
     .qr-mini {
@@ -399,6 +402,12 @@
       line-height: 1.45;
     }
 
+    @media (min-width: 640px) {
+      .ext-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
     @media (min-width: 760px) {
       .tool-grid {
         grid-template-columns: 1fr auto;
@@ -408,27 +417,15 @@
       .button-row {
         margin-top: 0;
       }
-
-      .ext-list {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .print-area {
-        grid-template-columns: repeat(2, minmax(0, auto));
-      }
     }
 
     @media (min-width: 1180px) {
       .ext-list {
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
-
-      .print-area {
-        grid-template-columns: repeat(2, minmax(0, auto));
-      }
     }
 
-    @media (max-width: 420px) {
+    @media (max-width: 520px) {
       .page-logo {
         width: 78px;
         height: 38px;
@@ -442,12 +439,12 @@
 
       .print-area {
         padding: 10px;
+        justify-content: start;
       }
 
       .qr-card {
-        transform: scale(0.78);
-        transform-origin: top center;
-        margin-bottom: -1.4cm;
+        transform: none;
+        margin-bottom: 0;
       }
 
       .ext-row {
@@ -580,9 +577,9 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script src="/fire-extinguisher/js/config.js?v=1.3.3"></script>
-  <script src="/fire-extinguisher/js/api.js?v=1.3.3"></script>
-  <script src="/fire-extinguisher/js/utils.js?v=1.3.3"></script>
+  <script src="/fire-extinguisher/js/config.js?v=1.3.4"></script>
+  <script src="/fire-extinguisher/js/api.js?v=1.3.4"></script>
+  <script src="/fire-extinguisher/js/utils.js?v=1.3.4"></script>
 
   <script>
     (function () {
