@@ -484,495 +484,630 @@
     </div>
   </div>
 
-  <script src="/fire-extinguisher/js/config.js?v=1.1.3"></script>
-<script src="/fire-extinguisher/js/api.js?v=1.1.3"></script>
-<script src="/fire-extinguisher/js/utils.js?v=1.1.3"></script>
+  <script src="/fire-extinguisher/js/config.js?v=1.1.4"></script>
+<script src="/fire-extinguisher/js/api.js?v=1.1.4"></script>
+<script src="/fire-extinguisher/js/utils.js?v=1.1.4"></script>
 
-  <script>
-    (function () {
-      'use strict';
+<script>
+  (function () {
+    'use strict';
 
-      const U = window.FireUtils;
-      const API = window.FireAPI;
+    const U = window.FireUtils;
+    const API = window.FireAPI;
 
-      let mode = 'report';
-      let currentItems = [];
-      let names = [];
-      let extinguishers = [];
+    let mode = 'report';
+    let currentItems = [];
+    let names = [];
+    let extinguishers = [];
 
-      document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', init);
 
     async function init() {
-  setLogo();
-  bindEvents();
-  await loadOptions();
-  await loadData();
-}
-function setLogo() {
-  const logo = U.$('#pageLogo');
-  if (logo) {
-    logo.src = window.APP_CONFIG.LOGO_URL;
-  }
-}
-      function bindEvents() {
-        U.$('#tabReport').addEventListener('click', () => setMode('report'));
-        U.$('#tabStatus').addEventListener('click', () => setMode('status'));
-        U.$('#periodSelect').addEventListener('change', toggleCustomDate);
-        U.$('#loadBtn').addEventListener('click', loadData);
-        U.$('#clearBtn').addEventListener('click', clearFilters);
-        U.$('#csvBtn').addEventListener('click', () => exportFile('csv'));
-        U.$('#excelBtn').addEventListener('click', () => exportFile('excel'));
-        U.$('#closeModalBtn').addEventListener('click', closeModal);
-        U.$('#detailModal').addEventListener('click', (e) => {
-          if (e.target.id === 'detailModal') closeModal();
-        });
+      setLogo();
+      bindEvents();
+      setStatusOptions();
+      await loadOptions();
+      await loadData();
+    }
+
+    function setLogo() {
+      const logo = U.$('#pageLogo');
+      if (logo) {
+        logo.src = window.APP_CONFIG.LOGO_URL;
+        logo.loading = 'eager';
+        logo.decoding = 'async';
       }
+    }
 
-      function setMode(nextMode) {
-        mode = nextMode;
+    function bindEvents() {
+      U.$('#tabReport').addEventListener('click', () => setMode('report'));
+      U.$('#tabStatus').addEventListener('click', () => setMode('status'));
+      U.$('#periodSelect').addEventListener('change', toggleCustomDate);
+      U.$('#loadBtn').addEventListener('click', loadData);
+      U.$('#clearBtn').addEventListener('click', clearFilters);
+      U.$('#csvBtn').addEventListener('click', () => exportFile('csv'));
+      U.$('#excelBtn').addEventListener('click', () => exportFile('excel'));
+      U.$('#closeModalBtn').addEventListener('click', closeModal);
 
-        U.$('#tabReport').classList.toggle('active', mode === 'report');
-        U.$('#tabStatus').classList.toggle('active', mode === 'status');
+      U.$('#detailModal').addEventListener('click', (e) => {
+        if (e.target.id === 'detailModal') closeModal();
+      });
 
-        U.$('#resultTitle').textContent = mode === 'report'
-          ? 'รายการผลตรวจ'
-          : 'สถานะตรวจแล้ว/ยังไม่ได้ตรวจ';
+      U.$('#tableBody').addEventListener('click', handleDetailClick);
+      U.$('#mobileList').addEventListener('click', handleDetailClick);
+    }
 
-        loadData();
-      }
+    function handleDetailClick(e) {
+      const btn = e.target.closest('[data-detail]');
+      if (!btn) return;
 
-      async function loadOptions() {
-  names = [];
-  extinguishers = [];
-
-  const results = await Promise.allSettled([
-    API.getNames(),
-    API.getExtinguishers()
-  ]);
-
-  const namesResult = results[0];
-  const extResult = results[1];
-
-  if (namesResult.status === 'fulfilled') {
-    names = namesResult.value.items || [];
-  } else {
-    console.warn('โหลดรายชื่อไม่สำเร็จ:', namesResult.reason);
-    U.toast('โหลดรายชื่อผู้บันทึกไม่สำเร็จ แต่ยังใช้งานรายงานได้', 'warning');
-  }
-
-  if (extResult.status === 'fulfilled') {
-    extinguishers = extResult.value.items || [];
-  } else {
-    console.warn('โหลดประเภทถังไม่สำเร็จ:', extResult.reason);
-    U.toast('โหลดประเภทถังไม่สำเร็จ แต่ยังใช้งานรายงานได้', 'warning');
-  }
-
-  renderInspectorOptions();
-  renderTypeOptions();
-}
-
-     function renderInspectorOptions() {
-  const select = U.$('#inspectorSelect');
-
-  if (!select) return;
-
-  if (!names.length) {
-    select.innerHTML = '<option value="all">ทั้งหมด</option>';
-    return;
-  }
-
-  select.innerHTML = '<option value="all">ทั้งหมด</option>' + names.map(item => {
-    const label = item.displayName || item.thaiName || item.englishName || '';
-    const value = item.thaiName || item.englishName || '';
-    return `<option value="${U.escapeHtml(value)}">${U.escapeHtml(label)}</option>`;
-  }).join('');
-}
-
-     function renderTypeOptions() {
-  const select = U.$('#typeSelect');
-
-  if (!select) return;
-
-  const types = [
-    ...new Set(
-      extinguishers
-        .map(item => String(item.type || '').trim())
-        .filter(Boolean)
-    )
-  ];
-
-  if (!types.length) {
-    select.innerHTML = '<option value="all">ทั้งหมด</option>';
-    return;
-  }
-
-  select.innerHTML = '<option value="all">ทั้งหมด</option>' + types.map(type => {
-    return `<option value="${U.escapeHtml(type)}">${U.escapeHtml(type)}</option>`;
-  }).join('');
-}
-
-      function toggleCustomDate() {
-        const isCustom = U.$('#periodSelect').value === 'custom';
-        U.$all('.date-field').forEach(el => {
-          el.hidden = !isCustom;
-        });
-      }
-
-      function clearFilters() {
-        U.$('#periodSelect').value = 'thisMonth';
-        U.$('#startDate').value = '';
-        U.$('#endDate').value = '';
-        U.$('#inspectorSelect').value = 'all';
-        U.$('#typeSelect').value = 'all';
-        U.$('#statusSelect').value = 'all';
-        U.$('#searchInput').value = '';
-        toggleCustomDate();
-        loadData();
-      }
-
-      function buildParams() {
-        const period = U.$('#periodSelect').value;
-        const search = U.$('#searchInput').value.trim();
-
-        const params = {
-          period,
-          inspector: U.$('#inspectorSelect').value || 'all',
-          type: U.$('#typeSelect').value || 'all',
-          status: U.$('#statusSelect').value || 'all'
-        };
-
-        if (period === 'custom') {
-          params.start = U.$('#startDate').value;
-          params.end = U.$('#endDate').value;
-        }
-
-        if (search) {
-          if (search.toUpperCase().startsWith('FE')) {
-            params.extinguisherId = search;
-          } else {
-            params.location = search;
-          }
-        }
-
-        return params;
-      }
-
-      async function loadData() {
-        const btn = U.$('#loadBtn');
-
-        try {
-          U.setLoading(btn, true, 'กำลังโหลด...');
-
-          const params = buildParams();
-          let res;
-
-          if (mode === 'status') {
-            res = await API.getInspectionStatus(params);
-          } else {
-            res = await API.getReport(params);
-          }
-
-          currentItems = res.items || [];
-
-          renderSummary(res.summary || {});
-          renderResults(currentItems);
-        } catch (err) {
-          U.toast(err.message || 'โหลดข้อมูลไม่สำเร็จ', 'error');
-          currentItems = [];
-          renderResults([]);
-        } finally {
-          U.setLoading(btn, false);
-        }
-      }
-
-      function renderSummary(summary) {
-        if (mode === 'status') {
-          U.setText('#sumLabel1', 'ถังทั้งหมด');
-          U.setText('#sumLabel2', 'ตรวจแล้ว');
-          U.setText('#sumLabel3', 'ยังไม่ได้ตรวจ');
-          U.setText('#sumLabel4', 'ผิดปกติ');
-
-          U.setText('#sum1', summary.totalExtinguishers ?? 0);
-          U.setText('#sum2', summary.checked ?? 0);
-          U.setText('#sum3', summary.unchecked ?? 0);
-          U.setText('#sum4', summary.abnormal ?? 0);
-        } else {
-          U.setText('#sumLabel1', 'รายการทั้งหมด');
-          U.setText('#sumLabel2', 'ถังที่ตรวจแล้ว');
-          U.setText('#sumLabel3', 'ผลปกติ');
-          U.setText('#sumLabel4', 'ผลผิดปกติ');
-
-          U.setText('#sum1', summary.totalRecords ?? 0);
-          U.setText('#sum2', summary.checkedExtinguishers ?? 0);
-          U.setText('#sum3', summary.normalRecords ?? 0);
-          U.setText('#sum4', summary.abnormalRecords ?? 0);
-        }
-      }
-
-      function renderResults(items) {
-        U.$('#resultCount').textContent = `${items.length} รายการ`;
-
-        if (mode === 'status') {
-          renderStatusTable(items);
-          renderStatusCards(items);
-        } else {
-          renderReportTable(items);
-          renderReportCards(items);
-        }
-      }
-
-      function renderReportTable(items) {
-        U.$('#tableHead').innerHTML = `
-          <tr>
-            <th>วันที่ตรวจ</th>
-            <th>หมายเลขถัง</th>
-            <th>จุดติดตั้ง</th>
-            <th>ชนิด</th>
-            <th>ผลตรวจ</th>
-            <th>ผู้บันทึก</th>
-            <th>รายละเอียด</th>
-          </tr>
-        `;
-
-        if (!items.length) {
-          U.$('#tableBody').innerHTML = `
-            <tr><td colspan="7">ไม่พบข้อมูล</td></tr>
-          `;
-          return;
-        }
-
-        U.$('#tableBody').innerHTML = items.map((item, index) => {
-          return `
-            <tr>
-              <td>${U.escapeHtml(item.timestamp)}</td>
-              <td><strong>${U.escapeHtml(item.extinguisherId)}</strong></td>
-              <td>${U.escapeHtml(item.location)}</td>
-              <td>${U.escapeHtml(item.type)}</td>
-              <td>${renderBadge(item.overallStatus)}</td>
-              <td>${U.escapeHtml(item.inspectorThai || '-')}</td>
-              <td><button class="btn ghost small" type="button" data-detail="${index}">ดู</button></td>
-            </tr>
-          `;
-        }).join('');
-
-        bindDetailButtons();
-      }
-
-      function renderStatusTable(items) {
-        U.$('#tableHead').innerHTML = `
-          <tr>
-            <th>หมายเลขถัง</th>
-            <th>จุดติดตั้ง</th>
-            <th>ชนิด</th>
-            <th>สถานะ</th>
-            <th>ตรวจล่าสุด</th>
-            <th>ผลล่าสุด</th>
-            <th>จำนวนครั้ง</th>
-            <th>ผู้ตรวจล่าสุด</th>
-          </tr>
-        `;
-
-        if (!items.length) {
-          U.$('#tableBody').innerHTML = `
-            <tr><td colspan="8">ไม่พบข้อมูล</td></tr>
-          `;
-          return;
-        }
-
-        U.$('#tableBody').innerHTML = items.map(item => {
-          return `
-            <tr>
-              <td><strong>${U.escapeHtml(item.extinguisherId)}</strong></td>
-              <td>${U.escapeHtml(item.location)}</td>
-              <td>${U.escapeHtml(item.type)}</td>
-              <td>${renderStatusBadge(item.inspectionStatus)}</td>
-              <td>${U.escapeHtml(item.lastCheckedAt || '-')}</td>
-              <td>${item.lastResult ? renderBadge(item.lastResult) : '-'}</td>
-              <td>${U.escapeHtml(item.checkCount ?? 0)}</td>
-              <td>${U.escapeHtml(item.lastInspectorThai || '-')}</td>
-            </tr>
-          `;
-        }).join('');
-      }
-
-      function renderReportCards(items) {
-        const box = U.$('#mobileList');
-
-        if (!items.length) {
-          box.innerHTML = '<div class="empty-state">ไม่พบข้อมูล</div>';
-          return;
-        }
-
-        box.innerHTML = items.map((item, index) => {
-          return `
-            <article class="result-card">
-              <h3>${U.escapeHtml(item.extinguisherId)}</h3>
-              <p>${U.escapeHtml(item.location || '-')}</p>
-              <p>${U.escapeHtml(item.type || '-')} / ${U.escapeHtml(item.size || '-')}</p>
-              <p>${U.escapeHtml(item.timestamp || '-')}</p>
-              <div class="card-foot">
-                ${renderBadge(item.overallStatus)}
-                <button class="btn ghost small" type="button" data-detail="${index}">ดูรายละเอียด</button>
-              </div>
-            </article>
-          `;
-        }).join('');
-
-        bindDetailButtons();
-      }
-
-      function renderStatusCards(items) {
-        const box = U.$('#mobileList');
-
-        if (!items.length) {
-          box.innerHTML = '<div class="empty-state">ไม่พบข้อมูล</div>';
-          return;
-        }
-
-        box.innerHTML = items.map(item => {
-          return `
-            <article class="result-card">
-              <h3>${U.escapeHtml(item.extinguisherId)}</h3>
-              <p>${U.escapeHtml(item.location || '-')}</p>
-              <p>${U.escapeHtml(item.type || '-')} / ${U.escapeHtml(item.size || '-')}</p>
-              <div class="card-foot">
-                ${renderStatusBadge(item.inspectionStatus)}
-                <span>${item.lastResult ? renderBadge(item.lastResult) : ''}</span>
-              </div>
-              <p>ตรวจล่าสุด: ${U.escapeHtml(item.lastCheckedAt || '-')}</p>
-              <p>จำนวนครั้ง: ${U.escapeHtml(item.checkCount ?? 0)}</p>
-              <p>ผู้ตรวจล่าสุด: ${U.escapeHtml(item.lastInspectorThai || '-')}</p>
-            </article>
-          `;
-        }).join('');
-      }
-
-      function renderBadge(status) {
-        const isOk = status === 'ปกติ';
-        return `<span class="badge ${isOk ? 'ok' : 'bad'}">${U.escapeHtml(status || '-')}</span>`;
-      }
-
-      function renderStatusBadge(status) {
-        if (status === 'ตรวจแล้ว') {
-          return `<span class="badge ok">ตรวจแล้ว</span>`;
-        }
-
-        return `<span class="badge wait">ยังไม่ได้ตรวจ</span>`;
-      }
-
-      function bindDetailButtons() {
-  U.$all('[data-detail]').forEach(btn => {
-    btn.addEventListener('click', () => {
       try {
         const index = Number(btn.dataset.detail);
         openDetail(currentItems[index]);
       } catch (err) {
-        U.toast(err.message || 'เปิดรายละเอียดไม่ได้', 'error');
         console.error(err);
+        U.toast(err.message || 'เปิดรายละเอียดไม่ได้', 'error');
       }
-    });
-  });
-}
-      function formatMonthValue(value) {
-  const text = String(value || '').trim();
+    }
 
-  if (!text || text === '-') return '-';
+    function setMode(nextMode) {
+      mode = nextMode;
 
-  // กรณีถูกต้องอยู่แล้ว เช่น 2026-05
-  const ym = text.match(/^(\d{4})-(\d{2})$/);
-  if (ym) return `${ym[1]}-${ym[2]}`;
+      U.$('#tabReport').classList.toggle('active', mode === 'report');
+      U.$('#tabStatus').classList.toggle('active', mode === 'status');
 
-  // กรณีเป็นวันที่แบบ dd/MM/yyyy HH:mm:ss
-  const thDate = text.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
-  if (thDate) return `${thDate[3]}-${thDate[2]}`;
+      U.$('#resultTitle').textContent = mode === 'report'
+        ? 'รายการผลตรวจ'
+        : 'สถานะตรวจแล้ว/ยังไม่ได้ตรวจ';
 
-  // กรณีเป็น ISO เช่น 2026-05-01T...
-  const iso = text.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (iso) return `${iso[1]}-${iso[2]}`;
+      setStatusOptions();
+      loadData();
+    }
 
-  // กรณีเป็น Date string เช่น Fri May 01 2026 00:00:00 GMT+0700
-  const d = new Date(text);
-  if (!Number.isNaN(d.getTime())) {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    return `${y}-${m}`;
-  }
+    function setStatusOptions() {
+      const select = U.$('#statusSelect');
 
-  return text;
-}
+      if (mode === 'status') {
+        select.innerHTML = `
+          <option value="all">ทั้งหมด</option>
+          <option value="ตรวจแล้ว">ตรวจแล้ว</option>
+          <option value="ยังไม่ได้ตรวจ">ยังไม่ได้ตรวจ</option>
+          <option value="ปกติ">ผลล่าสุดปกติ</option>
+          <option value="ผิดปกติ">ผลล่าสุดผิดปกติ</option>
+        `;
+      } else {
+        select.innerHTML = `
+          <option value="all">ทั้งหมด</option>
+          <option value="ปกติ">ปกติ</option>
+          <option value="ผิดปกติ">ผิดปกติ</option>
+        `;
+      }
+    }
 
-      function openDetail(item) {
-        if (!item) return;
+    async function loadOptions() {
+      names = [];
+      extinguishers = [];
 
-        U.$('#modalTitle').textContent = item.extinguisherId || 'รายละเอียด';
-       U.$('#modalSubTitle').textContent = `${item.location || '-'} • ${item.timestamp || '-'}`;
+      let reportFallbackItems = [];
 
-        const fields = [
-         ['วันที่เวลา', item.timestamp],
-          ['เดือน', formatMonthValue(item.month || item.timestamp)],
-          ['หมายเลขถัง', item.extinguisherId],
-          ['จุดติดตั้ง', item.location],
-          ['ชนิดถังดับเพลิง', item.type],
-          ['ขนาด', item.size],
-          ['ปีผลิดถัง', item.yearMade],
-          ['ความสะอาด', item.cleanliness],
-          ['หมายเหตุความสะอาด', item.cleanlinessNote],
-          ['สภาพถัง', item.bodyStatus],
-          ['หมายเหตุสภาพถัง', item.bodyNote],
-          ['แรงดัน', item.pressureStatus],
-          ['หมายเหตุแรงดัน', item.pressureNote],
-          ['เกจวัด/น้ำหนัก', item.gaugeWeightStatus],
-          ['หมายเหตุเกจวัด/น้ำหนัก', item.gaugeWeightNote],
-          ['น้ำหนักถัง CO2', item.co2Weight],
-          ['สาย/กระบอกฉีด', item.hoseStatus],
-          ['หมายเหตุสาย/กระบอกฉีด', item.hoseNote],
-          ['สายรัดสลัก', item.pinSealStatus],
-          ['หมายเหตุสายรัดสลัก', item.pinSealNote],
-          ['คันบังคับ', item.handleStatus],
-          ['หมายเหตุคันบังคับ', item.handleNote],
-          ['ผลตรวจรวม', item.overallStatus],
-          ['ชื่อผู้บันทึก', item.inspectorThai],
-          ['Name', item.inspectorEnglish],
-          ['หมายเหตุเพิ่มเติม', item.remark]
-        ];
+      const results = await Promise.allSettled([
+        API.getNames(),
+        API.getExtinguishers(),
+        API.getReport({
+          period: U.$('#periodSelect').value || 'thisMonth',
+          inspector: 'all',
+          type: 'all',
+          status: 'all'
+        })
+      ]);
 
-        U.$('#detailGrid').innerHTML = fields.map(([label, value]) => {
-          return `
-            <div class="detail-item">
-              <span>${U.escapeHtml(label)}</span>
-              <strong>${U.escapeHtml(value || '-')}</strong>
-            </div>
-          `;
-        }).join('');
+      const namesResult = results[0];
+      const extResult = results[1];
+      const reportResult = results[2];
 
-        U.$('#detailModal').classList.add('show');
+      if (namesResult.status === 'fulfilled' && namesResult.value && Array.isArray(namesResult.value.items)) {
+        names = normalizeNameItems(namesResult.value.items);
+      } else {
+        console.warn('โหลดรายชื่อจากชีท Name ไม่สำเร็จ:', namesResult.reason);
       }
 
-      function closeModal() {
-        U.$('#detailModal').classList.remove('show');
+      if (extResult.status === 'fulfilled' && extResult.value && Array.isArray(extResult.value.items)) {
+        extinguishers = extResult.value.items || [];
+      } else {
+        console.warn('โหลดรายการถังจาก Sheet1 ไม่สำเร็จ:', extResult.reason);
       }
 
-      async function exportFile(type) {
-        try {
-          const params = {
-            ...buildParams(),
-            mode
-          };
+      if (reportResult.status === 'fulfilled' && reportResult.value && Array.isArray(reportResult.value.items)) {
+        reportFallbackItems = reportResult.value.items || [];
+      } else {
+        console.warn('โหลดข้อมูล Data สำหรับ fallback ไม่สำเร็จ:', reportResult.reason);
+      }
 
-          U.toast(`กำลังสร้างไฟล์ ${type.toUpperCase()}...`, 'info');
+      if (!names.length && reportFallbackItems.length) {
+        names = buildNamesFromReport(reportFallbackItems);
+      }
 
-          const res = type === 'csv'
-            ? await API.exportCsv(params)
-            : await API.exportExcel(params);
+      if (!extinguishers.length && reportFallbackItems.length) {
+        extinguishers = buildExtinguishersFromReport(reportFallbackItems);
+      }
 
-          U.downloadBase64File(res.base64, res.fileName, res.mimeType);
+      renderInspectorOptions();
+      renderTypeOptions();
 
-          U.toast('Export สำเร็จ', 'success');
-        } catch (err) {
-          U.toast(err.message || 'Export ไม่สำเร็จ', 'error');
+      if (!names.length) {
+        U.toast('ไม่พบรายชื่อผู้บันทึกใน Name หรือ Data', 'warning');
+      }
+    }
+
+    function normalizeNameItems(items) {
+      const map = new Map();
+
+      items.forEach(item => {
+        const thaiName = String(item.thaiName || item['ชื่อ'] || '').trim();
+        const englishName = String(item.englishName || item.Name || '').trim();
+        const displayName = String(item.displayName || buildNameDisplay(thaiName, englishName)).trim();
+
+        const key = `${thaiName}|${englishName}|${displayName}`;
+        if (!displayName || map.has(key)) return;
+
+        map.set(key, {
+          thaiName,
+          englishName,
+          displayName
+        });
+      });
+
+      return Array.from(map.values());
+    }
+
+    function buildNamesFromReport(items) {
+      const map = new Map();
+
+      items.forEach(item => {
+        const thaiName = String(item.inspectorThai || item['ชื่อผู้บันทึก'] || '').trim();
+        const englishName = String(item.inspectorEnglish || item.Name || '').trim();
+        const displayName = buildNameDisplay(thaiName, englishName);
+
+        if (!displayName) return;
+
+        const key = `${thaiName}|${englishName}`;
+        if (!map.has(key)) {
+          map.set(key, {
+            thaiName,
+            englishName,
+            displayName
+          });
+        }
+      });
+
+      return Array.from(map.values());
+    }
+
+    function buildNameDisplay(thaiName, englishName) {
+      if (thaiName && englishName) return `${thaiName} / ${englishName}`;
+      return thaiName || englishName || '';
+    }
+
+    function buildExtinguishersFromReport(items) {
+      const map = new Map();
+
+      items.forEach(item => {
+        const id = String(item.extinguisherId || '').trim();
+        if (!id || map.has(id)) return;
+
+        map.set(id, {
+          extinguisherId: id,
+          location: item.location || '',
+          type: item.type || '',
+          size: item.size || '',
+          yearMade: item.yearMade || ''
+        });
+      });
+
+      return Array.from(map.values());
+    }
+
+    function renderInspectorOptions() {
+      const select = U.$('#inspectorSelect');
+      if (!select) return;
+
+      if (!names.length) {
+        select.innerHTML = '<option value="all">ทั้งหมด</option>';
+        return;
+      }
+
+      select.innerHTML = '<option value="all">ทั้งหมด</option>' + names.map(item => {
+        const label = item.displayName || item.thaiName || item.englishName || '';
+        const value = item.thaiName || item.englishName || label;
+        return `<option value="${U.escapeHtml(value)}">${U.escapeHtml(label)}</option>`;
+      }).join('');
+    }
+
+    function renderTypeOptions() {
+      const select = U.$('#typeSelect');
+      if (!select) return;
+
+      const types = [
+        ...new Set(
+          extinguishers
+            .map(item => String(item.type || '').trim())
+            .filter(Boolean)
+        )
+      ];
+
+      if (!types.length) {
+        select.innerHTML = '<option value="all">ทั้งหมด</option>';
+        return;
+      }
+
+      select.innerHTML = '<option value="all">ทั้งหมด</option>' + types.map(type => {
+        return `<option value="${U.escapeHtml(type)}">${U.escapeHtml(type)}</option>`;
+      }).join('');
+    }
+
+    function toggleCustomDate() {
+      const isCustom = U.$('#periodSelect').value === 'custom';
+      U.$all('.date-field').forEach(el => {
+        el.hidden = !isCustom;
+      });
+    }
+
+    function clearFilters() {
+      U.$('#periodSelect').value = 'thisMonth';
+      U.$('#startDate').value = '';
+      U.$('#endDate').value = '';
+      U.$('#inspectorSelect').value = 'all';
+      U.$('#typeSelect').value = 'all';
+      setStatusOptions();
+      U.$('#statusSelect').value = 'all';
+      U.$('#searchInput').value = '';
+      toggleCustomDate();
+      loadData();
+    }
+
+    function buildParams() {
+      const period = U.$('#periodSelect').value;
+      const search = U.$('#searchInput').value.trim();
+
+      const params = {
+        period,
+        inspector: U.$('#inspectorSelect').value || 'all',
+        type: U.$('#typeSelect').value || 'all',
+        status: U.$('#statusSelect').value || 'all'
+      };
+
+      if (period === 'custom') {
+        params.start = U.$('#startDate').value;
+        params.end = U.$('#endDate').value;
+      }
+
+      if (search) {
+        if (search.toUpperCase().startsWith('FE') || /^[0-9]+$/.test(search)) {
+          params.extinguisherId = search;
+        } else {
+          params.location = search;
         }
       }
-    })();
-  </script>
+
+      return params;
+    }
+
+    async function loadData() {
+      const btn = U.$('#loadBtn');
+
+      try {
+        U.setLoading(btn, true, 'กำลังโหลด...');
+
+        const params = buildParams();
+        let res;
+
+        if (mode === 'status') {
+          res = await API.getInspectionStatus(params);
+        } else {
+          res = await API.getReport(params);
+        }
+
+        currentItems = res.items || [];
+
+        renderSummary(res.summary || {});
+        renderResults(currentItems);
+
+        if (mode === 'report') {
+          refreshOptionsFromCurrentItems(currentItems);
+        }
+      } catch (err) {
+        U.toast(err.message || 'โหลดข้อมูลไม่สำเร็จ', 'error');
+        currentItems = [];
+        renderSummary({});
+        renderResults([]);
+      } finally {
+        U.setLoading(btn, false);
+      }
+    }
+
+    function refreshOptionsFromCurrentItems(items) {
+      let changed = false;
+
+      if (!names.length && items.length) {
+        names = buildNamesFromReport(items);
+        renderInspectorOptions();
+        changed = true;
+      }
+
+      if (!extinguishers.length && items.length) {
+        extinguishers = buildExtinguishersFromReport(items);
+        renderTypeOptions();
+        changed = true;
+      }
+
+      if (changed) {
+        console.log('Options refreshed from current report items.');
+      }
+    }
+
+    function renderSummary(summary) {
+      if (mode === 'status') {
+        U.setText('#sumLabel1', 'ถังทั้งหมด');
+        U.setText('#sumLabel2', 'ตรวจแล้ว');
+        U.setText('#sumLabel3', 'ยังไม่ได้ตรวจ');
+        U.setText('#sumLabel4', 'ผิดปกติ');
+
+        U.setText('#sum1', summary.totalExtinguishers ?? 0);
+        U.setText('#sum2', summary.checked ?? 0);
+        U.setText('#sum3', summary.unchecked ?? 0);
+        U.setText('#sum4', summary.abnormal ?? 0);
+      } else {
+        U.setText('#sumLabel1', 'รายการทั้งหมด');
+        U.setText('#sumLabel2', 'ถังที่ตรวจแล้ว');
+        U.setText('#sumLabel3', 'ผลปกติ');
+        U.setText('#sumLabel4', 'ผลผิดปกติ');
+
+        U.setText('#sum1', summary.totalRecords ?? 0);
+        U.setText('#sum2', summary.checkedExtinguishers ?? 0);
+        U.setText('#sum3', summary.normalRecords ?? 0);
+        U.setText('#sum4', summary.abnormalRecords ?? 0);
+      }
+    }
+
+    function renderResults(items) {
+      U.$('#resultCount').textContent = `${items.length} รายการ`;
+
+      if (mode === 'status') {
+        renderStatusTable(items);
+        renderStatusCards(items);
+      } else {
+        renderReportTable(items);
+        renderReportCards(items);
+      }
+    }
+
+    function renderReportTable(items) {
+      U.$('#tableHead').innerHTML = `
+        <tr>
+          <th>วันที่ตรวจ</th>
+          <th>หมายเลขถัง</th>
+          <th>จุดติดตั้ง</th>
+          <th>ชนิด</th>
+          <th>ผลตรวจ</th>
+          <th>ผู้บันทึก</th>
+          <th>รายละเอียด</th>
+        </tr>
+      `;
+
+      if (!items.length) {
+        U.$('#tableBody').innerHTML = '<tr><td colspan="7">ไม่พบข้อมูล</td></tr>';
+        return;
+      }
+
+      U.$('#tableBody').innerHTML = items.map((item, index) => {
+        return `
+          <tr>
+            <td>${U.escapeHtml(item.timestamp || '-')}</td>
+            <td><strong>${U.escapeHtml(item.extinguisherId || '-')}</strong></td>
+            <td>${U.escapeHtml(item.location || '-')}</td>
+            <td>${U.escapeHtml(item.type || '-')}</td>
+            <td>${renderBadge(item.overallStatus)}</td>
+            <td>${U.escapeHtml(item.inspectorThai || item.inspectorEnglish || '-')}</td>
+            <td><button class="btn ghost small" type="button" data-detail="${index}">ดู</button></td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderStatusTable(items) {
+      U.$('#tableHead').innerHTML = `
+        <tr>
+          <th>หมายเลขถัง</th>
+          <th>จุดติดตั้ง</th>
+          <th>ชนิด</th>
+          <th>สถานะ</th>
+          <th>ตรวจล่าสุด</th>
+          <th>ผลล่าสุด</th>
+          <th>จำนวนครั้ง</th>
+          <th>ผู้ตรวจล่าสุด</th>
+        </tr>
+      `;
+
+      if (!items.length) {
+        U.$('#tableBody').innerHTML = '<tr><td colspan="8">ไม่พบข้อมูล</td></tr>';
+        return;
+      }
+
+      U.$('#tableBody').innerHTML = items.map(item => {
+        return `
+          <tr>
+            <td><strong>${U.escapeHtml(item.extinguisherId || '-')}</strong></td>
+            <td>${U.escapeHtml(item.location || '-')}</td>
+            <td>${U.escapeHtml(item.type || '-')}</td>
+            <td>${renderStatusBadge(item.inspectionStatus)}</td>
+            <td>${U.escapeHtml(item.lastCheckedAt || '-')}</td>
+            <td>${item.lastResult ? renderBadge(item.lastResult) : '-'}</td>
+            <td>${U.escapeHtml(item.checkCount ?? 0)}</td>
+            <td>${U.escapeHtml(item.lastInspectorThai || item.lastInspectorEnglish || '-')}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderReportCards(items) {
+      const box = U.$('#mobileList');
+
+      if (!items.length) {
+        box.innerHTML = '<div class="empty-state">ไม่พบข้อมูล</div>';
+        return;
+      }
+
+      box.innerHTML = items.map((item, index) => {
+        return `
+          <article class="result-card">
+            <h3>${U.escapeHtml(item.extinguisherId || '-')}</h3>
+            <p>${U.escapeHtml(item.location || '-')}</p>
+            <p>${U.escapeHtml(item.type || '-')} / ${U.escapeHtml(item.size || '-')}</p>
+            <p>${U.escapeHtml(item.timestamp || '-')}</p>
+            <p>ผู้บันทึก: ${U.escapeHtml(item.inspectorThai || item.inspectorEnglish || '-')}</p>
+            <div class="card-foot">
+              ${renderBadge(item.overallStatus)}
+              <button class="btn ghost small" type="button" data-detail="${index}">ดูรายละเอียด</button>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderStatusCards(items) {
+      const box = U.$('#mobileList');
+
+      if (!items.length) {
+        box.innerHTML = '<div class="empty-state">ไม่พบข้อมูล</div>';
+        return;
+      }
+
+      box.innerHTML = items.map(item => {
+        return `
+          <article class="result-card">
+            <h3>${U.escapeHtml(item.extinguisherId || '-')}</h3>
+            <p>${U.escapeHtml(item.location || '-')}</p>
+            <p>${U.escapeHtml(item.type || '-')} / ${U.escapeHtml(item.size || '-')}</p>
+            <div class="card-foot">
+              ${renderStatusBadge(item.inspectionStatus)}
+              <span>${item.lastResult ? renderBadge(item.lastResult) : ''}</span>
+            </div>
+            <p>ตรวจล่าสุด: ${U.escapeHtml(item.lastCheckedAt || '-')}</p>
+            <p>จำนวนครั้ง: ${U.escapeHtml(item.checkCount ?? 0)}</p>
+            <p>ผู้ตรวจล่าสุด: ${U.escapeHtml(item.lastInspectorThai || item.lastInspectorEnglish || '-')}</p>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderBadge(status) {
+      const text = String(status || '-').trim();
+      const isOk = text === 'ปกติ';
+      return `<span class="badge ${isOk ? 'ok' : 'bad'}">${U.escapeHtml(text)}</span>`;
+    }
+
+    function renderStatusBadge(status) {
+      if (status === 'ตรวจแล้ว') {
+        return '<span class="badge ok">ตรวจแล้ว</span>';
+      }
+      return '<span class="badge wait">ยังไม่ได้ตรวจ</span>';
+    }
+
+    function formatMonthValue(value) {
+      const text = String(value || '').trim();
+
+      if (!text || text === '-') return '-';
+
+      const ym = text.match(/^(\d{4})-(\d{2})$/);
+      if (ym) return `${ym[1]}-${ym[2]}`;
+
+      const thDate = text.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+      if (thDate) return `${thDate[3]}-${thDate[2]}`;
+
+      const iso = text.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (iso) return `${iso[1]}-${iso[2]}`;
+
+      const d = new Date(text);
+      if (!Number.isNaN(d.getTime())) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        return `${y}-${m}`;
+      }
+
+      return text;
+    }
+
+    function openDetail(item) {
+      if (!item) return;
+
+      U.$('#modalTitle').textContent = item.extinguisherId || 'รายละเอียด';
+      U.$('#modalSubTitle').textContent = `${item.location || '-'} • ${item.timestamp || '-'}`;
+
+      const fields = [
+        ['วันที่เวลา', item.timestamp],
+        ['เดือน', formatMonthValue(item.month || item.timestamp)],
+        ['หมายเลขถัง', item.extinguisherId],
+        ['จุดติดตั้ง', item.location],
+        ['ชนิดถังดับเพลิง', item.type],
+        ['ขนาด', item.size],
+        ['ปีผลิดถัง', item.yearMade],
+        ['ความสะอาด', item.cleanliness],
+        ['หมายเหตุความสะอาด', item.cleanlinessNote],
+        ['สภาพถัง', item.bodyStatus],
+        ['หมายเหตุสภาพถัง', item.bodyNote],
+        ['แรงดัน', item.pressureStatus],
+        ['หมายเหตุแรงดัน', item.pressureNote],
+        ['เกจวัด/น้ำหนัก', item.gaugeWeightStatus],
+        ['หมายเหตุเกจวัด/น้ำหนัก', item.gaugeWeightNote],
+        ['น้ำหนักถัง CO2', item.co2Weight],
+        ['สาย/กระบอกฉีด', item.hoseStatus],
+        ['หมายเหตุสาย/กระบอกฉีด', item.hoseNote],
+        ['สายรัดสลัก', item.pinSealStatus],
+        ['หมายเหตุสายรัดสลัก', item.pinSealNote],
+        ['คันบังคับ', item.handleStatus],
+        ['หมายเหตุคันบังคับ', item.handleNote],
+        ['ผลตรวจรวม', item.overallStatus],
+        ['ชื่อผู้บันทึก', item.inspectorThai],
+        ['Name', item.inspectorEnglish],
+        ['หมายเหตุเพิ่มเติม', item.remark]
+      ];
+
+      U.$('#detailGrid').innerHTML = fields.map(([label, value]) => {
+        return `
+          <div class="detail-item">
+            <span>${U.escapeHtml(label)}</span>
+            <strong>${U.escapeHtml(value || '-')}</strong>
+          </div>
+        `;
+      }).join('');
+
+      U.$('#detailModal').classList.add('show');
+    }
+
+    function closeModal() {
+      U.$('#detailModal').classList.remove('show');
+    }
+
+    async function exportFile(type) {
+      try {
+        const params = {
+          ...buildParams(),
+          mode
+        };
+
+        U.toast(`กำลังสร้างไฟล์ ${type.toUpperCase()}...`, 'info');
+
+        const res = type === 'csv'
+          ? await API.exportCsv(params)
+          : await API.exportExcel(params);
+
+        U.downloadBase64File(res.base64, res.fileName, res.mimeType);
+        U.toast('Export สำเร็จ', 'success');
+      } catch (err) {
+        U.toast(err.message || 'Export ไม่สำเร็จ', 'error');
+      }
+    }
+  })();
+</script>
 </body>
 </html>
