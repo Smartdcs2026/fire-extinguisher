@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#b91c1c" />
+  <title>ตรวจถังดับเพลิง | Fire Extinguisher</title>
+
+  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.0.2" />
+
+  <style>
+    .page-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .back-link {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      box-shadow: var(--shadow);
+    }
+
+    .page-title h1 {
+      margin: 0;
+      font-size: clamp(20px, 5vw, 30px);
+      line-height: 1.12;
+    }
+
+    .page-title p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .info-card,
+    .history-card,
+    .form-card,
+    .check-item {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .info-card {
+      padding: 18px;
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .info-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 6px;
+      background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+    }
+
+    .ext-id {
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+      margin: 0 0 10px;
+      padding-left: 6px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .info-line {
+      background: #f9fafb;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 10px 12px;
+    }
+
+    .info-line span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 3px;
+    }
+
+    .info-line strong {
+      display: block;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .history-card {
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .history-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .history-item {
+      border: 1px solid var(--line);
+      background: #f9fafb;
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .history-main {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 6px;
+    }
+
+    .history-time {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .badge.ok {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .badge.bad {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .history-meta {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .form-card {
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .form-card h2 {
+      margin: 0 0 14px;
+      font-size: 20px;
+    }
+
+    .check-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .check-item {
+      padding: 14px;
+      box-shadow: none;
+    }
+
+    .check-title {
+      font-weight: 900;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .option-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .option-pill {
+      position: relative;
+    }
+
+    .option-pill input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .option-pill span {
+      display: grid;
+      place-items: center;
+      min-height: 44px;
+      border-radius: 15px;
+      border: 1px solid var(--line);
+      background: #fff;
+      font-weight: 800;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .option-pill input:checked + span {
+      border-color: rgba(185, 28, 28, 0.85);
+      background: rgba(185, 28, 28, 0.09);
+      color: var(--primary-dark);
+      box-shadow: 0 0 0 4px rgba(185, 28, 28, 0.08);
+    }
+
+    .note-field {
+      margin-top: 10px;
+    }
+
+    .note-field textarea,
+    .note-field input {
+      min-height: 46px;
+    }
+
+    .co2-box {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 16px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+    }
+
+    .co2-box label {
+      display: block;
+      font-weight: 900;
+      margin-bottom: 8px;
+      color: #9a3412;
+    }
+
+    .field-group {
+      margin-top: 14px;
+    }
+
+    .field-group label {
+      display: block;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .submit-bar {
+      position: sticky;
+      bottom: 0;
+      margin: 16px -16px -16px;
+      padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+      background: rgba(255, 255, 255, 0.92);
+      border-top: 1px solid var(--line);
+      backdrop-filter: blur(12px);
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+
+    .empty-state {
+      color: var(--muted);
+      background: #f9fafb;
+      border: 1px dashed var(--line);
+      padding: 14px;
+      border-radius: 16px;
+      text-align: center;
+      line-height: 1.45;
+    }
+
+    .loading-box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (min-width: 720px) {
+      .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .check-list {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .check-item.full {
+        grid-column: 1 / -1;
+      }
+
+      .submit-bar {
+        position: static;
+        margin: 18px 0 0;
+        padding: 0;
+        background: transparent;
+        border: 0;
+        backdrop-filter: none;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .ext-id {
+        font-size: 25px;
+      }
+
+      .option-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app-shell">
+    <div class="page-top">
+      <a class="back-link" href="/fire-extinguisher/">←</a>
+      <div class="page-title">
+        <h1>ตรวจถังดับเพลิง</h1>
+        <p>แสดงข้อมูลถัง ประวัติ และบันทึกผลตรวจ</p>
+      </div>
+    </div>
+
+    <section id="loadingBox" class="loading-box">
+      กำลังโหลดข้อมูลถัง...
+    </section>
+
+    <section id="notFoundBox" class="loading-box" hidden>
+      ไม่พบข้อมูลถัง หรือ URL ไม่มีหมายเลขถัง
+      <div style="margin-top:12px;">
+        <a class="btn ghost" href="/fire-extinguisher/">กลับหน้าแรก</a>
+      </div>
+    </section>
+
+    <section id="contentBox" hidden>
+      <article class="info-card">
+        <h2 class="ext-id" id="extinguisherId">-</h2>
+
+        <div class="info-grid">
+          <div class="info-line">
+            <span>จุดติดตั้ง</span>
+            <strong id="location">-</strong>
+          </div>
+
+          <div class="info-line">
+            <span>ชนิดถังดับเพลิง</span>
+            <strong id="type">-</strong>
+          </div>
+
+          <div class="info-line">
+            <span>ขนาด</span>
+            <strong id="size">-</strong>
+          </div>
+
+          <div class="info-line">
+            <span>ปีผลิดถัง</span>
+            <strong id="yearMade">-</strong>
+          </div>
+        </div>
+      </article>
+
+      <section class="history-card">
+        <div class="section-head">
+          <h2>ประวัติล่าสุด</h2>
+          <button class="btn ghost small" id="refreshHistoryBtn" type="button">รีเฟรช</button>
+        </div>
+
+        <div class="history-list" id="historyList">
+          <div class="empty-state">ยังไม่มีประวัติการตรวจ</div>
+        </div>
+      </section>
+
+      <form class="form-card" id="inspectionForm">
+        <h2>แบบฟอร์มตรวจ</h2>
+
+        <div class="check-list">
+          <div class="check-item">
+            <div class="check-title">ความสะอาด</div>
+            <div class="option-row">
+              <label class="option-pill">
+                <input type="radio" name="cleanliness" value="สะอาด" checked />
+                <span>สะอาด</span>
+              </label>
+              <label class="option-pill">
+                <input type="radio" name="cleanliness" value="ไม่สะอาด" />
+                <span>ไม่สะอาด</span>
+              </label>
+            </div>
+            <div class="note-field" data-note-for="cleanliness" hidden>
+              <textarea name="cleanlinessNote" rows="2" placeholder="ระบุรายละเอียดความไม่สะอาด"></textarea>
+            </div>
+          </div>
+
+          <div class="check-item">
+            <div class="check-title">สภาพถัง</div>
+            <div class="option-row">
+              <label class="option-pill">
+                <input type="radio" name="bodyStatus" value="ปกติ" checked />
+                <span>ปกติ</span>
+              </label>
+              <label class="option-pill">
+                <input type="radio" name="bodyStatus" value="ผิดปกติ" />
+                <span>ผิดปกติ</span>
+              </label>
+            </div>
+            <div class="note-field" data-note-for="bodyStatus" hidden>
+              <textarea name="bodyNote" rows="2" placeholder="เช่น ถังบุบ เป็นสนิม รั่ว สีหลุด"></textarea>
+            </div>
+          </div>
+
+          <div class="check-item">
+            <div class="check-title">แรงดัน</div>
+            <div class="option-row">
+              <label class="option-pill">
+                <input type="radio" name="pressureStatus" value="ปกติ" checked />
+                <span>ปกติ</span>
+              </label>
+              <label class="option-pill">
+                <input type="radio" name="pressureStatus" value="ผิดปกติ" />
+                <span>ผิดปกติ</span>
+              </label>
+            </div>
+            <div class="note-field" data-note-for="pressureStatus" hidden>
+              <textarea name="pressureNote" rows="2" placeholder="เช่น เข็มไม่อยู่โซนเขียว แรงดันต่ำ"></textarea>
+            </div>
+          </div>
+
+          <div class="check-item">
+            <div class="check-title">เกจวัด/น้ำหนัก</div>
+            <div class="option-row">
+              <label class="option-pill">
+                <input type="radio" name="gaugeWeightStatus" value="ปกติ" checked />
+                <span>ปกติ</span>
+              </label>
+              <label class="option-pill">
+                <input type="radio" name="gaugeWeightStatus" value="ผิดปกติ" />
+                <span>ผิดปกติ</span>
+              </label>
+            </div>
+            <div class="note-field" data-note-for="gaugeWeightStatus" hidden>
+              <textarea name="gaugeWeightNote" rows="2" placeholder="ระบุปัญหาเกจวัดหรือน้ำหนัก"></textarea>
+            </div>
+
+            <div class="co2-box" id="co2Box" hidden>
+              <label for="co2Weight">น้ำหนักถัง CO2 ที่ชั่งได้ (kg)</label>
+              <input id="co2Weight" name="co2Weight" type="number" step="0.01" inputmode="decimal" placeholder="เช่น 8.50" />
+            </div>
+          </div>
+
+          <div class="check-item">
+            <div class="check-title">สาย/กระบอกฉีด</div>
+            <div class="option-row">
+              <label class="option-pill">
+                <input type="radio" name="hoseStatus" value="ปกติ" checked />
+                <span>ปกติ</span>
+              </label>
+              <label class="option-pill">
+                <input type="radio" name="hoseStatus" value="ผิดปกติ" />
+                <span>ผิดปกติ</span>
+              </label>
+            </div>
+            <div class="note-field" data-note-for="hoseStatus" hidden>
+              <textarea name="hoseNote" rows="2" placeholder="เช่น สายแตก หัวฉีดตัน หัวฉีดหลวม"></textarea>
+            </div>
+          </div>
+
+          <div class="check-item">
+            <div class="check-title">สายรัดสลัก</div>
+            <div class="option-row">
+              <label class="option-pill">
+                <input type="radio" name="pinSealStatus" value="ปกติ" checked />
+                <span>ปกติ</span>
+              </label>
+              <label class="option-pill">
+                <input type="radio" name="pinSealStatus" value="ผิดปกติ" />
+                <span>ผิดปกติ</span>
+              </label>
+            </div>
+            <div class="note-field" data-note-for="pinSealStatus" hidden>
+              <textarea name="pinSealNote" rows="2" placeholder="เช่น ซีลขาด สลักหาย สายรัดหลวม"></textarea>
+            </div>
+          </div>
+
+          <div class="check-item">
+            <div class="check-title">คันบังคับ</div>
+            <div class="option-row">
+              <label class="option-pill">
+                <input type="radio" name="handleStatus" value="ปกติ" checked />
+                <span>ปกติ</span>
+              </label>
+              <label class="option-pill">
+                <input type="radio" name="handleStatus" value="ผิดปกติ" />
+                <span>ผิดปกติ</span>
+              </label>
+            </div>
+            <div class="note-field" data-note-for="handleStatus" hidden>
+              <textarea name="handleNote" rows="2" placeholder="เช่น คันบังคับหัก หลวม ค้าง เป็นสนิม"></textarea>
+            </div>
+          </div>
+
+          <div class="check-item full">
+            <div class="field-group">
+              <label for="inspectorSelect">ชื่อผู้บันทึก</label>
+              <select id="inspectorSelect" name="inspector" required>
+                <option value="">กำลังโหลดรายชื่อ...</option>
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label for="remark">หมายเหตุเพิ่มเติม</label>
+              <textarea id="remark" name="remark" rows="3" placeholder="หมายเหตุเพิ่มเติม ถ้ามี"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="submit-bar">
+          <button class="btn primary full" id="submitBtn" type="submit">
+            บันทึกผลตรวจ
+          </button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="/fire-extinguisher/js/config.js?v=1.0.2"></script>
+  <script src="/fire-extinguisher/js/api.js?v=1.0.2"></script>
+  <script src="/fire-extinguisher/js/utils.js?v=1.0.2"></script>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const U = window.FireUtils;
+      const API = window.FireAPI;
+
+      let currentExtinguisher = null;
+      let names = [];
+
+      document.addEventListener('DOMContentLoaded', init);
+
+      async function init() {
+        bindEvents();
+
+        const id = U.normalizeId(U.getParam('id'));
+
+        if (!id) {
+          showNotFound();
+          return;
+        }
+
+        await loadData(id);
+      }
+
+      function bindEvents() {
+        U.$('#refreshHistoryBtn').addEventListener('click', async () => {
+          if (currentExtinguisher) {
+            await loadHistory(currentExtinguisher.extinguisherId);
+          }
+        });
+
+        U.$('#inspectionForm').addEventListener('change', handleFormChange);
+        U.$('#inspectionForm').addEventListener('submit', handleSubmit);
+      }
+
+      async function loadData(id) {
+        try {
+          U.show('#loadingBox');
+          U.hide('#contentBox');
+          U.hide('#notFoundBox');
+
+          const [extRes, namesRes] = await Promise.all([
+            API.getExtinguisher(id),
+            API.getNames()
+          ]);
+
+          currentExtinguisher = extRes.item;
+          names = namesRes.items || [];
+
+          renderExtinguisher(currentExtinguisher);
+          renderNames(names);
+          renderHistory(extRes.history || []);
+          updateCo2Visibility();
+
+          U.hide('#loadingBox');
+          U.show('#contentBox');
+        } catch (err) {
+          U.toast(err.message || 'โหลดข้อมูลไม่สำเร็จ', 'error');
+          showNotFound();
+        }
+      }
+
+      async function loadHistory(id) {
+        try {
+          const res = await API.getHistory(id, 5);
+          renderHistory(res.items || []);
+          U.toast('อัปเดตประวัติล่าสุดแล้ว', 'success');
+        } catch (err) {
+          U.toast(err.message || 'โหลดประวัติไม่สำเร็จ', 'error');
+        }
+      }
+
+      function showNotFound() {
+        U.hide('#loadingBox');
+        U.hide('#contentBox');
+        U.show('#notFoundBox');
+      }
+
+      function renderExtinguisher(item) {
+        U.setText('#extinguisherId', item.extinguisherId);
+        U.setText('#location', item.location);
+        U.setText('#type', item.type);
+        U.setText('#size', item.size);
+        U.setText('#yearMade', item.yearMade);
+      }
+
+      function renderNames(items) {
+        const select = U.$('#inspectorSelect');
+
+        if (!items.length) {
+          select.innerHTML = '<option value="">ไม่พบรายชื่อในชีท Name</option>';
+          return;
+        }
+
+        select.innerHTML = [
+          '<option value="">เลือกชื่อผู้บันทึก</option>',
+          ...items.map((item, index) => {
+            const label = U.escapeHtml(item.displayName || item.thaiName || item.englishName);
+            return `<option value="${index}">${label}</option>`;
+          })
+        ].join('');
+      }
+
+      function renderHistory(items) {
+        const box = U.$('#historyList');
+
+        if (!items.length) {
+          box.innerHTML = '<div class="empty-state">ยังไม่มีประวัติการตรวจ</div>';
+          return;
+        }
+
+        box.innerHTML = items.map(item => {
+          const isOk = item.overallStatus === 'ปกติ';
+
+          return `
+            <article class="history-item">
+              <div class="history-main">
+                <div>
+                  <strong>${U.escapeHtml(item.extinguisherId)}</strong>
+                  <div class="history-time">${U.escapeHtml(item.timestamp)}</div>
+                </div>
+                <span class="badge ${isOk ? 'ok' : 'bad'}">${U.escapeHtml(item.overallStatus || '-')}</span>
+              </div>
+              <div class="history-meta">
+                ผู้บันทึก: ${U.escapeHtml(item.inspectorThai || '-')}
+                ${item.remark ? `<br>หมายเหตุ: ${U.escapeHtml(item.remark)}` : ''}
+              </div>
+            </article>
+          `;
+        }).join('');
+      }
+
+      function handleFormChange() {
+        toggleNotes();
+        updateCo2Visibility();
+      }
+
+      function toggleNotes() {
+        const rules = [
+          ['cleanliness', 'ไม่สะอาด'],
+          ['bodyStatus', 'ผิดปกติ'],
+          ['pressureStatus', 'ผิดปกติ'],
+          ['gaugeWeightStatus', 'ผิดปกติ'],
+          ['hoseStatus', 'ผิดปกติ'],
+          ['pinSealStatus', 'ผิดปกติ'],
+          ['handleStatus', 'ผิดปกติ']
+        ];
+
+        rules.forEach(([name, badValue]) => {
+          const selected = getRadioValue(name);
+          const note = document.querySelector(`[data-note-for="${name}"]`);
+
+          if (note) {
+            note.hidden = selected !== badValue;
+          }
+        });
+      }
+
+      function updateCo2Visibility() {
+        const isCo2 = currentExtinguisher && isCo2Type(currentExtinguisher.type);
+        U.$('#co2Box').hidden = !isCo2;
+      }
+
+      function isCo2Type(type) {
+        const text = String(type || '').toLowerCase();
+        return text.includes('co2') ||
+          text.includes('carbon dioxide') ||
+          text.includes('คาร์บอนไดออกไซด์');
+      }
+
+      function getRadioValue(name) {
+        const el = document.querySelector(`input[name="${name}"]:checked`);
+        return el ? el.value : '';
+      }
+
+      function getFormPayload() {
+        const inspectorIndex = U.$('#inspectorSelect').value;
+        const inspector = names[Number(inspectorIndex)] || {};
+
+        return {
+          extinguisherId: currentExtinguisher.extinguisherId,
+
+          cleanliness: getRadioValue('cleanliness'),
+          cleanlinessNote: getValue('cleanlinessNote'),
+
+          bodyStatus: getRadioValue('bodyStatus'),
+          bodyNote: getValue('bodyNote'),
+
+          pressureStatus: getRadioValue('pressureStatus'),
+          pressureNote: getValue('pressureNote'),
+
+          gaugeWeightStatus: getRadioValue('gaugeWeightStatus'),
+          gaugeWeightNote: getValue('gaugeWeightNote'),
+
+          co2Weight: getValue('co2Weight'),
+
+          hoseStatus: getRadioValue('hoseStatus'),
+          hoseNote: getValue('hoseNote'),
+
+          pinSealStatus: getRadioValue('pinSealStatus'),
+          pinSealNote: getValue('pinSealNote'),
+
+          handleStatus: getRadioValue('handleStatus'),
+          handleNote: getValue('handleNote'),
+
+          inspectorThai: inspector.thaiName || '',
+          inspectorEnglish: inspector.englishName || '',
+
+          remark: getValue('remark')
+        };
+      }
+
+      function getValue(name) {
+        const el = document.querySelector(`[name="${name}"]`);
+        return el ? String(el.value || '').trim() : '';
+      }
+
+      function validateClient(payload) {
+        if (!payload.extinguisherId) {
+          throw new Error('ไม่พบหมายเลขถัง');
+        }
+
+        if (!payload.inspectorThai && !payload.inspectorEnglish) {
+          throw new Error('กรุณาเลือกชื่อผู้บันทึก');
+        }
+
+        if (payload.cleanliness === 'ไม่สะอาด' && !payload.cleanlinessNote) {
+          throw new Error('กรุณาระบุหมายเหตุความสะอาด');
+        }
+
+        const checks = [
+          ['bodyStatus', 'bodyNote', 'สภาพถัง'],
+          ['pressureStatus', 'pressureNote', 'แรงดัน'],
+          ['gaugeWeightStatus', 'gaugeWeightNote', 'เกจวัด/น้ำหนัก'],
+          ['hoseStatus', 'hoseNote', 'สาย/กระบอกฉีด'],
+          ['pinSealStatus', 'pinSealNote', 'สายรัดสลัก'],
+          ['handleStatus', 'handleNote', 'คันบังคับ']
+        ];
+
+        checks.forEach(([statusKey, noteKey, label]) => {
+          if (payload[statusKey] === 'ผิดปกติ' && !payload[noteKey]) {
+            throw new Error(`กรุณาระบุรายละเอียดความผิดปกติของ${label}`);
+          }
+        });
+
+        if (isCo2Type(currentExtinguisher.type) && !payload.co2Weight) {
+          throw new Error('ถัง CO2 ต้องกรอกน้ำหนักถังที่ชั่งได้');
+        }
+      }
+
+      async function handleSubmit(e) {
+        e.preventDefault();
+
+        const btn = U.$('#submitBtn');
+
+        try {
+          const payload = getFormPayload();
+          validateClient(payload);
+
+          const ok = confirm('ยืนยันบันทึกผลตรวจถังนี้ใช่หรือไม่?');
+          if (!ok) return;
+
+          U.setLoading(btn, true, 'กำลังบันทึก...');
+
+          const res = await API.saveInspection(payload);
+
+          U.toast(res.message || 'บันทึกผลตรวจเรียบร้อย', 'success');
+
+          U.$('#inspectionForm').reset();
+          toggleNotes();
+          updateCo2Visibility();
+
+          await loadHistory(currentExtinguisher.extinguisherId);
+        } catch (err) {
+          U.toast(err.message || 'บันทึกไม่สำเร็จ', 'error');
+        } finally {
+          U.setLoading(btn, false);
+        }
+      }
+    })();
+  </script>
+</body>
+</html>
