@@ -834,6 +834,33 @@ function setLogo() {
           });
         });
       }
+      function formatMonthValue(value) {
+  const text = String(value || '').trim();
+
+  if (!text || text === '-') return '-';
+
+  // กรณีถูกต้องอยู่แล้ว เช่น 2026-05
+  const ym = text.match(/^(\d{4})-(\d{2})$/);
+  if (ym) return `${ym[1]}-${ym[2]}`;
+
+  // กรณีเป็นวันที่แบบ dd/MM/yyyy HH:mm:ss
+  const thDate = text.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+  if (thDate) return `${thDate[3]}-${thDate[2]}`;
+
+  // กรณีเป็น ISO เช่น 2026-05-01T...
+  const iso = text.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (iso) return `${iso[1]}-${iso[2]}`;
+
+  // กรณีเป็น Date string เช่น Fri May 01 2026 00:00:00 GMT+0700
+  const d = new Date(text);
+  if (!Number.isNaN(d.getTime())) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    return `${y}-${m}`;
+  }
+
+  return text;
+}
 
       function openDetail(item) {
         if (!item) return;
