@@ -1514,24 +1514,27 @@
       }
 
       async function exportFile(type) {
-        try {
-          const params = {
-            ...buildParams(),
-            mode
-          };
+  try {
+    const params = {
+      ...buildParams(),
+      mode,
+      exportDetail: 'full',
+      includeChecklist: '1',
+      includeNormalAbnormal: '1'
+    };
 
-          U.toast(`กำลังสร้างไฟล์ ${type.toUpperCase()}...`, 'info');
+    U.toast(`กำลังสร้างไฟล์ ${type.toUpperCase()} แบบครบถ้วน...`, 'info');
 
-          const res = type === 'csv'
-            ? await API.exportCsv(params)
-            : await API.exportExcel(params);
+    const res = type === 'csv'
+      ? await API.exportCsv(params)
+      : await API.exportExcel(params);
 
-          U.downloadBase64File(res.base64, res.fileName, res.mimeType);
-          U.toast('Export สำเร็จ', 'success');
-        } catch (err) {
-          U.toast(err.message || 'Export ไม่สำเร็จ', 'error');
-        }
-      }
+    U.downloadBase64File(res.base64, res.fileName, res.mimeType);
+    U.toast('Export สำเร็จ', 'success');
+  } catch (err) {
+    U.toast(err.message || 'Export ไม่สำเร็จ', 'error');
+  }
+}
     })();
   </script>
 </body>
