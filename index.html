@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#b91c1c" />
+  <title>Fire Extinguisher</title>
+
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body>
+  <main class="app-shell">
+    <header class="app-header">
+      <div class="brand-mark">FE</div>
+      <div class="brand-text">
+        <h1>Fire Extinguisher</h1>
+        <p>ระบบตรวจเช็คถังดับเพลิง</p>
+      </div>
+    </header>
+
+    <section class="status-panel" id="healthPanel">
+      <div>
+        <span class="status-dot" id="healthDot"></span>
+        <span id="healthText">กำลังเชื่อมต่อระบบ...</span>
+      </div>
+    </section>
+
+    <section class="hero-card">
+      <h2>เริ่มตรวจถังดับเพลิง</h2>
+      <p>
+        สแกน QR Code ที่ติดกับถัง หรือกรอกหมายเลขถังด้วยตนเอง
+      </p>
+
+      <button class="btn primary full" id="openScannerBtn" type="button">
+        เปิดกล้องสแกน QR Code
+      </button>
+
+      <div class="manual-box">
+        <label for="manualId">กรณีสแกนไม่ได้ ให้กรอกหมายเลขถัง</label>
+        <div class="input-row">
+          <input id="manualId" type="text" placeholder="เช่น FE-001" autocomplete="off" />
+          <button class="btn danger" id="manualSearchBtn" type="button">ค้นหา</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="scanner-panel" id="scannerPanel" hidden>
+      <div class="scanner-top">
+        <strong>สแกน QR Code</strong>
+        <button class="btn ghost small" id="closeScannerBtn" type="button">ปิดกล้อง</button>
+      </div>
+
+      <div class="scanner-frame">
+        <video id="scannerVideo" muted playsinline></video>
+        <div class="scan-box"></div>
+      </div>
+
+      <p class="scanner-note">
+        วาง QR Code ให้อยู่ในกรอบ หากเปิดกล้องใน LINE ไม่ได้ ให้เปิดผ่าน Browser ภายนอก
+      </p>
+    </section>
+
+    <section class="summary-grid" id="summaryGrid">
+      <article class="summary-card">
+        <span>ถังทั้งหมด</span>
+        <strong id="totalExtinguishers">-</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>ตรวจแล้ว</span>
+        <strong id="checkedCount">-</strong>
+      </article>
+
+      <article class="summary-card warning">
+        <span>ยังไม่ได้ตรวจ</span>
+        <strong id="uncheckedCount">-</strong>
+      </article>
+
+      <article class="summary-card danger">
+        <span>ผิดปกติ</span>
+        <strong id="abnormalCount">-</strong>
+      </article>
+    </section>
+
+    <nav class="action-grid">
+      <a class="action-card" href="qrcode.html">
+        <strong>พิมพ์ QR Code</strong>
+        <span>เลือกถังและสร้างบัตร QR</span>
+      </a>
+
+      <a class="action-card" href="report.html">
+        <strong>รายงานผลตรวจ</strong>
+        <span>ดูตรวจแล้ว/ยังไม่ได้ตรวจ และ Export</span>
+      </a>
+    </nav>
+
+    <section class="line-help">
+      <strong>ใช้งานผ่าน LINE Browser</strong>
+      <p>
+        ถ้าเปิดกล้องไม่ได้ ให้กดเมนูมุมขวาบนของ LINE แล้วเลือกเปิดใน Browser ภายนอก
+      </p>
+    </section>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/scanner.js"></script>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const U = window.FireUtils;
+      const API = window.FireAPI;
+      const Scanner = window.FireScanner;
+
+      const openScannerBtn = U.$('#openScannerBtn');
+      const closeScannerBtn = U.$('#closeScannerBtn');
+      const manualSearchBtn = U.$('#manualSearchBtn');
+      const manualId = U.$('#manualId');
+      const scannerPanel = U.$('#scannerPanel');
+      const scannerVideo = U.$('#scannerVideo');
+
+      document.addEventListener('DOMContentLoaded', init);
+
+      async function init() {
+        bindEvents();
+        await checkHealth();
+        await loadMonthStatus();
+      }
+
+      function bindEvents() {
+        openScannerBtn.addEventListener('click', openScanner);
+        closeScannerBtn.addEventListener('click', closeScanner);
+
+        manualSearchBtn.addEventListener('click', () => {
+          U.goCheck(manualId.value);
+        });
+
+        manualId.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            U.goCheck(manualId.value);
+          }
+        });
+
+        window.addEventListener('beforeunload', () => {
+          Scanner.stop();
+        });
+      }
+
+      async function checkHealth() {
+        const dot = U.$('#healthDot');
+        const text = U.$('#healthText');
+
+        try {
+          const res = await API.health();
+          dot.className = 'status-dot ok';
+          text.textContent = `ระบบพร้อมใช้งาน • ${res.timestamp || ''}`;
+        } catch (err) {
+          dot.className = 'status-dot fail';
+          text.textContent = err.message || 'เชื่อมต่อระบบไม่ได้';
+        }
+      }
+
+      async function loadMonthStatus() {
+        try {
+          const res = await API.getInspectionStatus({
+            period: window.APP_CONFIG.DEFAULT_PERIOD,
+            status: 'all'
+          });
+
+          const s = res.summary || {};
+
+          U.setText('#totalExtinguishers', s.totalExtinguishers ?? 0);
+          U.setText('#checkedCount', s.checked ?? 0);
+          U.setText('#uncheckedCount', s.unchecked ?? 0);
+          U.setText('#abnormalCount', s.abnormal ?? 0);
+        } catch (err) {
+          U.toast(err.message || 'โหลดสถานะเดือนไม่สำเร็จ', 'warning');
+        }
+      }
+
+      async function openScanner() {
+        try {
+          U.show(scannerPanel);
+          U.setLoading(openScannerBtn, true, 'กำลังเปิดกล้อง...');
+
+          await Scanner.start({
+            video: scannerVideo,
+            onResult: (id) => {
+              U.toast(`พบหมายเลขถัง ${id}`, 'success');
+              setTimeout(() => U.goCheck(id), 300);
+            }
+          });
+        } catch (err) {
+          U.hide(scannerPanel);
+          U.toast(err.message || 'เปิดกล้องไม่ได้', 'error');
+        } finally {
+          U.setLoading(openScannerBtn, false);
+        }
+      }
+
+      function closeScanner() {
+        Scanner.stop();
+        U.hide(scannerPanel);
+      }
+    })();
+  </script>
+</body>
+</html>
