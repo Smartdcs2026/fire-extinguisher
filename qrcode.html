@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.8" />
+  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.9" />
 
   <style>
     body,
@@ -238,7 +238,7 @@
       width: 100%;
       box-sizing: border-box;
       display: grid;
-      grid-template-rows: 0.46cm 3.02cm 1.36cm 0.22cm;
+      grid-template-rows: 0.46cm 3.03cm 1.35cm 0.22cm;
       justify-items: center;
       align-content: start;
       padding: 0.12cm 0.20cm;
@@ -254,7 +254,7 @@
     }
 
     .qr-no {
-      width: 100%;
+      width: 2.92cm;
       display: grid;
       place-items: center;
       font-size: 20px;
@@ -265,7 +265,6 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      border-bottom: 1px solid #e5e7eb;
       padding-bottom: 0.04cm;
     }
 
@@ -273,78 +272,74 @@
       width: 100%;
       display: grid;
       place-items: center;
-      padding-top: 0.06cm;
+      padding-top: 0.05cm;
     }
 
     .qr-box {
-      width: 2.9cm;
-      height: 2.9cm;
+      width: 2.92cm;
+      height: 2.92cm;
       display: grid;
       place-items: center;
     }
 
     .qr-box canvas,
     .qr-box img {
-      width: 2.9cm !important;
-      height: 2.9cm !important;
+      width: 2.92cm !important;
+      height: 2.92cm !important;
       display: block;
     }
 
     .qr-detail {
-      width: 100%;
-      height: 1.30cm;
+      width: 2.92cm;
+      height: 1.25cm;
       box-sizing: border-box;
       display: grid;
       grid-template-rows: repeat(4, 1fr);
-      border: 1px solid #d1d5db;
-      border-radius: 0.10cm;
+      align-items: stretch;
+      padding-top: 0.06cm;
       overflow: hidden;
-      background: #ffffff;
     }
 
     .detail-row {
       width: 100%;
       min-width: 0;
       display: grid;
-      grid-template-columns: 1.15cm minmax(0, 1fr);
+      grid-template-columns: 0.82cm minmax(0, 1fr);
       align-items: center;
+      gap: 0.06cm;
       box-sizing: border-box;
-      padding: 0 0.08cm;
       text-align: left;
       overflow: hidden;
-    }
-
-    .detail-row + .detail-row {
-      border-top: 1px solid #e5e7eb;
     }
 
     .detail-label {
       display: block;
       min-width: 0;
-      font-size: 6.5px;
+      font-size: 6.7px;
       line-height: 1;
       color: #64748b;
       font-weight: 900;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      padding-right: 0.06cm;
+      text-align: left;
     }
 
     .detail-value {
       display: block;
       min-width: 0;
-      font-size: 8.5px;
+      font-size: 8.4px;
       line-height: 1.05;
       color: #111827;
       font-weight: 900;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      text-align: right;
     }
 
     .qr-footer {
-      width: 100%;
+      width: 2.92cm;
       display: grid;
       place-items: center;
       font-size: 7px;
@@ -497,7 +492,7 @@
 
       <div class="page-title">
         <h1>พิมพ์ QR Code</h1>
-        <p>1 ใบเคลือบ 7.2 x 11 ซม. / 2 ถัง / ข้อมูลใต้ QR แบบตาราง</p>
+        <p>1 ใบเคลือบ 7.2 x 11 ซม. / 2 ถัง / ข้อมูลใต้ QR แบบไม่มีกรอบ</p>
       </div>
     </div>
 
@@ -546,9 +541,9 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script src="/fire-extinguisher/js/config.js?v=1.2.8"></script>
-  <script src="/fire-extinguisher/js/api.js?v=1.2.8"></script>
-  <script src="/fire-extinguisher/js/utils.js?v=1.2.8"></script>
+  <script src="/fire-extinguisher/js/config.js?v=1.2.9"></script>
+  <script src="/fire-extinguisher/js/api.js?v=1.2.9"></script>
+  <script src="/fire-extinguisher/js/utils.js?v=1.2.9"></script>
 
   <script>
     (function () {
