@@ -25,7 +25,9 @@
 
   function setText(selector, value, root = document) {
     const el = $(selector, root);
-    if (el) el.textContent = safeText(value, '');
+    if (el) {
+      el.textContent = safeText(value, '');
+    }
   }
 
   function show(el) {
@@ -80,23 +82,28 @@
     return String(value || '').trim().toUpperCase();
   }
 
- function goCheck(id) {
-  id = normalizeId(id);
+  function goCheck(id) {
+    id = normalizeId(id);
 
-  if (!id) {
-    toast('กรุณากรอกหมายเลขถัง', 'warning');
-    return;
+    if (!id) {
+      toast('กรุณากรอกหมายเลขถัง', 'warning');
+      return;
+    }
+
+    if (id.startsWith('HTTP://') || id.startsWith('HTTPS://')) {
+      toast('QR Code นี้ไม่มีหมายเลขถัง กรุณาสแกน QR ของถังดับเพลิง', 'warning');
+      return;
+    }
+
+    location.href = `/fire-extinguisher/check.html?id=${encodeURIComponent(id)}`;
   }
-
-  if (id.startsWith('HTTP://') || id.startsWith('HTTPS://')) {
-    toast('QR Code นี้ไม่มีหมายเลขถัง กรุณาสแกน QR ของถังดับเพลิง', 'warning');
-    return;
-  }
-
-  location.href = `/fire-extinguisher/check.html?id=${encodeURIComponent(id)}`;
-}
 
   function downloadBase64File(base64, fileName, mimeType) {
+    if (!base64) {
+      toast('ไม่พบข้อมูลไฟล์สำหรับดาวน์โหลด', 'error');
+      return;
+    }
+
     const byteCharacters = atob(base64);
     const byteNumbers = new Array(byteCharacters.length);
 
@@ -122,13 +129,13 @@
   }
 
   function openExternalBrowserHint() {
-    const current = location.href;
+    const current = escapeHtml(location.href);
 
     return `
       <div class="line-hint">
         <strong>ถ้าเปิดกล้องใน LINE ไม่ได้</strong>
         <span>ให้กดเมนูมุมขวาบน แล้วเลือก “เปิดในเบราว์เซอร์”</span>
-        <button type="button" class="btn ghost small" onclick="navigator.clipboard && navigator.clipboard.writeText('${escapeHtml(current)}')">
+        <button type="button" class="btn ghost small" onclick="navigator.clipboard && navigator.clipboard.writeText('${current}')">
           คัดลอกลิงก์
         </button>
       </div>
