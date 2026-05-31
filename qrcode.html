@@ -1096,10 +1096,10 @@
   height: 100%;
   box-sizing: border-box;
   display: grid;
-  grid-template-rows: 0.46cm 3.28cm 1.36cm 0.22cm;
+  grid-template-rows: 0.50cm 3.56cm 1.48cm 0.24cm;
   justify-items: center;
   align-content: center;
-  padding: 0.08cm 0.16cm;
+  padding: 0.06cm 0.10cm;
   overflow: hidden;
   text-align: center;
   position: relative;
@@ -1107,15 +1107,15 @@
 
 .qr-mini + .qr-mini {
   border-left: 1px dashed #111;
-  padding-left: 0.20cm;
-  margin-left: 0.08cm;
+  padding-left: 0.14cm;
+  margin-left: 0.06cm;
 }
 
 .qr-no {
   width: 100%;
   display: grid;
   place-items: center;
-  font-size: 21px;
+  font-size: 22px;
   line-height: 1;
   font-weight: 950;
   color: #111827;
@@ -1129,29 +1129,29 @@
   width: 100%;
   display: grid;
   place-items: center;
-  padding-top: 0.02cm;
+  padding-top: 0.01cm;
 }
 
 .qr-box {
-  width: 3.15cm;
-  height: 3.15cm;
+  width: 3.45cm;
+  height: 3.45cm;
   display: grid;
   place-items: center;
 }
 
 .qr-box canvas,
 .qr-box img {
-  width: 3.15cm !important;
-  height: 3.15cm !important;
+  width: 3.45cm !important;
+  height: 3.45cm !important;
   display: block;
 }
 
 .qr-detail {
-  width: 4.60cm;
-  height: 1.32cm;
+  width: 4.85cm;
+  height: 1.42cm;
   box-sizing: border-box;
   display: grid;
-  grid-template-rows: 0.38cm 0.38cm 0.28cm 0.28cm;
+  grid-template-rows: 0.40cm 0.40cm 0.30cm 0.30cm;
   align-items: center;
   justify-items: center;
   overflow: hidden;
@@ -1181,7 +1181,7 @@
 }
 
 .detail-location {
-  font-size: 8px;
+  font-size: 8.4px;
   line-height: 1.04;
   white-space: normal;
   word-break: break-word;
@@ -1191,7 +1191,7 @@
 }
 
 .detail-type {
-  font-size: 8.2px;
+  font-size: 8.6px;
   line-height: 1.04;
   white-space: normal;
   word-break: break-word;
@@ -1201,23 +1201,23 @@
 }
 
 .detail-size {
-  font-size: 8.6px;
+  font-size: 9px;
   line-height: 1;
   white-space: nowrap;
 }
 
 .detail-year {
-  font-size: 8.6px;
+  font-size: 9px;
   line-height: 1;
   white-space: nowrap;
 }
 
 .qr-footer {
-  width: 4.60cm;
-  height: 0.20cm;
+  width: 4.85cm;
+  height: 0.22cm;
   display: grid;
   place-items: center;
-  font-size: 6.6px;
+  font-size: 6.8px;
   line-height: 1;
   color: #6b7280;
   font-weight: 800;
@@ -1693,8 +1693,8 @@
 
         new QRCode(element, {
           text,
-          width: 121,
-          height: 121,
+          width: 132,
+          height: 132,
           colorDark: '#111827',
           colorLight: '#ffffff',
           correctLevel: QRCode.CorrectLevel.M
