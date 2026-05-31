@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#b91c1c" />
   <title>รายงานผลตรวจ | Fire Extinguisher</title>
 
-  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.0.4" />
+  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.1.0" />
 
   <style>
     .page-top {
@@ -484,9 +484,9 @@
     </div>
   </div>
 
-  <script src="/fire-extinguisher/js/config.js?v=1.0.4"></script>
-  <script src="/fire-extinguisher/js/api.js?v=1.0.4"></script>
-  <script src="/fire-extinguisher/js/utils.js?v=1.0.4"></script>
+  <script src="/fire-extinguisher/js/config.js?v=1.1.0"></script>
+<script src="/fire-extinguisher/js/api.js?v=1.1.0"></script>
+<script src="/fire-extinguisher/js/utils.js?v=1.1.0"></script>
 
   <script>
     (function () {
@@ -843,7 +843,7 @@ function setLogo() {
 
         const fields = [
           ['Timestamp', item.timestamp],
-          ['เดือน', item.month],
+          ['เดือน', formatMonthValue(item.month || item.timestamp)],
           ['หมายเลขถัง', item.extinguisherId],
           ['จุดติดตั้ง', item.location],
           ['ชนิดถังดับเพลิง', item.type],
