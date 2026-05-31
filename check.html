@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#b91c1c" />
   <title>ข้อมูลถังดับเพลิง | Fire Extinguisher</title>
 
-  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.0" />
+  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.1" />
 
   <style>
     .app-shell {
@@ -159,6 +159,9 @@
       font-size: 12px;
       font-weight: 900;
       white-space: nowrap;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .info-grid {
@@ -172,7 +175,7 @@
       background: #f9fafb;
       border: 1px solid var(--line);
       border-radius: 16px;
-      padding: 10px 10px;
+      padding: 10px;
     }
 
     .info-line.span-2 {
@@ -204,6 +207,10 @@
       align-items: center;
     }
 
+    .quick-main {
+      min-width: 0;
+    }
+
     .quick-main strong {
       display: block;
       font-size: 15px;
@@ -215,6 +222,9 @@
       color: var(--muted);
       font-size: 12px;
       line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .inspect-soft-btn {
@@ -235,7 +245,7 @@
     }
 
     .history-card {
-      padding: 13px;
+      padding: 12px;
     }
 
     .section-head {
@@ -243,12 +253,12 @@
       justify-content: space-between;
       align-items: center;
       gap: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 9px;
     }
 
     .section-head h2 {
       margin: 0;
-      font-size: 17px;
+      font-size: 16px;
       line-height: 1.2;
     }
 
@@ -261,76 +271,44 @@
 
     .history-list {
       display: grid;
-      gap: 8px;
+      gap: 7px;
     }
 
     .history-item {
       border: 1px solid var(--line);
       background: #f9fafb;
-      border-radius: 17px;
-      padding: 11px;
+      border-radius: 15px;
+      padding: 8px 9px;
     }
 
-    .history-main {
+    .history-row-compact {
       display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: start;
-      gap: 8px;
-      margin-bottom: 7px;
+      grid-template-columns: minmax(92px, 1.1fr) auto minmax(78px, 0.9fr);
+      align-items: center;
+      gap: 7px;
     }
 
-    .history-title {
+    .history-date {
       min-width: 0;
-    }
-
-    .history-title strong {
-      display: block;
-      font-size: 14px;
-      line-height: 1.25;
-    }
-
-    .history-time {
-      color: var(--muted);
       font-size: 12px;
-      line-height: 1.35;
-      margin-top: 2px;
-    }
-
-    .history-meta {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 6px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.35;
-    }
-
-    .history-meta div {
-      min-width: 0;
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: 13px;
-      padding: 7px 8px;
-    }
-
-    .history-meta span {
-      display: block;
-      font-size: 10.5px;
-      color: #9ca3af;
-      font-weight: 800;
-      margin-bottom: 2px;
-    }
-
-    .history-meta strong {
-      display: block;
       color: #374151;
-      font-size: 12px;
       font-weight: 850;
-      word-break: break-word;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .history-remark {
-      grid-column: 1 / -1;
+    .history-inspector {
+      min-width: 0;
+      font-size: 12px;
+      color: #4b5563;
+      font-weight: 800;
+      line-height: 1.25;
+      text-align: right;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .badge {
@@ -338,10 +316,11 @@
       align-items: center;
       justify-content: center;
       border-radius: 999px;
-      padding: 5px 10px;
-      font-size: 12px;
+      padding: 4px 8px;
+      font-size: 11px;
       font-weight: 900;
       white-space: nowrap;
+      min-width: 48px;
     }
 
     .badge.ok {
@@ -358,7 +337,7 @@
       color: var(--muted);
       background: #f9fafb;
       border: 1px dashed var(--line);
-      padding: 13px;
+      padding: 12px;
       border-radius: 16px;
       text-align: center;
       line-height: 1.45;
@@ -635,7 +614,6 @@
       }
 
       .info-grid,
-      .history-meta,
       .check-list {
         gap: 7px;
       }
@@ -646,6 +624,22 @@
 
       .info-line strong {
         font-size: 13px;
+      }
+
+      .history-row-compact {
+        grid-template-columns: minmax(82px, 1fr) auto minmax(68px, 0.8fr);
+        gap: 5px;
+      }
+
+      .history-date,
+      .history-inspector {
+        font-size: 11px;
+      }
+
+      .badge {
+        font-size: 10.5px;
+        padding: 4px 7px;
+        min-width: 44px;
       }
 
       .option-row {
@@ -730,6 +724,7 @@
             <strong>สำหรับเจ้าหน้าที่ตรวจ</strong>
             <span id="quickHint">ตรวจสอบข้อมูลถังและประวัติก่อนเริ่มบันทึกผล</span>
           </div>
+
           <button class="inspect-soft-btn" id="openFormBtn" type="button">
             ตรวจเช็คถัง
           </button>
@@ -739,9 +734,12 @@
           <div class="section-head">
             <div>
               <h2>ประวัติการตรวจล่าสุด</h2>
-              <small>แสดงรายการล่าสุดของถังนี้</small>
+              <small>วันที่ / ผลตรวจ / ผู้ตรวจ</small>
             </div>
-            <button class="btn ghost small" id="refreshHistoryBtn" type="button">รีเฟรช</button>
+
+            <button class="btn ghost small" id="refreshHistoryBtn" type="button">
+              รีเฟรช
+            </button>
           </div>
 
           <div class="history-list" id="historyList">
@@ -755,7 +753,10 @@
               <h2>แบบฟอร์มตรวจถัง</h2>
               <p>เลือกปกติ/ผิดปกติ และกรอกหมายเหตุเฉพาะรายการที่ผิดปกติ</p>
             </div>
-            <button class="btn ghost small" id="closeFormBtn" type="button">ซ่อน</button>
+
+            <button class="btn ghost small" id="closeFormBtn" type="button">
+              ซ่อน
+            </button>
           </div>
 
           <div class="check-list">
@@ -766,11 +767,13 @@
                   <input type="radio" name="cleanliness" value="สะอาด" checked />
                   <span>สะอาด</span>
                 </label>
+
                 <label class="option-pill">
                   <input type="radio" name="cleanliness" value="ไม่สะอาด" />
                   <span>ไม่สะอาด</span>
                 </label>
               </div>
+
               <div class="note-field" data-note-for="cleanliness" hidden>
                 <textarea name="cleanlinessNote" rows="2" placeholder="ระบุรายละเอียดความไม่สะอาด"></textarea>
               </div>
@@ -783,11 +786,13 @@
                   <input type="radio" name="bodyStatus" value="ปกติ" checked />
                   <span>ปกติ</span>
                 </label>
+
                 <label class="option-pill">
                   <input type="radio" name="bodyStatus" value="ผิดปกติ" />
                   <span>ผิดปกติ</span>
                 </label>
               </div>
+
               <div class="note-field" data-note-for="bodyStatus" hidden>
                 <textarea name="bodyNote" rows="2" placeholder="เช่น ถังบุบ เป็นสนิม รั่ว สีหลุด"></textarea>
               </div>
@@ -800,11 +805,13 @@
                   <input type="radio" name="pressureStatus" value="ปกติ" checked />
                   <span>ปกติ</span>
                 </label>
+
                 <label class="option-pill">
                   <input type="radio" name="pressureStatus" value="ผิดปกติ" />
                   <span>ผิดปกติ</span>
                 </label>
               </div>
+
               <div class="note-field" data-note-for="pressureStatus" hidden>
                 <textarea name="pressureNote" rows="2" placeholder="เช่น เข็มไม่อยู่โซนเขียว แรงดันต่ำ"></textarea>
               </div>
@@ -817,11 +824,13 @@
                   <input type="radio" name="gaugeWeightStatus" value="ปกติ" checked />
                   <span>ปกติ</span>
                 </label>
+
                 <label class="option-pill">
                   <input type="radio" name="gaugeWeightStatus" value="ผิดปกติ" />
                   <span>ผิดปกติ</span>
                 </label>
               </div>
+
               <div class="note-field" data-note-for="gaugeWeightStatus" hidden>
                 <textarea name="gaugeWeightNote" rows="2" placeholder="ระบุปัญหาเกจวัดหรือน้ำหนัก"></textarea>
               </div>
@@ -839,11 +848,13 @@
                   <input type="radio" name="hoseStatus" value="ปกติ" checked />
                   <span>ปกติ</span>
                 </label>
+
                 <label class="option-pill">
                   <input type="radio" name="hoseStatus" value="ผิดปกติ" />
                   <span>ผิดปกติ</span>
                 </label>
               </div>
+
               <div class="note-field" data-note-for="hoseStatus" hidden>
                 <textarea name="hoseNote" rows="2" placeholder="เช่น สายแตก หัวฉีดตัน หัวฉีดหลวม"></textarea>
               </div>
@@ -856,11 +867,13 @@
                   <input type="radio" name="pinSealStatus" value="ปกติ" checked />
                   <span>ปกติ</span>
                 </label>
+
                 <label class="option-pill">
                   <input type="radio" name="pinSealStatus" value="ผิดปกติ" />
                   <span>ผิดปกติ</span>
                 </label>
               </div>
+
               <div class="note-field" data-note-for="pinSealStatus" hidden>
                 <textarea name="pinSealNote" rows="2" placeholder="เช่น ซีลขาด สลักหาย สายรัดหลวม"></textarea>
               </div>
@@ -873,11 +886,13 @@
                   <input type="radio" name="handleStatus" value="ปกติ" checked />
                   <span>ปกติ</span>
                 </label>
+
                 <label class="option-pill">
                   <input type="radio" name="handleStatus" value="ผิดปกติ" />
                   <span>ผิดปกติ</span>
                 </label>
               </div>
+
               <div class="note-field" data-note-for="handleStatus" hidden>
                 <textarea name="handleNote" rows="2" placeholder="เช่น คันบังคับหัก หลวม ค้าง เป็นสนิม"></textarea>
               </div>
@@ -911,6 +926,7 @@
               <strong>ข้อมูลถังและประวัติพร้อมแล้ว</strong>
               <span>เจ้าหน้าที่สามารถเริ่มตรวจเช็คถังนี้ได้</span>
             </div>
+
             <button class="inspect-soft-btn" id="bottomOpenFormBtn" type="button">
               ตรวจเช็คถัง
             </button>
@@ -920,9 +936,9 @@
     </section>
   </main>
 
-  <script src="/fire-extinguisher/js/config.js?v=1.2.0"></script>
-  <script src="/fire-extinguisher/js/api.js?v=1.2.0"></script>
-  <script src="/fire-extinguisher/js/utils.js?v=1.2.0"></script>
+  <script src="/fire-extinguisher/js/config.js?v=1.2.1"></script>
+  <script src="/fire-extinguisher/js/api.js?v=1.2.1"></script>
+  <script src="/fire-extinguisher/js/utils.js?v=1.2.1"></script>
 
   <script>
     (function () {
@@ -1071,50 +1087,57 @@
         const box = U.$('#historyList');
         const list = Array.isArray(items) ? items : [];
 
+        if (!box) return;
+
         if (!list.length) {
           box.innerHTML = '<div class="empty-state">ยังไม่มีประวัติการตรวจถังนี้</div>';
           U.setText('#lastStatusText', 'ยังไม่มีประวัติ');
-          U.$('#quickHint').textContent = 'ยังไม่มีประวัติ เจ้าหน้าที่สามารถเริ่มตรวจครั้งแรกได้';
+
+          const quickHint = U.$('#quickHint');
+          if (quickHint) {
+            quickHint.textContent = 'ยังไม่มีประวัติ เจ้าหน้าที่สามารถเริ่มตรวจครั้งแรกได้';
+          }
+
           return;
         }
 
         const latest = list[0] || {};
         U.setText('#lastStatusText', latest.overallStatus || '-');
 
-        U.$('#quickHint').textContent = latest.timestamp
-          ? `ตรวจล่าสุด: ${latest.timestamp}`
-          : 'ตรวจสอบข้อมูลก่อนเริ่มบันทึกผล';
+        const quickHint = U.$('#quickHint');
+        if (quickHint) {
+          quickHint.textContent = latest.timestamp
+            ? `ตรวจล่าสุด: ${latest.timestamp}`
+            : 'ตรวจสอบข้อมูลก่อนเริ่มบันทึกผล';
+        }
 
         box.innerHTML = list.map(item => {
-          const isOk = String(item.overallStatus || '').trim() === 'ปกติ';
+          const status = String(item.overallStatus || '-').trim();
+          const isOk = status === 'ปกติ';
+
+          const inspector = String(
+            item.inspectorThai ||
+            item.inspectorEnglish ||
+            item.inspector ||
+            item.recorder ||
+            item.recordBy ||
+            '-'
+          ).trim();
 
           return `
             <article class="history-item">
-              <div class="history-main">
-                <div class="history-title">
-                  <strong>${U.escapeHtml(item.timestamp || '-')}</strong>
-                  <div class="history-time">หมายเลขถัง: ${U.escapeHtml(item.extinguisherId || currentExtinguisher.extinguisherId || '-')}</div>
-                </div>
-                <span class="badge ${isOk ? 'ok' : 'bad'}">${U.escapeHtml(item.overallStatus || '-')}</span>
-              </div>
-
-              <div class="history-meta">
-                <div>
-                  <span>ผู้บันทึก</span>
-                  <strong>${U.escapeHtml(item.inspectorThai || item.inspectorEnglish || '-')}</strong>
+              <div class="history-row-compact">
+                <div class="history-date" title="${U.escapeHtml(item.timestamp || '-')}">
+                  ${U.escapeHtml(item.timestamp || '-')}
                 </div>
 
-                <div>
-                  <span>ผลตรวจ</span>
-                  <strong>${U.escapeHtml(item.overallStatus || '-')}</strong>
-                </div>
+                <span class="badge ${isOk ? 'ok' : 'bad'}">
+                  ${U.escapeHtml(status)}
+                </span>
 
-                ${item.remark ? `
-                  <div class="history-remark">
-                    <span>หมายเหตุ</span>
-                    <strong>${U.escapeHtml(item.remark)}</strong>
-                  </div>
-                ` : ''}
+                <div class="history-inspector" title="${U.escapeHtml(inspector)}">
+                  ${U.escapeHtml(inspector)}
+                </div>
               </div>
             </article>
           `;
