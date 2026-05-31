@@ -333,12 +333,17 @@
 <body>
   <main class="app-shell">
     <div class="page-top">
-      <a class="back-link" href="/fire-extinguisher/">←</a>
-      <div class="page-title">
-        <h1>ตรวจถังดับเพลิง</h1>
-        <p>แสดงข้อมูลถัง ประวัติ และบันทึกผลตรวจ</p>
-      </div>
-    </div>
+  <a class="back-link" href="/fire-extinguisher/">←</a>
+
+  <div class="page-logo">
+    <img id="pageLogo" alt="Fire Extinguisher Logo" />
+  </div>
+
+  <div class="page-title">
+    <h1>ตรวจถังดับเพลิง</h1>
+    <p>แสดงข้อมูลถัง ประวัติ และบันทึกผลตรวจ</p>
+  </div>
+</div>
 
     <section id="loadingBox" class="loading-box">
       กำลังโหลดข้อมูลถัง...
@@ -558,17 +563,24 @@
       document.addEventListener('DOMContentLoaded', init);
 
       async function init() {
-        bindEvents();
+  setLogo();
+  bindEvents();
 
-        const id = U.normalizeId(U.getParam('id'));
+  const id = U.normalizeId(U.getParam('id'));
 
-        if (!id) {
-          showNotFound();
-          return;
-        }
+  if (!id) {
+    showNotFound();
+    return;
+  }
 
-        await loadData(id);
-      }
+  await loadData(id);
+}
+      function setLogo() {
+  const logo = U.$('#pageLogo');
+  if (logo) {
+    logo.src = window.APP_CONFIG.LOGO_URL;
+  }
+}
 
       function bindEvents() {
         U.$('#refreshHistoryBtn').addEventListener('click', async () => {
