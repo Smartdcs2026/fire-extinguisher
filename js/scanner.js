@@ -216,19 +216,37 @@
     }
   }
 
-  function extractIdFromQr(value) {
-    value = String(value || '').trim();
+ function extractIdFromQr(value) {
+  value = String(value || '').trim();
 
-    if (!value) return '';
+  if (!value) return '';
 
-    try {
-      const url = new URL(value);
-      const id = url.searchParams.get('id') || '';
-      if (id) return normalizeId(id);
-    } catch (err) {}
+  // กรณี QR เป็น URL
+  try {
+    const url = new URL(value);
 
-    return normalizeId(value);
+    const id =
+      url.searchParams.get('id') ||
+      url.searchParams.get('extinguisherId') ||
+      '';
+
+    // ถ้า URL มี id ให้ใช้ id
+    if (id) return normalizeId(id);
+
+    // ถ้าเป็น URL แต่ไม่มี id ห้ามเอา URL ทั้งก้อนไปค้นหา
+    return '';
+  } catch (err) {}
+
+  // กรณี QR เป็นรหัสถังโดยตรง เช่น 9, 001, FE-001
+  const text = normalizeId(value);
+
+  // ป้องกันกรณีเป็น URL แต่ parse ไม่ผ่าน
+  if (text.startsWith('HTTP://') || text.startsWith('HTTPS://')) {
+    return '';
   }
+
+  return text;
+}
 
   function normalizeId(value) {
     if (window.FireUtils && typeof window.FireUtils.normalizeId === 'function') {
