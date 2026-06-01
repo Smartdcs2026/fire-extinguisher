@@ -923,18 +923,35 @@
 
       document.addEventListener('DOMContentLoaded', init);
 
-      async function init() {
-        setLogo();
-        bindEvents();
-        setStatusOptions();
-        const roundField = U.$('#roundStatusField');
-if (roundField) {
-  roundField.hidden = mode !== 'status';
-}
-        await loadOptions();
-        await loadData();
-      }
+     async function init() {
+  setLogo();
+  bindEvents();
+  setStatusOptions();
+  applyInitialQueryParams();
+  setStatusOptions();
 
+  const roundField = U.$('#roundStatusField');
+  if (roundField) {
+    roundField.hidden = mode !== 'status';
+  }
+
+  U.$('#tabReport').classList.toggle('active', mode === 'report');
+  U.$('#tabStatus').classList.toggle('active', mode === 'status');
+
+  U.$('#resultTitle').textContent = mode === 'report'
+    ? 'รายการผลตรวจ'
+    : 'สถานะประจำเดือน';
+
+  await loadOptions();
+
+  if (U.$('#roundStatusSelect')) {
+    const sp = new URLSearchParams(location.search);
+    const roundStatus = sp.get('roundStatus');
+    if (roundStatus) U.$('#roundStatusSelect').value = roundStatus;
+  }
+
+  await loadData();
+}
       function setLogo() {
         const logo = U.$('#pageLogo');
         if (logo) {
@@ -1570,6 +1587,30 @@ const params = {
     U.toast('Export สำเร็จ', 'success');
   } catch (err) {
     U.toast(err.message || 'Export ไม่สำเร็จ', 'error');
+  }
+}
+      function applyInitialQueryParams() {
+  const sp = new URLSearchParams(location.search);
+
+  const queryMode = sp.get('mode');
+  const roundStatus = sp.get('roundStatus');
+  const status = sp.get('status');
+  const period = sp.get('period');
+
+  if (period && U.$('#periodSelect')) {
+    U.$('#periodSelect').value = period;
+  }
+
+  if (roundStatus && U.$('#roundStatusSelect')) {
+    U.$('#roundStatusSelect').value = roundStatus;
+  }
+
+  if (status && U.$('#statusSelect')) {
+    U.$('#statusSelect').value = status;
+  }
+
+  if (queryMode === 'status' || queryMode === 'report') {
+    mode = queryMode;
   }
 }
     })();
