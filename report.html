@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-   <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.5" />
-
+    
+<link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.6" />
   <style>
     :root {
       --primary: #b91c1c;
@@ -718,6 +718,9 @@
         border-radius: 20px;
       }
     }
+    [hidden] {
+  display: none !important;
+}
   </style>
 </head>
 
@@ -905,11 +908,11 @@
     </div>
   </div>
 
- 
-<script src="/fire-extinguisher/js/config.js?v=1.2.5"></script>
-<script src="/fire-extinguisher/js/api.js?v=1.2.5"></script>
-<script src="/fire-extinguisher/js/utils.js?v=1.2.5"></script>
 
+
+<script src="/fire-extinguisher/js/config.js?v=1.2.6"></script>
+<script src="/fire-extinguisher/js/api.js?v=1.2.6"></script>
+<script src="/fire-extinguisher/js/utils.js?v=1.2.6"></script>
   <script>
     (function () {
       'use strict';
@@ -944,14 +947,19 @@
     resetAllLoadingButtons();
   }
 }
-      function syncModeUi() {
+  function syncModeUi() {
   const roundField = U.$('#roundStatusField');
+  const roundSummaryGrid = U.$('#roundSummaryGrid');
 
   U.$('#tabReport').classList.toggle('active', mode === 'report');
   U.$('#tabStatus').classList.toggle('active', mode === 'status');
 
   if (roundField) {
     roundField.hidden = mode !== 'status';
+  }
+
+  if (roundSummaryGrid) {
+    roundSummaryGrid.hidden = mode !== 'status';
   }
 
   U.$('#resultTitle').textContent = mode === 'report'
@@ -1237,7 +1245,7 @@ function resetAllLoadingButtons() {
   loadData();
 }
 
-      function buildParams() {
+  function buildParams() {
   const period = U.$('#periodSelect').value;
   const search = U.$('#searchInput').value.trim();
   const roundStatusSelect = U.$('#roundStatusSelect');
@@ -1247,7 +1255,9 @@ function resetAllLoadingButtons() {
     inspector: U.$('#inspectorSelect').value || 'all',
     type: U.$('#typeSelect').value || 'all',
     status: U.$('#statusSelect').value || 'all',
-    roundStatus: roundStatusSelect ? roundStatusSelect.value || 'all' : 'all'
+    roundStatus: mode === 'status' && roundStatusSelect
+      ? roundStatusSelect.value || 'all'
+      : 'all'
   };
 
   if (period === 'custom') {
@@ -1265,8 +1275,9 @@ function resetAllLoadingButtons() {
 
   return params;
 }
-    async function loadData() {
+   async function loadData() {
   const btn = U.$('#loadBtn');
+  const seq = ++loadSeq;
 
   try {
     if (btn) {
@@ -1279,6 +1290,8 @@ function resetAllLoadingButtons() {
       ? await API.getInspectionStatus(params)
       : await API.getReport(params);
 
+    if (seq !== loadSeq) return;
+
     currentItems = Array.isArray(res.items) ? res.items : [];
 
     renderRoundNote(res.summary || {}, res.roundMeta || {});
@@ -1289,6 +1302,8 @@ function resetAllLoadingButtons() {
       refreshOptionsFromCurrentItems(currentItems);
     }
   } catch (err) {
+    if (seq !== loadSeq) return;
+
     console.error('loadData error:', err);
 
     U.toast(err.message || 'โหลดข้อมูลไม่สำเร็จ', 'error');
@@ -1298,7 +1313,7 @@ function resetAllLoadingButtons() {
     renderSummary({});
     renderResults([]);
   } finally {
-    if (btn) {
+    if (seq === loadSeq && btn) {
       U.setLoading(btn, false);
     }
   }
@@ -1539,9 +1554,15 @@ function resetAllLoadingButtons() {
         return '<span class="badge wait">ยังไม่ตรวจ</span>';
       }
 
-      function getRoundTextFromTimestamp(timestamp) {
+     function getRoundTextFromTimestamp(timestamp) {
   const text = String(timestamp || '').trim();
-  const m = text.match(/^(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2}):(\d{2})$/);
+
+  /*
+    รองรับทั้ง:
+    02/06/2026 01:42:45
+    02/06/2026 1:42:45
+  */
+  const m = text.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2}):(\d{2})$/);
 
   if (!m) return '-';
 
@@ -1650,8 +1671,14 @@ function resetAllLoadingButtons() {
         U.$('#detailModal').classList.remove('show');
       }
 
-     async function exportFile(type) {
+    async function exportFile(type) {
+  const btn = type === 'csv' ? U.$('#csvBtn') : U.$('#excelBtn');
+
   try {
+    if (btn) {
+      U.setLoading(btn, true, 'กำลัง Export...');
+    }
+
     const params = {
       ...buildParams(),
       mode,
@@ -1670,7 +1697,12 @@ function resetAllLoadingButtons() {
     U.downloadBase64File(res.base64, res.fileName, res.mimeType);
     U.toast('Export สำเร็จ', 'success');
   } catch (err) {
+    console.error('exportFile error:', err);
     U.toast(err.message || 'Export ไม่สำเร็จ', 'error');
+  } finally {
+    if (btn) {
+      U.setLoading(btn, false);
+    }
   }
 }
       function applyInitialQueryParams() {
