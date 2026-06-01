@@ -1027,46 +1027,54 @@ if (roundField) {
       }
 
       async function loadOptions() {
-        names = [];
-        extinguishers = [];
+  names = [];
+  extinguishers = [];
 
-        let reportFallbackItems = [];
+  let reportFallbackItems = [];
 
-        const results = await Promise.allSettled([
-          API.getNames(),
-          API.getExtinguishers(),
-          API.getReport({
-            period: U.$('#periodSelect').value || 'thisMonth',
-            inspector: 'all',
-            type: 'all',
-            status: 'all'
-          })
-        ]);
+  try {
+    const results = await Promise.allSettled([
+      API.getNames(),
+      API.getExtinguishers(),
+      API.getReport({
+        period: U.$('#periodSelect').value || 'thisMonth',
+        inspector: 'all',
+        type: 'all',
+        status: 'all',
+        roundStatus: 'all'
+      })
+    ]);
 
-        if (results[0].status === 'fulfilled' && Array.isArray(results[0].value.items)) {
-          names = normalizeNameItems(results[0].value.items);
-        }
+    if (results[0].status === 'fulfilled' && Array.isArray(results[0].value.items)) {
+      names = normalizeNameItems(results[0].value.items);
+    }
 
-        if (results[1].status === 'fulfilled' && Array.isArray(results[1].value.items)) {
-          extinguishers = results[1].value.items || [];
-        }
+    if (results[1].status === 'fulfilled' && Array.isArray(results[1].value.items)) {
+      extinguishers = results[1].value.items || [];
+    }
 
-        if (results[2].status === 'fulfilled' && Array.isArray(results[2].value.items)) {
-          reportFallbackItems = results[2].value.items || [];
-        }
+    if (results[2].status === 'fulfilled' && Array.isArray(results[2].value.items)) {
+      reportFallbackItems = results[2].value.items || [];
+    }
 
-        if (!names.length && reportFallbackItems.length) {
-          names = buildNamesFromReport(reportFallbackItems);
-        }
+    if (!names.length && reportFallbackItems.length) {
+      names = buildNamesFromReport(reportFallbackItems);
+    }
 
-        if (!extinguishers.length && reportFallbackItems.length) {
-          extinguishers = buildExtinguishersFromReport(reportFallbackItems);
-        }
+    if (!extinguishers.length && reportFallbackItems.length) {
+      extinguishers = buildExtinguishersFromReport(reportFallbackItems);
+    }
 
-        renderInspectorOptions();
-        renderTypeOptions();
-      }
+    renderInspectorOptions();
+    renderTypeOptions();
+  } catch (err) {
+    console.error('loadOptions error:', err);
+    U.toast(err.message || 'โหลดตัวเลือกไม่สำเร็จ', 'warning');
 
+    renderInspectorOptions();
+    renderTypeOptions();
+  }
+}
       function normalizeNameItems(items) {
         const map = new Map();
 
@@ -1147,21 +1155,29 @@ if (roundField) {
       }
 
       function renderTypeOptions() {
-        const select = U.$('#typeSelect');
-        if (!select) return;
+  const select = U.$('#typeSelect');
+  if (!select) return;
 
-        const types = [
-          ...new Set(
-            extinguishers
-              .map(item => String(item.type || '').trim())
-              .filter(Boolean)
-          )
-        ];
+  const currentValue = select.value || 'all';
 
-        select.innerHTML = '<option value="all">ทั้งหมด</option>' + types.map(type => {
-          return `<option value="${U.escapeHtml(type)}">${U.escapeHtml(type)}</option>`;
-        }).join('');
-      }
+  const types = [
+    ...new Set(
+      extinguishers
+        .map(item => String(item.type || '').trim())
+        .filter(Boolean)
+    )
+  ];
+
+  select.innerHTML = '<option value="all">ทั้งหมด</option>' + types.map(type => {
+    return `<option value="${U.escapeHtml(type)}">${U.escapeHtml(type)}</option>`;
+  }).join('');
+
+  if (types.includes(currentValue)) {
+    select.value = currentValue;
+  } else {
+    select.value = 'all';
+  }
+}
 
       function toggleCustomDate() {
         const isCustom = U.$('#periodSelect').value === 'custom';
@@ -1215,35 +1231,43 @@ if (roundStatusSelect) {
 
   return params;
 }
-      async function loadData() {
-        const btn = U.$('#loadBtn');
+     async function loadData() {
+  const btn = U.$('#loadBtn');
 
-        try {
-          U.setLoading(btn, true, 'กำลังโหลด...');
+  try {
+    if (btn) {
+      U.setLoading(btn, true, 'กำลังโหลด...');
+    }
 
-          const params = buildParams();
-          const res = mode === 'status'
-            ? await API.getInspectionStatus(params)
-            : await API.getReport(params);
+    const params = buildParams();
 
-          currentItems = res.items || [];
+    const res = mode === 'status'
+      ? await API.getInspectionStatus(params)
+      : await API.getReport(params);
 
-          renderRoundNote(res.summary || {}, res.roundMeta || {});
-          renderSummary(res.summary || {});
-          renderResults(currentItems);
+    currentItems = Array.isArray(res.items) ? res.items : [];
 
-          if (mode === 'report') {
-            refreshOptionsFromCurrentItems(currentItems);
-          }
-        } catch (err) {
-          U.toast(err.message || 'โหลดข้อมูลไม่สำเร็จ', 'error');
-          currentItems = [];
-          renderSummary({});
-          renderResults([]);
-        } finally {
-          U.setLoading(btn, false);
-        }
-      }
+    renderRoundNote(res.summary || {}, res.roundMeta || {});
+    renderSummary(res.summary || {});
+    renderResults(currentItems);
+
+    if (mode === 'report') {
+      refreshOptionsFromCurrentItems(currentItems);
+    }
+  } catch (err) {
+    console.error('loadData error:', err);
+
+    U.toast(err.message || 'โหลดข้อมูลไม่สำเร็จ', 'error');
+
+    currentItems = [];
+    renderSummary({});
+    renderResults([]);
+  } finally {
+    if (btn) {
+      U.setLoading(btn, false);
+    }
+  }
+}
 
       function renderRoundNote(summary, roundMeta) {
   const rule = summary.shortRuleText || roundMeta.shortRuleText || 'รอบ 1: วันที่ 1-10 • รอบ 2: วันที่ 11-สิ้นเดือน';
