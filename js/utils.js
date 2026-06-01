@@ -51,10 +51,12 @@
     button.disabled = true;
     button.textContent = text;
     button.classList.add('is-loading');
+    button.setAttribute('aria-busy', 'true');
   } else {
     button.disabled = false;
     button.textContent = button.dataset.oldText || button.textContent || '';
     button.classList.remove('is-loading');
+    button.removeAttribute('aria-busy');
     delete button.dataset.oldText;
   }
 }
