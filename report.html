@@ -792,7 +792,18 @@
             <option value="all">ทั้งหมด</option>
           </select>
         </div>
-
+        <div class="field" id="roundStatusField">
+  <label for="roundStatusSelect">รอบตรวจ</label>
+  <select id="roundStatusSelect">
+    <option value="all">ทั้งหมด</option>
+    <option value="earlyChecked">รอบ 1 ตรวจแล้ว</option>
+    <option value="earlyUnchecked">รอบ 1 ยังไม่ตรวจ</option>
+    <option value="lateChecked">รอบ 2 ตรวจแล้ว</option>
+    <option value="lateUnchecked">รอบ 2 ยังไม่ตรวจ</option>
+    <option value="completedBothRounds">ครบ 2 รอบ</option>
+    <option value="incompleteBothRounds">ยังไม่ครบ 2 รอบ</option>
+  </select>
+</div>
         <div class="field wide">
           <label for="searchInput">ค้นหา</label>
           <input id="searchInput" type="search" placeholder="หมายเลขถัง / จุดติดตั้ง" />
@@ -916,6 +927,10 @@
         setLogo();
         bindEvents();
         setStatusOptions();
+        const roundField = U.$('#roundStatusField');
+if (roundField) {
+  roundField.hidden = mode !== 'status';
+}
         await loadOptions();
         await loadData();
       }
@@ -933,6 +948,11 @@
         U.$('#tabReport').addEventListener('click', () => setMode('report'));
         U.$('#tabStatus').addEventListener('click', () => setMode('status'));
         U.$('#periodSelect').addEventListener('change', toggleCustomDate);
+
+const roundStatusSelect = U.$('#roundStatusSelect');
+if (roundStatusSelect) {
+  roundStatusSelect.addEventListener('change', loadData);
+}
         U.$('#loadBtn').addEventListener('click', loadData);
         U.$('#clearBtn').addEventListener('click', clearFilters);
         U.$('#csvBtn').addEventListener('click', () => exportFile('csv'));
@@ -960,6 +980,10 @@
 
         U.$('#tabReport').classList.toggle('active', mode === 'report');
         U.$('#tabStatus').classList.toggle('active', mode === 'status');
+        const roundField = U.$('#roundStatusField');
+if (roundField) {
+  roundField.hidden = mode !== 'status';
+}
 
         U.$('#resultTitle').textContent = mode === 'report'
           ? 'รายการผลตรวจ'
@@ -1144,6 +1168,10 @@
         setStatusOptions();
         U.$('#statusSelect').value = 'all';
         U.$('#searchInput').value = '';
+        const roundStatusSelect = U.$('#roundStatusSelect');
+if (roundStatusSelect) {
+  roundStatusSelect.value = 'all';
+}
         toggleCustomDate();
         loadData();
       }
@@ -1158,7 +1186,15 @@
           type: U.$('#typeSelect').value || 'all',
           status: U.$('#statusSelect').value || 'all'
         };
+        const roundStatusSelect = U.$('#roundStatusSelect');
 
+const params = {
+  period,
+  inspector: U.$('#inspectorSelect').value || 'all',
+  type: U.$('#typeSelect').value || 'all',
+  status: U.$('#statusSelect').value || 'all',
+  roundStatus: roundStatusSelect ? roundStatusSelect.value || 'all' : 'all'
+};
         if (period === 'custom') {
           params.start = U.$('#startDate').value;
           params.end = U.$('#endDate').value;
@@ -1513,14 +1549,15 @@
         U.$('#detailModal').classList.remove('show');
       }
 
-      async function exportFile(type) {
+     async function exportFile(type) {
   try {
     const params = {
       ...buildParams(),
       mode,
       exportDetail: 'full',
       includeChecklist: '1',
-      includeNormalAbnormal: '1'
+      includeNormalAbnormal: '1',
+      includeImages: '0'
     };
 
     U.toast(`กำลังสร้างไฟล์ ${type.toUpperCase()} แบบครบถ้วน...`, 'info');
