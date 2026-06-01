@@ -959,6 +959,12 @@
     font-size: 9.2px;
   }
 }
+    .pending-btn b {
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 950;
+  color: #b45309;
+}
   </style>
 </head>
 
@@ -1015,17 +1021,20 @@
       <div class="pending-actions">
   <a class="pending-btn" href="/fire-extinguisher/report.html?mode=status&roundStatus=earlyUnchecked">
     <strong>ค้างรอบ 1</strong>
-    <span>ถังที่ยังไม่ตรวจรอบต้นเดือน</span>
+    <b id="pendingEarlyCount">-</b>
+    <span>ถังที่ยังไม่ตรวจต้นเดือน</span>
   </a>
 
   <a class="pending-btn" href="/fire-extinguisher/report.html?mode=status&roundStatus=lateUnchecked">
     <strong>ค้างรอบ 2</strong>
-    <span>ถังที่ยังไม่ตรวจรอบปลายเดือน</span>
+    <b id="pendingLateCount">-</b>
+    <span>ถังที่ยังไม่ตรวจปลายเดือน</span>
   </a>
 
   <a class="pending-btn" href="/fire-extinguisher/report.html?mode=status&roundStatus=incompleteBothRounds">
     <strong>ยังไม่ครบ 2 รอบ</strong>
-    <span>ถังที่ต้องติดตามประจำเดือน</span>
+    <b id="pendingIncompleteCount">-</b>
+    <span>ถังที่ต้องติดตาม</span>
   </a>
 </div>
       <div class="manual-box">
@@ -1253,7 +1262,9 @@
           U.setText('#completedBothRounds', s.completedBothRounds ?? 0);
           U.setText('#incompleteBothRounds', s.incompleteBothRounds ?? 0);
           U.setText('#abnormalCount', s.abnormal ?? 0);
-
+         U.setText('#pendingEarlyCount', s.earlyUnchecked ?? 0);
+U.setText('#pendingLateCount', s.lateUnchecked ?? 0);
+U.setText('#pendingIncompleteCount', s.incompleteBothRounds ?? 0);
           U.setText('#earlyChecked', s.earlyChecked ?? 0);
           U.setText('#earlyUnchecked', s.earlyUnchecked ?? 0);
           U.setText('#lateChecked', s.lateChecked ?? 0);
