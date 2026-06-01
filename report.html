@@ -792,7 +792,7 @@
             <option value="all">ทั้งหมด</option>
           </select>
         </div>
-        <div class="field" id="roundStatusField">
+        <div class="field" id="roundStatusField" hidden>
   <label for="roundStatusSelect">รอบตรวจ</label>
   <select id="roundStatusSelect">
     <option value="all">ทั้งหมด</option>
@@ -962,7 +962,7 @@
 
 const roundStatusSelect = U.$('#roundStatusSelect');
 if (roundStatusSelect) {
-  roundStatusSelect.addEventListener('change', loadData);
+  roundStatusSelect.value = 'all';
 }
         U.$('#loadBtn').addEventListener('click', loadData);
         U.$('#clearBtn').addEventListener('click', clearFilters);
