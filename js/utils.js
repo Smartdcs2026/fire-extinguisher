@@ -40,20 +40,24 @@
     if (el) el.hidden = true;
   }
 
-  function setLoading(button, isLoading, text = 'กำลังโหลด...') {
-    if (!button) return;
+ function setLoading(button, isLoading, text = 'กำลังโหลด...') {
+  if (!button) return;
 
-    if (isLoading) {
-      button.dataset.oldText = button.textContent;
-      button.disabled = true;
-      button.textContent = text;
-      button.classList.add('is-loading');
-    } else {
-      button.disabled = false;
-      button.textContent = button.dataset.oldText || button.textContent;
-      button.classList.remove('is-loading');
+  if (isLoading) {
+    if (!button.dataset.oldText) {
+      button.dataset.oldText = button.textContent || '';
     }
+
+    button.disabled = true;
+    button.textContent = text;
+    button.classList.add('is-loading');
+  } else {
+    button.disabled = false;
+    button.textContent = button.dataset.oldText || button.textContent || '';
+    button.classList.remove('is-loading');
+    delete button.dataset.oldText;
   }
+}
 
   function toast(message, type = 'info') {
     const old = document.querySelector('.app-toast');
