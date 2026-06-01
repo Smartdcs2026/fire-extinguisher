@@ -903,6 +903,62 @@
         padding: 11px;
       }
     }
+    .pending-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.pending-btn {
+  min-width: 0;
+  min-height: 66px;
+  padding: 10px;
+  border-radius: 17px;
+  background: #fff;
+  border: 1px solid rgba(217, 119, 6, 0.28);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+  color: #111827;
+  text-decoration: none;
+  display: grid;
+  align-content: center;
+  gap: 3px;
+}
+
+.pending-btn strong {
+  font-size: 13px;
+  line-height: 1.2;
+  font-weight: 950;
+  color: #92400e;
+}
+
+.pending-btn span {
+  font-size: 10.5px;
+  line-height: 1.25;
+  font-weight: 750;
+  color: #64748b;
+}
+
+@media (max-width: 430px) {
+  .pending-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .pending-btn {
+    min-height: 60px;
+    padding: 8px 6px;
+    border-radius: 15px;
+  }
+
+  .pending-btn strong {
+    font-size: 11.5px;
+  }
+
+  .pending-btn span {
+    font-size: 9.2px;
+  }
+}
   </style>
 </head>
 
@@ -956,7 +1012,22 @@
           รีเฟรชข้อมูล
         </button>
       </div>
+      <div class="pending-actions">
+  <a class="pending-btn" href="/fire-extinguisher/report.html?mode=status&roundStatus=earlyUnchecked">
+    <strong>ค้างรอบ 1</strong>
+    <span>ถังที่ยังไม่ตรวจรอบต้นเดือน</span>
+  </a>
 
+  <a class="pending-btn" href="/fire-extinguisher/report.html?mode=status&roundStatus=lateUnchecked">
+    <strong>ค้างรอบ 2</strong>
+    <span>ถังที่ยังไม่ตรวจรอบปลายเดือน</span>
+  </a>
+
+  <a class="pending-btn" href="/fire-extinguisher/report.html?mode=status&roundStatus=incompleteBothRounds">
+    <strong>ยังไม่ครบ 2 รอบ</strong>
+    <span>ถังที่ต้องติดตามประจำเดือน</span>
+  </a>
+</div>
       <div class="manual-box">
         <label for="manualId">กรอกหมายเลขถัง กรณีสแกนไม่ได้</label>
         <div class="input-row">
