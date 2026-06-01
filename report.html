@@ -948,9 +948,47 @@ let loadSeq = 0;
     resetAllLoadingButtons();
   }
 }
+
+      function syncPeriodOptionsForMode() {
+  const select = U.$('#periodSelect');
+  if (!select) return;
+
+  const current = select.value || 'thisMonth';
+
+  if (mode === 'status') {
+    select.innerHTML = `
+      <option value="thisMonth">เดือนนี้</option>
+      <option value="lastMonth">เดือนที่แล้ว</option>
+      <option value="custom">กำหนดเดือนเอง</option>
+    `;
+
+    if (current === 'thisMonth' || current === 'lastMonth' || current === 'custom') {
+      select.value = current;
+    } else {
+      select.value = 'thisMonth';
+    }
+  } else {
+    select.innerHTML = `
+      <option value="today">วันนี้</option>
+      <option value="yesterday">เมื่อวาน</option>
+      <option value="last7days">7 วันที่ผ่านมา</option>
+      <option value="last14days">14 วันที่ผ่านมา</option>
+      <option value="last30days">30 วันที่ผ่านมา</option>
+      <option value="thisMonth">เดือนนี้</option>
+      <option value="lastMonth">เดือนที่แล้ว</option>
+      <option value="thisYear">ปีนี้</option>
+      <option value="custom">กำหนดเอง</option>
+    `;
+
+    select.value = current || 'thisMonth';
+  }
+}
+      
   function syncModeUi() {
   const roundField = U.$('#roundStatusField');
   const roundSummaryGrid = U.$('#roundSummaryGrid');
+
+  syncPeriodOptionsForMode();
 
   U.$('#tabReport').classList.toggle('active', mode === 'report');
   U.$('#tabStatus').classList.toggle('active', mode === 'status');
@@ -966,6 +1004,8 @@ let loadSeq = 0;
   U.$('#resultTitle').textContent = mode === 'report'
     ? 'รายการผลตรวจ'
     : 'สถานะประจำเดือน';
+
+  toggleCustomDate();
 }
       function setLogo() {
         const logo = U.$('#pageLogo');
