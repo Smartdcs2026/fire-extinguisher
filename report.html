@@ -923,12 +923,13 @@
 
       document.addEventListener('DOMContentLoaded', init);
 
-     async function init() {
+   async function init() {
   setLogo();
   bindEvents();
-  setStatusOptions();
+
   applyInitialQueryParams();
   setStatusOptions();
+  applyInitialQueryParams();
 
   const roundField = U.$('#roundStatusField');
   if (roundField) {
@@ -943,13 +944,6 @@
     : 'สถานะประจำเดือน';
 
   await loadOptions();
-
-  if (U.$('#roundStatusSelect')) {
-    const sp = new URLSearchParams(location.search);
-    const roundStatus = sp.get('roundStatus');
-    if (roundStatus) U.$('#roundStatusSelect').value = roundStatus;
-  }
-
   await loadData();
 }
       function setLogo() {
@@ -1194,40 +1188,33 @@ if (roundStatusSelect) {
       }
 
       function buildParams() {
-        const period = U.$('#periodSelect').value;
-        const search = U.$('#searchInput').value.trim();
+  const period = U.$('#periodSelect').value;
+  const search = U.$('#searchInput').value.trim();
+  const roundStatusSelect = U.$('#roundStatusSelect');
 
-        const params = {
-          period,
-          inspector: U.$('#inspectorSelect').value || 'all',
-          type: U.$('#typeSelect').value || 'all',
-          status: U.$('#statusSelect').value || 'all'
-        };
-        const roundStatusSelect = U.$('#roundStatusSelect');
+  const params = {
+    period,
+    inspector: U.$('#inspectorSelect').value || 'all',
+    type: U.$('#typeSelect').value || 'all',
+    status: U.$('#statusSelect').value || 'all',
+    roundStatus: roundStatusSelect ? roundStatusSelect.value || 'all' : 'all'
+  };
 
-const params = {
-  period,
-  inspector: U.$('#inspectorSelect').value || 'all',
-  type: U.$('#typeSelect').value || 'all',
-  status: U.$('#statusSelect').value || 'all',
-  roundStatus: roundStatusSelect ? roundStatusSelect.value || 'all' : 'all'
-};
-        if (period === 'custom') {
-          params.start = U.$('#startDate').value;
-          params.end = U.$('#endDate').value;
-        }
+  if (period === 'custom') {
+    params.start = U.$('#startDate').value;
+    params.end = U.$('#endDate').value;
+  }
 
-        if (search) {
-          if (search.toUpperCase().startsWith('FE') || /^[0-9]+$/.test(search)) {
-            params.extinguisherId = search;
-          } else {
-            params.location = search;
-          }
-        }
+  if (search) {
+    if (search.toUpperCase().startsWith('FE') || /^[0-9]+$/.test(search)) {
+      params.extinguisherId = search;
+    } else {
+      params.location = search;
+    }
+  }
 
-        return params;
-      }
-
+  return params;
+}
       async function loadData() {
         const btn = U.$('#loadBtn');
 
