@@ -119,6 +119,7 @@
     extinguisherId: params.extinguisherId || params.id || '',
     location: params.location || '',
     mode: params.mode || '',
+    roundStatus: params.roundStatus || 'all',
     exportDetail: params.exportDetail || '',
     includeChecklist: params.includeChecklist || '',
     includeNormalAbnormal: params.includeNormalAbnormal || ''
