@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
     
-<link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.6" />
+<link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.7" />
   <style>
     :root {
       --primary: #b91c1c;
@@ -910,9 +910,9 @@
 
 
 
-<script src="/fire-extinguisher/js/config.js?v=1.2.6"></script>
-<script src="/fire-extinguisher/js/api.js?v=1.2.6"></script>
-<script src="/fire-extinguisher/js/utils.js?v=1.2.6"></script>
+<script src="/fire-extinguisher/js/config.js?v=1.2.7"></script>
+<script src="/fire-extinguisher/js/api.js?v=1.2.7"></script>
+<script src="/fire-extinguisher/js/utils.js?v=1.2.7"></script>
   <script>
     (function () {
       'use strict';
@@ -920,10 +920,11 @@
       const U = window.FireUtils;
       const API = window.FireAPI;
 
-      let mode = 'report';
-      let currentItems = [];
-      let names = [];
-      let extinguishers = [];
+     let mode = 'report';
+let currentItems = [];
+let names = [];
+let extinguishers = [];
+let loadSeq = 0;
 
       document.addEventListener('DOMContentLoaded', init);
 
