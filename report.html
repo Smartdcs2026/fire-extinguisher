@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.3" />
+   <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.5" />
 
   <style>
     :root {
@@ -905,9 +905,10 @@
     </div>
   </div>
 
-  <script src="/fire-extinguisher/js/config.js?v=1.2.3"></script>
-<script src="/fire-extinguisher/js/api.js?v=1.2.3"></script>
-<script src="/fire-extinguisher/js/utils.js?v=1.2.3"></script>
+ 
+<script src="/fire-extinguisher/js/config.js?v=1.2.5"></script>
+<script src="/fire-extinguisher/js/api.js?v=1.2.5"></script>
+<script src="/fire-extinguisher/js/utils.js?v=1.2.5"></script>
 
   <script>
     (function () {
@@ -923,28 +924,39 @@
 
       document.addEventListener('DOMContentLoaded', init);
 
-   async function init() {
-  setLogo();
-  bindEvents();
+ async function init() {
+  try {
+    setLogo();
+    bindEvents();
 
-  applyInitialQueryParams();
-  setStatusOptions();
-  applyInitialQueryParams();
+    applyInitialQueryParams();
+    setStatusOptions();
+    applyInitialQueryParams();
 
-  const roundField = U.$('#roundStatusField');
-  if (roundField) {
-    roundField.hidden = mode !== 'status';
+    syncModeUi();
+    toggleCustomDate();
+
+    await loadOptions();
+    await loadData();
+  } catch (err) {
+    console.error('init error:', err);
+    U.toast(err.message || 'เปิดหน้ารายงานไม่สำเร็จ', 'error');
+    resetAllLoadingButtons();
   }
+}
+      function syncModeUi() {
+  const roundField = U.$('#roundStatusField');
 
   U.$('#tabReport').classList.toggle('active', mode === 'report');
   U.$('#tabStatus').classList.toggle('active', mode === 'status');
 
+  if (roundField) {
+    roundField.hidden = mode !== 'status';
+  }
+
   U.$('#resultTitle').textContent = mode === 'report'
     ? 'รายการผลตรวจ'
     : 'สถานะประจำเดือน';
-
-  await loadOptions();
-  await loadData();
 }
       function setLogo() {
         const logo = U.$('#pageLogo');
@@ -956,28 +968,59 @@
       }
 
       function bindEvents() {
-        U.$('#tabReport').addEventListener('click', () => setMode('report'));
-        U.$('#tabStatus').addEventListener('click', () => setMode('status'));
-        U.$('#periodSelect').addEventListener('change', toggleCustomDate);
+  U.$('#tabReport').addEventListener('click', () => setMode('report'));
+  U.$('#tabStatus').addEventListener('click', () => setMode('status'));
 
-const roundStatusSelect = U.$('#roundStatusSelect');
-if (roundStatusSelect) {
-  roundStatusSelect.addEventListener('change', loadData);
+  U.$('#periodSelect').addEventListener('change', () => {
+    toggleCustomDate();
+    loadData();
+  });
+
+  const roundStatusSelect = U.$('#roundStatusSelect');
+  if (roundStatusSelect) {
+    roundStatusSelect.addEventListener('change', loadData);
+  }
+
+  U.$('#inspectorSelect').addEventListener('change', loadData);
+  U.$('#typeSelect').addEventListener('change', loadData);
+  U.$('#statusSelect').addEventListener('change', loadData);
+
+  U.$('#loadBtn').addEventListener('click', loadData);
+  U.$('#clearBtn').addEventListener('click', clearFilters);
+  U.$('#csvBtn').addEventListener('click', () => exportFile('csv'));
+  U.$('#excelBtn').addEventListener('click', () => exportFile('excel'));
+
+  U.$('#closeModalBtn').addEventListener('click', closeModal);
+
+  U.$('#detailModal').addEventListener('click', (e) => {
+    if (e.target.id === 'detailModal') closeModal();
+  });
+
+  U.$('#tableBody').addEventListener('click', handleDetailClick);
+  U.$('#mobileList').addEventListener('click', handleDetailClick);
+
+  U.$('#searchInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      loadData();
+    }
+  });
+
+  window.addEventListener('error', (e) => {
+    console.error('page error:', e.error || e.message);
+    resetAllLoadingButtons();
+  });
+
+  window.addEventListener('unhandledrejection', (e) => {
+    console.error('promise error:', e.reason);
+    resetAllLoadingButtons();
+  });
 }
-        U.$('#loadBtn').addEventListener('click', loadData);
-        U.$('#clearBtn').addEventListener('click', clearFilters);
-        U.$('#csvBtn').addEventListener('click', () => exportFile('csv'));
-        U.$('#excelBtn').addEventListener('click', () => exportFile('excel'));
-        U.$('#closeModalBtn').addEventListener('click', closeModal);
-
-        U.$('#detailModal').addEventListener('click', (e) => {
-          if (e.target.id === 'detailModal') closeModal();
-        });
-
-        U.$('#tableBody').addEventListener('click', handleDetailClick);
-        U.$('#mobileList').addEventListener('click', handleDetailClick);
-      }
-
+function resetAllLoadingButtons() {
+  ['#loadBtn', '#csvBtn', '#excelBtn', '#clearBtn'].forEach(selector => {
+    const btn = U.$(selector);
+    if (btn) U.setLoading(btn, false);
+  });
+}
       function handleDetailClick(e) {
         const btn = e.target.closest('[data-detail]');
         if (!btn) return;
@@ -986,23 +1029,13 @@ if (roundStatusSelect) {
         openDetail(currentItems[index]);
       }
 
-      function setMode(nextMode) {
-        mode = nextMode;
+     function setMode(nextMode) {
+  mode = nextMode === 'status' ? 'status' : 'report';
 
-        U.$('#tabReport').classList.toggle('active', mode === 'report');
-        U.$('#tabStatus').classList.toggle('active', mode === 'status');
-        const roundField = U.$('#roundStatusField');
-if (roundField) {
-  roundField.hidden = mode !== 'status';
+  setStatusOptions();
+  syncModeUi();
+  loadData();
 }
-
-        U.$('#resultTitle').textContent = mode === 'report'
-          ? 'รายการผลตรวจ'
-          : 'สถานะประจำเดือน';
-
-        setStatusOptions();
-        loadData();
-      }
 
       function setStatusOptions() {
         const select = U.$('#statusSelect');
@@ -1026,7 +1059,7 @@ if (roundField) {
         }
       }
 
-      async function loadOptions() {
+     async function loadOptions() {
   names = [];
   extinguishers = [];
 
@@ -1166,17 +1199,13 @@ if (roundField) {
         .map(item => String(item.type || '').trim())
         .filter(Boolean)
     )
-  ];
+  ].sort((a, b) => String(a).localeCompare(String(b), 'th'));
 
   select.innerHTML = '<option value="all">ทั้งหมด</option>' + types.map(type => {
     return `<option value="${U.escapeHtml(type)}">${U.escapeHtml(type)}</option>`;
   }).join('');
 
-  if (types.includes(currentValue)) {
-    select.value = currentValue;
-  } else {
-    select.value = 'all';
-  }
+  select.value = types.includes(currentValue) ? currentValue : 'all';
 }
 
       function toggleCustomDate() {
@@ -1187,21 +1216,26 @@ if (roundField) {
       }
 
       function clearFilters() {
-        U.$('#periodSelect').value = 'thisMonth';
-        U.$('#startDate').value = '';
-        U.$('#endDate').value = '';
-        U.$('#inspectorSelect').value = 'all';
-        U.$('#typeSelect').value = 'all';
-        setStatusOptions();
-        U.$('#statusSelect').value = 'all';
-        U.$('#searchInput').value = '';
-        const roundStatusSelect = U.$('#roundStatusSelect');
-if (roundStatusSelect) {
-  roundStatusSelect.value = 'all';
+  U.$('#periodSelect').value = 'thisMonth';
+  U.$('#startDate').value = '';
+  U.$('#endDate').value = '';
+  U.$('#inspectorSelect').value = 'all';
+  U.$('#typeSelect').value = 'all';
+  U.$('#searchInput').value = '';
+
+  setStatusOptions();
+
+  U.$('#statusSelect').value = 'all';
+
+  const roundStatusSelect = U.$('#roundStatusSelect');
+  if (roundStatusSelect) {
+    roundStatusSelect.value = 'all';
+  }
+
+  toggleCustomDate();
+  syncModeUi();
+  loadData();
 }
-        toggleCustomDate();
-        loadData();
-      }
 
       function buildParams() {
   const period = U.$('#periodSelect').value;
@@ -1231,7 +1265,7 @@ if (roundStatusSelect) {
 
   return params;
 }
-     async function loadData() {
+    async function loadData() {
   const btn = U.$('#loadBtn');
 
   try {
@@ -1260,6 +1294,7 @@ if (roundStatusSelect) {
     U.toast(err.message || 'โหลดข้อมูลไม่สำเร็จ', 'error');
 
     currentItems = [];
+    renderRoundNote({}, {});
     renderSummary({});
     renderResults([]);
   } finally {
@@ -1269,7 +1304,7 @@ if (roundStatusSelect) {
   }
 }
 
-      function renderRoundNote(summary, roundMeta) {
+    function renderRoundNote(summary, roundMeta) {
   const rule = summary.shortRuleText || roundMeta.shortRuleText || 'รอบ 1: วันที่ 1-10 • รอบ 2: วันที่ 11-สิ้นเดือน';
 
   const note = mode === 'status'
@@ -1300,50 +1335,54 @@ if (roundStatusSelect) {
       }
 
       function renderSummary(summary) {
-        if (mode === 'status') {
-          U.setText('#sumLabel1', 'ถังทั้งหมด');
-          U.setText('#sumLabel2', 'ครบ 2 รอบ');
-          U.setText('#sumLabel3', 'ยังไม่ครบ');
-          U.setText('#sumLabel4', 'ผิดปกติ');
+  if (mode === 'status') {
+    U.setText('#sumLabel1', 'ถังทั้งหมด');
+    U.setText('#sumLabel2', 'ครบ 2 รอบ');
+    U.setText('#sumLabel3', 'ยังไม่ครบ');
+    U.setText('#sumLabel4', 'ผิดปกติล่าสุด');
 
-          U.setText('#sum1', summary.totalExtinguishers ?? 0);
-          U.setText('#sum2', summary.completedBothRounds ?? 0);
-          U.setText('#sum3', summary.incompleteBothRounds ?? 0);
-          U.setText('#sum4', summary.abnormal ?? 0);
+    U.setText('#sum1', summary.totalExtinguishers ?? 0);
+    U.setText('#sum2', summary.completedBothRounds ?? 0);
+    U.setText('#sum3', summary.incompleteBothRounds ?? 0);
+    U.setText('#sum4', summary.abnormal ?? 0);
 
-          U.setText('#earlyChecked', summary.earlyChecked ?? 0);
-          U.setText('#earlyUnchecked', summary.earlyUnchecked ?? 0);
-          U.setText('#lateChecked', summary.lateChecked ?? 0);
-          U.setText('#lateUnchecked', summary.lateUnchecked ?? 0);
-        } else {
-          U.setText('#sumLabel1', 'รายการทั้งหมด');
-          U.setText('#sumLabel2', 'ถังที่ตรวจแล้ว');
-          U.setText('#sumLabel3', 'ผลปกติ');
-          U.setText('#sumLabel4', 'ผลผิดปกติ');
+    U.setText('#earlyChecked', summary.earlyChecked ?? 0);
+    U.setText('#earlyUnchecked', summary.earlyUnchecked ?? 0);
+    U.setText('#lateChecked', summary.lateChecked ?? 0);
+    U.setText('#lateUnchecked', summary.lateUnchecked ?? 0);
+  } else {
+    U.setText('#sumLabel1', 'รายการทั้งหมด');
+    U.setText('#sumLabel2', 'ถังที่ตรวจแล้ว');
+    U.setText('#sumLabel3', 'ผลปกติ');
+    U.setText('#sumLabel4', 'ผลผิดปกติ');
 
-          U.setText('#sum1', summary.totalRecords ?? 0);
-          U.setText('#sum2', summary.checkedExtinguishers ?? 0);
-          U.setText('#sum3', summary.normalRecords ?? 0);
-          U.setText('#sum4', summary.abnormalRecords ?? 0);
+    U.setText('#sum1', summary.totalRecords ?? 0);
+    U.setText('#sum2', summary.checkedExtinguishers ?? 0);
+    U.setText('#sum3', summary.normalRecords ?? 0);
+    U.setText('#sum4', summary.abnormalRecords ?? 0);
 
-          U.setText('#earlyChecked', '-');
-          U.setText('#earlyUnchecked', '-');
-          U.setText('#lateChecked', '-');
-          U.setText('#lateUnchecked', '-');
-        }
-      }
+    U.setText('#earlyChecked', '-');
+    U.setText('#earlyUnchecked', '-');
+    U.setText('#lateChecked', '-');
+    U.setText('#lateUnchecked', '-');
+  }
+}
 
       function renderResults(items) {
-        U.$('#resultCount').textContent = `${items.length} รายการ`;
+  const count = Array.isArray(items) ? items.length : 0;
 
-        if (mode === 'status') {
-          renderStatusTable(items);
-          renderStatusCards(items);
-        } else {
-          renderReportTable(items);
-          renderReportCards(items);
-        }
-      }
+  U.$('#resultCount').textContent = `${count} รายการ`;
+
+  if (mode === 'status') {
+    U.$('#resultTitle').textContent = 'สถานะประจำเดือน';
+    renderStatusTable(items);
+    renderStatusCards(items);
+  } else {
+    U.$('#resultTitle').textContent = 'รายการผลตรวจ';
+    renderReportTable(items);
+    renderReportCards(items);
+  }
+}
 
       function renderReportTable(items) {
   U.$('#tableHead').innerHTML = `
