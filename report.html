@@ -1712,7 +1712,7 @@ function resetAllLoadingButtons() {
         U.$('#detailModal').classList.remove('show');
       }
 
-    async function exportFile(type) {
+  async function exportFile(type) {
   const btn = type === 'csv' ? U.$('#csvBtn') : U.$('#excelBtn');
 
   try {
@@ -1720,16 +1720,22 @@ function resetAllLoadingButtons() {
       U.setLoading(btn, true, 'กำลัง Export...');
     }
 
+    const baseParams = buildParams();
+
     const params = {
-      ...buildParams(),
+      ...baseParams,
       mode,
-      exportDetail: 'full',
-      includeChecklist: '1',
-      includeNormalAbnormal: '1',
+      exportDetail: mode === 'report' ? 'full' : 'status',
+      includeChecklist: mode === 'report' ? '1' : '0',
+      includeNormalAbnormal: mode === 'report' ? '1' : '0',
       includeImages: '0'
     };
 
-    U.toast(`กำลังสร้างไฟล์ ${type.toUpperCase()} แบบครบถ้วน...`, 'info');
+    const exportName = mode === 'report'
+      ? 'รายละเอียดผลตรวจ'
+      : 'สถานะประจำเดือน';
+
+    U.toast(`กำลังสร้างไฟล์ ${type.toUpperCase()} ${exportName}...`, 'info');
 
     const res = type === 'csv'
       ? await API.exportCsv(params)
