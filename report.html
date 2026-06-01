@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.2" />
+  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.3" />
 
   <style>
     :root {
@@ -905,9 +905,9 @@
     </div>
   </div>
 
-  <script src="/fire-extinguisher/js/config.js?v=1.2.2"></script>
-  <script src="/fire-extinguisher/js/api.js?v=1.2.2"></script>
-  <script src="/fire-extinguisher/js/utils.js?v=1.2.2"></script>
+  <script src="/fire-extinguisher/js/config.js?v=1.2.3"></script>
+<script src="/fire-extinguisher/js/api.js?v=1.2.3"></script>
+<script src="/fire-extinguisher/js/utils.js?v=1.2.3"></script>
 
   <script>
     (function () {
@@ -962,7 +962,7 @@
 
 const roundStatusSelect = U.$('#roundStatusSelect');
 if (roundStatusSelect) {
-  roundStatusSelect.value = 'all';
+  roundStatusSelect.addEventListener('change', loadData);
 }
         U.$('#loadBtn').addEventListener('click', loadData);
         U.$('#clearBtn').addEventListener('click', clearFilters);
@@ -1246,9 +1246,14 @@ if (roundStatusSelect) {
       }
 
       function renderRoundNote(summary, roundMeta) {
-        const rule = summary.shortRuleText || roundMeta.shortRuleText || 'รอบ 1: วันที่ 1-10 • รอบ 2: วันที่ 11-สิ้นเดือน';
-        U.setText('#roundNote', `${rule} ระบบนับถังละ 1 ครั้งต่อรอบ`);
-      }
+  const rule = summary.shortRuleText || roundMeta.shortRuleText || 'รอบ 1: วันที่ 1-10 • รอบ 2: วันที่ 11-สิ้นเดือน';
+
+  const note = mode === 'status'
+    ? `${rule} ระบบนับถังละ 1 ครั้งต่อรอบ และควรดูสถานะทีละเดือน`
+    : `${rule} รายการผลตรวจแสดงตามวันที่บันทึกจริง`;
+
+  U.setText('#roundNote', note);
+}
 
       function refreshOptionsFromCurrentItems(items) {
         let changed = false;
@@ -1317,37 +1322,41 @@ if (roundStatusSelect) {
       }
 
       function renderReportTable(items) {
-        U.$('#tableHead').innerHTML = `
-          <tr>
-            <th>วันที่ตรวจ</th>
-            <th>หมายเลขถัง</th>
-            <th>จุดติดตั้ง</th>
-            <th>ชนิด</th>
-            <th>ผลตรวจ</th>
-            <th>ผู้บันทึก</th>
-            <th>รายละเอียด</th>
-          </tr>
-        `;
+  U.$('#tableHead').innerHTML = `
+    <tr>
+      <th>วันที่บันทึก</th>
+      <th>เดือนรอบตรวจ</th>
+      <th>รอบตรวจ</th>
+      <th>หมายเลขถัง</th>
+      <th>จุดติดตั้ง</th>
+      <th>ชนิด</th>
+      <th>ผลตรวจ</th>
+      <th>ผู้บันทึก</th>
+      <th>รายละเอียด</th>
+    </tr>
+  `;
 
-        if (!items.length) {
-          U.$('#tableBody').innerHTML = '<tr><td colspan="7">ไม่พบข้อมูล</td></tr>';
-          return;
-        }
+  if (!items.length) {
+    U.$('#tableBody').innerHTML = '<tr><td colspan="9">ไม่พบข้อมูล</td></tr>';
+    return;
+  }
 
-        U.$('#tableBody').innerHTML = items.map((item, index) => {
-          return `
-            <tr>
-              <td>${U.escapeHtml(item.timestamp || '-')}</td>
-              <td><strong>${U.escapeHtml(item.extinguisherId || '-')}</strong></td>
-              <td>${U.escapeHtml(item.location || '-')}</td>
-              <td>${U.escapeHtml(item.type || '-')}</td>
-              <td>${renderBadge(item.overallStatus)}</td>
-              <td>${U.escapeHtml(item.inspectorThai || item.inspectorEnglish || '-')}</td>
-              <td><button class="btn ghost small" type="button" data-detail="${index}">ดู</button></td>
-            </tr>
-          `;
-        }).join('');
-      }
+  U.$('#tableBody').innerHTML = items.map((item, index) => {
+    return `
+      <tr>
+        <td>${U.escapeHtml(item.timestamp || '-')}</td>
+        <td>${U.escapeHtml(item.inspectionMonth || formatMonthValue(item.month || item.timestamp) || '-')}</td>
+        <td>${U.escapeHtml(item.inspectionRound || getRoundTextFromTimestamp(item.timestamp) || '-')}</td>
+        <td><strong>${U.escapeHtml(item.extinguisherId || '-')}</strong></td>
+        <td>${U.escapeHtml(item.location || '-')}</td>
+        <td>${U.escapeHtml(item.type || '-')}</td>
+        <td>${renderBadge(item.overallStatus)}</td>
+        <td>${U.escapeHtml(item.inspectorThai || item.inspectorEnglish || '-')}</td>
+        <td><button class="btn ghost small" type="button" data-detail="${index}">ดู</button></td>
+      </tr>
+    `;
+  }).join('');
+}
 
       function renderStatusTable(items) {
         U.$('#tableHead').innerHTML = `
@@ -1388,31 +1397,35 @@ if (roundStatusSelect) {
         }).join('');
       }
 
-      function renderReportCards(items) {
-        const box = U.$('#mobileList');
+     function renderReportCards(items) {
+  const box = U.$('#mobileList');
 
-        if (!items.length) {
-          box.innerHTML = '<div class="empty-state">ไม่พบข้อมูล</div>';
-          return;
-        }
+  if (!items.length) {
+    box.innerHTML = '<div class="empty-state">ไม่พบข้อมูล</div>';
+    return;
+  }
 
-        box.innerHTML = items.map((item, index) => {
-          return `
-            <article class="result-card">
-              <h3>${U.escapeHtml(item.extinguisherId || '-')}</h3>
-              <p>${U.escapeHtml(item.location || '-')}</p>
-              <p>${U.escapeHtml(item.type || '-')} / ${U.escapeHtml(item.size || '-')}</p>
-              <p>${U.escapeHtml(item.timestamp || '-')}</p>
-              <p>ผู้บันทึก: ${U.escapeHtml(item.inspectorThai || item.inspectorEnglish || '-')}</p>
-              <div class="card-foot">
-                ${renderBadge(item.overallStatus)}
-                <button class="btn ghost small" type="button" data-detail="${index}">ดูรายละเอียด</button>
-              </div>
-            </article>
-          `;
-        }).join('');
-      }
+  box.innerHTML = items.map((item, index) => {
+    const inspectionMonth = item.inspectionMonth || formatMonthValue(item.month || item.timestamp) || '-';
+    const inspectionRound = item.inspectionRound || getRoundTextFromTimestamp(item.timestamp) || '-';
 
+    return `
+      <article class="result-card">
+        <h3>${U.escapeHtml(item.extinguisherId || '-')}</h3>
+        <p>${U.escapeHtml(item.location || '-')}</p>
+        <p>${U.escapeHtml(item.type || '-')} / ${U.escapeHtml(item.size || '-')}</p>
+        <p>บันทึก: ${U.escapeHtml(item.timestamp || '-')}</p>
+        <p>เดือนรอบตรวจ: ${U.escapeHtml(inspectionMonth)} / ${U.escapeHtml(inspectionRound)}</p>
+        <p>ผู้บันทึก: ${U.escapeHtml(item.inspectorThai || item.inspectorEnglish || '-')}</p>
+
+        <div class="card-foot">
+          ${renderBadge(item.overallStatus)}
+          <button class="btn ghost small" type="button" data-detail="${index}">ดูรายละเอียด</button>
+        </div>
+      </article>
+    `;
+  }).join('');
+}
       function renderStatusCards(items) {
         const box = U.$('#mobileList');
 
@@ -1463,6 +1476,25 @@ if (roundStatusSelect) {
         return '<span class="badge wait">ยังไม่ตรวจ</span>';
       }
 
+      function getRoundTextFromTimestamp(timestamp) {
+  const text = String(timestamp || '').trim();
+  const m = text.match(/^(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2}):(\d{2})$/);
+
+  if (!m) return '-';
+
+  const day = Number(m[1]);
+  const hour = Number(m[4]);
+
+  if (day === 1 && hour <= 2) {
+    return 'รอบปลายเดือน';
+  }
+
+  if (day <= 10) {
+    return 'รอบต้นเดือน';
+  }
+
+  return 'รอบปลายเดือน';
+}
       function formatMonthValue(value) {
         const text = String(value || '').trim();
 
@@ -1509,8 +1541,10 @@ if (roundStatusSelect) {
               ['ผู้ตรวจล่าสุด', item.lastInspectorThai || item.lastInspectorEnglish]
             ]
           : [
-              ['วันที่เวลา', item.timestamp],
-              ['เดือน', formatMonthValue(item.month || item.timestamp)],
+  ['วันที่บันทึกจริง', item.timestamp],
+  ['เดือนตามเวลาบันทึก', formatMonthValue(item.month || item.timestamp)],
+  ['เดือนรอบตรวจ', item.inspectionMonth || formatMonthValue(item.month || item.timestamp)],
+  ['รอบตรวจ', item.inspectionRound || getRoundTextFromTimestamp(item.timestamp)],
               ['หมายเลขถัง', item.extinguisherId],
               ['จุดติดตั้ง', item.location],
               ['ชนิดถังดับเพลิง', item.type],
