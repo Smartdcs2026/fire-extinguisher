@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.3.4" />
+  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.3.5" />
 
   <style>
     body,
@@ -265,7 +265,6 @@
       color: #991b1b;
       font-weight: 900;
       margin-bottom: 2px;
-      letter-spacing: 0.1px;
     }
 
     .latest-date {
@@ -290,9 +289,9 @@
 
     .latest-detail {
       display: block;
-      margin-top: 3px;
+      margin-top: 4px;
       font-size: 12px;
-      line-height: 1.35;
+      line-height: 1.38;
       color: #7f1d1d;
       font-weight: 800;
       white-space: normal;
@@ -308,6 +307,11 @@
 
     .latest-detail b {
       font-weight: 900;
+    }
+
+    .issue-line {
+      display: block;
+      margin-top: 2px;
     }
 
     .badge {
@@ -372,6 +376,12 @@
       background: #f9fafb;
       border-radius: 16px;
       padding: 8px 9px;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .history-item:active {
+      transform: scale(0.99);
     }
 
     .history-row-one {
@@ -588,6 +598,142 @@
       z-index: 10;
     }
 
+    .detail-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      background: rgba(15, 23, 42, 0.58);
+      backdrop-filter: blur(3px);
+    }
+
+    .detail-modal.show {
+      display: flex;
+    }
+
+    .detail-box {
+      width: min(100%, 430px);
+      max-height: min(86vh, 720px);
+      overflow: auto;
+      border-radius: 24px;
+      background: #fff;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+    }
+
+    .detail-head {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: linear-gradient(135deg, #991b1b, #dc2626);
+      color: #fff;
+      padding: 14px 14px 12px;
+      border-radius: 24px 24px 0 0;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .detail-head h3 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.25;
+      font-weight: 900;
+    }
+
+    .detail-head p {
+      margin: 4px 0 0;
+      font-size: 12px;
+      opacity: 0.9;
+      line-height: 1.35;
+    }
+
+    .detail-close {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: 0;
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+      font-size: 20px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .detail-body {
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .detail-summary {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 10px;
+      border-radius: 18px;
+      background: #f9fafb;
+      border: 1px solid var(--line);
+    }
+
+    .detail-summary strong {
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .detail-item {
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 10px;
+    }
+
+    .detail-item.bad {
+      border-color: #fecaca;
+      background: #fef2f2;
+    }
+
+    .detail-item.ok {
+      border-color: #bbf7d0;
+      background: #f0fdf4;
+    }
+
+    .detail-item .label {
+      display: block;
+      font-size: 11px;
+      font-weight: 900;
+      color: #6b7280;
+      margin-bottom: 3px;
+    }
+
+    .detail-item .value {
+      display: block;
+      font-size: 13px;
+      font-weight: 900;
+      color: #111827;
+      line-height: 1.35;
+    }
+
+    .detail-item .note {
+      display: block;
+      margin-top: 4px;
+      font-size: 12px;
+      color: #7f1d1d;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
     @media (min-width: 720px) {
       .app-shell {
         padding: 18px;
@@ -768,7 +914,7 @@
         <div class="section-head">
           <div>
             <h2>ประวัติการตรวจ</h2>
-            <small>วันที่ / ผู้ตรวจ / ผลตรวจ</small>
+            <small>แตะรายการเพื่อดูรายละเอียดครบถ้วน</small>
           </div>
           <button class="btn ghost small" id="refreshHistoryBtn" type="button">รีเฟรช</button>
         </div>
@@ -941,9 +1087,23 @@
     </section>
   </main>
 
-  <script src="/fire-extinguisher/js/config.js?v=1.3.4"></script>
-  <script src="/fire-extinguisher/js/api.js?v=1.3.4"></script>
-  <script src="/fire-extinguisher/js/utils.js?v=1.3.4"></script>
+  <div class="detail-modal" id="detailModal" aria-hidden="true">
+    <div class="detail-box" role="dialog" aria-modal="true">
+      <div class="detail-head">
+        <div>
+          <h3 id="detailTitle">รายละเอียดการตรวจ</h3>
+          <p id="detailSubtitle">-</p>
+        </div>
+        <button class="detail-close" id="detailCloseBtn" type="button">×</button>
+      </div>
+
+      <div class="detail-body" id="detailBody"></div>
+    </div>
+  </div>
+
+  <script src="/fire-extinguisher/js/config.js?v=1.3.5"></script>
+  <script src="/fire-extinguisher/js/api.js?v=1.3.5"></script>
+  <script src="/fire-extinguisher/js/utils.js?v=1.3.5"></script>
 
   <script>
     (function () {
@@ -986,6 +1146,16 @@
           if (currentExtinguisher) {
             await loadHistory(currentExtinguisher.extinguisherId);
           }
+        });
+
+        U.$('#historyList').addEventListener('click', handleHistoryClick);
+        U.$('#detailCloseBtn').addEventListener('click', closeDetailPopup);
+        U.$('#detailModal').addEventListener('click', (e) => {
+          if (e.target.id === 'detailModal') closeDetailPopup();
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') closeDetailPopup();
         });
 
         U.$('#toggleInspectBtn').addEventListener('click', toggleInspectionForm);
@@ -1121,7 +1291,6 @@
           const detail = U.$('#latestDetail');
           detail.className = 'latest-detail wait';
           detail.textContent = 'ยังไม่มีประวัติการตรวจ';
-
           return;
         }
 
@@ -1139,59 +1308,68 @@
         badge.textContent = result;
 
         const detail = U.$('#latestDetail');
-        const detailText = buildLatestDetailText(latest);
+        const detailHtml = buildLatestDetailHtml(latest);
 
         if (isOk) {
           detail.className = 'latest-detail ok';
-          detail.textContent = detailText || 'ตรวจครบทุกจุด: ปกติ';
+          detail.innerHTML = detailHtml || 'ตรวจครบทุกจุด: ปกติ';
         } else {
           detail.className = 'latest-detail';
-          detail.innerHTML = detailText || '<b>พบจุดที่ต้องดูแล:</b> ไม่ระบุรายละเอียด';
+          detail.innerHTML = detailHtml || '<b>พบจุดที่ต้องดูแล:</b> ไม่ระบุรายละเอียด';
         }
       }
 
-      function buildLatestDetailText(item) {
-        const issues = [];
-
-        addIssue(issues, 'ความสะอาด', item.cleanliness, 'สะอาด');
-        addIssue(issues, 'สภาพถัง', item.bodyStatus, 'ปกติ');
-        addIssue(issues, 'แรงดัน', item.pressureStatus, 'ปกติ');
-        addIssue(issues, 'เกจ/น้ำหนัก', item.gaugeWeightStatus, 'ปกติ');
-        addIssue(issues, 'สาย/หัวฉีด', item.hoseStatus, 'ปกติ');
-        addIssue(issues, 'สลัก/ซีล', item.pinSealStatus, 'ปกติ');
-        addIssue(issues, 'คันบังคับ', item.handleStatus, 'ปกติ');
-
-        const co2Weight = String(item.co2Weight || '').trim();
-        const isCo2 = currentExtinguisher && isCo2Type(currentExtinguisher.type);
-
-        if (isCo2 && co2Weight) {
-          issues.push(`น้ำหนัก CO2: ${escapeInline(co2Weight)} kg`);
-        }
+      function buildLatestDetailHtml(item) {
+        const issues = collectIssues(item);
+        const co2Line = buildCo2Line(item);
 
         if (!issues.length) {
-          return isCo2 && co2Weight
-            ? `ตรวจครบทุกจุด: ปกติ · น้ำหนัก CO2: ${escapeInline(co2Weight)} kg`
+          return co2Line
+            ? `ตรวจครบทุกจุด: ปกติ<span class="issue-line">${co2Line}</span>`
             : 'ตรวจครบทุกจุด: ปกติ';
         }
 
-        return `<b>พบจุดที่ต้องดูแล:</b> ${issues.join(' · ')}`;
+        return [
+          '<b>พบจุดที่ต้องดูแล:</b>',
+          ...issues.map(issue => {
+            return `<span class="issue-line">• ${escapeInline(issue.label)}: ${escapeInline(issue.status)}${issue.note ? ` - ${escapeInline(issue.note)}` : ''}</span>`;
+          }),
+          co2Line ? `<span class="issue-line">• ${co2Line}</span>` : ''
+        ].filter(Boolean).join('');
       }
 
-      function addIssue(list, label, value, normalValue) {
-        const text = String(value || '').trim();
+      function collectIssues(item) {
+        const checks = [
+          { label: 'ความสะอาด', status: item.cleanliness, normal: 'สะอาด', note: item.cleanlinessNote },
+          { label: 'สภาพถัง', status: item.bodyStatus, normal: 'ปกติ', note: item.bodyNote },
+          { label: 'แรงดัน', status: item.pressureStatus, normal: 'ปกติ', note: item.pressureNote },
+          { label: 'เกจ/น้ำหนัก', status: item.gaugeWeightStatus, normal: 'ปกติ', note: item.gaugeWeightNote },
+          { label: 'สาย/หัวฉีด', status: item.hoseStatus, normal: 'ปกติ', note: item.hoseNote },
+          { label: 'สลัก/ซีล', status: item.pinSealStatus, normal: 'ปกติ', note: item.pinSealNote },
+          { label: 'คันบังคับ', status: item.handleStatus, normal: 'ปกติ', note: item.handleNote }
+        ];
 
-        if (!text || text === '-' || text === normalValue) return;
-
-        list.push(`${escapeInline(label)}: ${escapeInline(text)}`);
+        return checks
+          .map(check => ({
+            label: check.label,
+            status: String(check.status || '').trim(),
+            note: String(check.note || '').trim(),
+            normal: check.normal
+          }))
+          .filter(check => {
+            return check.status &&
+              check.status !== '-' &&
+              check.status !== check.normal;
+          });
       }
 
-      function escapeInline(value) {
-        return String(value ?? '')
-          .replaceAll('&', '&amp;')
-          .replaceAll('<', '&lt;')
-          .replaceAll('>', '&gt;')
-          .replaceAll('"', '&quot;')
-          .replaceAll("'", '&#039;');
+      function buildCo2Line(item) {
+        const co2Weight = String(item.co2Weight || '').trim();
+        const isCo2 = currentExtinguisher && isCo2Type(currentExtinguisher.type);
+
+        if (!isCo2 || !co2Weight) return '';
+
+        return `น้ำหนัก CO2: ${escapeInline(co2Weight)} kg`;
       }
 
       function renderHistory(items) {
@@ -1202,13 +1380,13 @@
           return;
         }
 
-        box.innerHTML = items.map(item => {
+        box.innerHTML = items.map((item, index) => {
           const result = item.overallStatus || '-';
           const isOk = result === 'ปกติ';
           const inspector = item.inspectorThai || item.inspectorEnglish || '-';
 
           return `
-            <article class="history-item">
+            <article class="history-item" data-history-index="${index}" role="button" tabindex="0">
               <div class="history-row-one">
                 <div class="history-cell date" title="${U.escapeHtml(item.timestamp || '-')}">
                   ${U.escapeHtml(item.timestamp || '-')}
@@ -1225,6 +1403,111 @@
             </article>
           `;
         }).join('');
+
+        U.$all('[data-history-index]').forEach(row => {
+          row.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              openHistoryDetail(Number(row.dataset.historyIndex));
+            }
+          });
+        });
+      }
+
+      function handleHistoryClick(e) {
+        const row = e.target.closest('[data-history-index]');
+        if (!row) return;
+
+        openHistoryDetail(Number(row.dataset.historyIndex));
+      }
+
+      function openHistoryDetail(index) {
+        const item = historyItems[index];
+        if (!item) return;
+
+        const result = item.overallStatus || '-';
+        const isOk = result === 'ปกติ';
+        const inspector = item.inspectorThai || item.inspectorEnglish || '-';
+
+        U.$('#detailTitle').textContent = `ผลตรวจ: ${result}`;
+        U.$('#detailSubtitle').textContent = `${item.timestamp || '-'} • ผู้ตรวจ: ${inspector}`;
+
+        const fields = [
+          { label: 'หมายเลขถัง', value: item.extinguisherId || (currentExtinguisher && currentExtinguisher.extinguisherId) || '-' },
+          { label: 'จุดติดตั้ง', value: item.location || (currentExtinguisher && currentExtinguisher.location) || '-' },
+          { label: 'ชนิดถัง', value: item.type || (currentExtinguisher && currentExtinguisher.type) || '-' },
+          { label: 'ขนาด', value: item.size || (currentExtinguisher && currentExtinguisher.size) || '-' },
+          { label: 'ปีผลิตถัง', value: item.yearMade || (currentExtinguisher && currentExtinguisher.yearMade) || '-' },
+          { label: 'วันที่ตรวจ', value: item.timestamp || '-' },
+          { label: 'ผู้ตรวจ', value: inspector },
+          { label: 'ผลตรวจรวม', value: result, status: isOk ? 'ok' : 'bad' },
+
+          { label: 'ความสะอาด', value: item.cleanliness || '-', note: item.cleanlinessNote, normal: 'สะอาด' },
+          { label: 'สภาพถัง', value: item.bodyStatus || '-', note: item.bodyNote, normal: 'ปกติ' },
+          { label: 'แรงดัน', value: item.pressureStatus || '-', note: item.pressureNote, normal: 'ปกติ' },
+          { label: 'เกจวัด/น้ำหนัก', value: item.gaugeWeightStatus || '-', note: item.gaugeWeightNote, normal: 'ปกติ' },
+          { label: 'น้ำหนัก CO2', value: item.co2Weight ? `${item.co2Weight} kg` : '-', co2Only: true },
+          { label: 'สาย/กระบอกฉีด', value: item.hoseStatus || '-', note: item.hoseNote, normal: 'ปกติ' },
+          { label: 'สายรัดสลัก', value: item.pinSealStatus || '-', note: item.pinSealNote, normal: 'ปกติ' },
+          { label: 'คันบังคับ', value: item.handleStatus || '-', note: item.handleNote, normal: 'ปกติ' },
+          { label: 'หมายเหตุเพิ่มเติม', value: item.remark || '-' }
+        ];
+
+        const isCo2 = currentExtinguisher && isCo2Type(currentExtinguisher.type);
+
+        U.$('#detailBody').innerHTML = `
+          <div class="detail-summary">
+            <strong>${U.escapeHtml(currentExtinguisher ? currentExtinguisher.extinguisherId : '-')}</strong>
+            <span class="badge ${isOk ? 'ok' : 'bad'}">${U.escapeHtml(result)}</span>
+          </div>
+
+          <div class="detail-grid">
+            ${fields
+              .filter(field => !field.co2Only || isCo2)
+              .map(field => buildDetailItem(field))
+              .join('')}
+          </div>
+        `;
+
+        const modal = U.$('#detailModal');
+        modal.classList.add('show');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function buildDetailItem(field) {
+        const value = String(field.value || '-').trim();
+        const note = String(field.note || '').trim();
+        const normal = field.normal || '';
+        const statusClass = field.status || (
+          normal && value && value !== '-' && value !== normal ? 'bad' :
+          normal && value === normal ? 'ok' :
+          ''
+        );
+
+        return `
+          <div class="detail-item ${statusClass}">
+            <span class="label">${U.escapeHtml(field.label)}</span>
+            <span class="value">${U.escapeHtml(value)}</span>
+            ${note ? `<span class="note">รายละเอียด: ${U.escapeHtml(note)}</span>` : ''}
+          </div>
+        `;
+      }
+
+      function closeDetailPopup() {
+        const modal = U.$('#detailModal');
+        modal.classList.remove('show');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      function escapeInline(value) {
+        return String(value ?? '')
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#039;');
       }
 
       function toggleInspectionForm() {
