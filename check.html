@@ -1112,9 +1112,10 @@
       const U = window.FireUtils;
       const API = window.FireAPI;
 
-      let currentExtinguisher = null;
-      let names = [];
-      let historyItems = [];
+     let currentExtinguisher = null;
+let names = [];
+let historyItems = [];
+let latestSummary = null;
 
       document.addEventListener('DOMContentLoaded', init);
 
@@ -1165,45 +1166,68 @@
       }
 
       async function loadData(id) {
-        try {
-          U.show('#loadingBox');
-          U.hide('#contentBox');
-          U.hide('#notFoundBox');
+  try {
+    U.show('#loadingBox');
+    U.hide('#notFoundBox');
+    U.hide('#contentBox');
 
-          const [extRes, namesRes] = await Promise.all([
-            API.getExtinguisher(id),
-            API.getNames()
-          ]);
+    const [extRes, namesRes, latestRes] = await Promise.all([
+      API.getExtinguisher(id),
+      API.getNames(),
+      API.getLatestSummary ? API.getLatestSummary(id) : Promise.resolve({ ok: true, found: false })
+    ]);
 
-          currentExtinguisher = extRes.item;
-          names = normalizeNames(namesRes.items || []);
-          historyItems = extRes.history || [];
+    if (!extRes || !extRes.ok || !extRes.item) {
+      showNotFound();
+      return;
+    }
 
-          renderExtinguisher(currentExtinguisher);
-          renderNames(names);
-          renderHistory(historyItems);
-          renderLatest(historyItems);
-          updateCo2Visibility();
+    currentExtinguisher = extRes.item;
+    names = normalizeNames(namesRes.items || []);
+    latestSummary = latestRes && latestRes.found ? latestRes.item : null;
 
-          U.hide('#loadingBox');
-          U.show('#contentBox');
-        } catch (err) {
-          U.toast(err.message || 'โหลดข้อมูลไม่สำเร็จ', 'error');
-          showNotFound();
-        }
-      }
+    renderExtinguisher(currentExtinguisher);
+    renderNames(names);
 
-      async function loadHistory(id) {
-        try {
-          const res = await API.getHistory(id, 10);
-          historyItems = res.items || [];
-          renderHistory(historyItems);
-          renderLatest(historyItems);
-          U.toast('อัปเดตประวัติล่าสุดแล้ว', 'success');
-        } catch (err) {
-          U.toast(err.message || 'โหลดประวัติไม่สำเร็จ', 'error');
-        }
-      }
+    if (latestSummary) {
+      renderLatestSummary(latestSummary);
+    } else {
+      renderLatest([]);
+    }
+
+    U.hide('#loadingBox');
+    U.show('#contentBox');
+
+    await loadHistory(id, { silent: true });
+  } catch (err) {
+    console.error('loadData error:', err);
+    U.toast(err.message || 'โหลดข้อมูลไม่สำเร็จ', 'error');
+    showNotFound();
+  }
+}
+
+      async function loadHistory(id, options = {}) {
+  const silent = !!options.silent;
+
+  try {
+    const res = await API.getHistory(id, 5);
+
+    historyItems = Array.isArray(res.items) ? res.items : [];
+    renderHistory(historyItems);
+
+    if (!latestSummary) {
+      renderLatest(historyItems);
+    }
+
+    if (!silent) {
+      U.toast('อัปเดตประวัติล่าสุดแล้ว', 'success');
+    }
+  } catch (err) {
+    if (!silent) {
+      U.toast(err.message || 'โหลดประวัติไม่สำเร็จ', 'error');
+    }
+  }
+}
 
       function showNotFound() {
         U.hide('#loadingBox');
@@ -1275,6 +1299,61 @@
         ].join('');
       }
 
+      function renderLatestSummary(item) {
+  if (!item) {
+    renderLatest([]);
+    return;
+  }
+
+  const status = String(item.latestStatus || '').trim();
+  const isOk = status === 'ปกติ';
+  const isBad = status && status !== 'ปกติ';
+
+  U.setText('#latestTimestamp', item.latestTimestamp || 'ยังไม่มีประวัติ');
+  U.setText('#latestInspector', item.latestInspectorThai || item.latestInspectorEnglish || '-');
+  U.setText('#latestResult', status || '-');
+  U.setText('#lastStatusText', status || 'ยังไม่มีประวัติ');
+
+  const badge = U.$('#latestBadge');
+  if (badge) {
+    badge.className = isOk ? 'badge ok' : (isBad ? 'badge bad' : 'badge wait');
+    badge.textContent = status || 'ยังไม่มีข้อมูล';
+  }
+
+  const detail = U.$('#latestDetail');
+  if (detail) {
+    if (!status) {
+      detail.className = 'latest-detail wait';
+      detail.textContent = 'ยังไม่มีประวัติการตรวจ';
+    } else if (isOk) {
+      detail.className = 'latest-detail ok';
+      detail.textContent = 'ผลตรวจล่าสุดปกติ';
+    } else {
+      detail.className = 'latest-detail';
+      detail.innerHTML = buildLatestIssueHtml(item.abnormalSummary || item.remark || 'พบความผิดปกติ');
+    }
+  }
+}
+      function buildLatestIssueHtml(text) {
+  const raw = String(text || '').trim();
+
+  if (!raw) {
+    return 'พบความผิดปกติ';
+  }
+
+  const parts = raw
+    .split('|')
+    .map(v => v.trim())
+    .filter(Boolean);
+
+  if (!parts.length) {
+    return U.escapeHtml(raw);
+  }
+
+  return parts
+    .map(part => `<span class="issue-line">${U.escapeHtml(part)}</span>`)
+    .join('');
+}
       function renderLatest(items) {
         const latest = items && items.length ? items[0] : null;
 
@@ -1666,7 +1745,7 @@
           toggleNotes();
           updateCo2Visibility();
 
-          await loadHistory(currentExtinguisher.extinguisherId);
+          await refreshLatestAndHistory(currentExtinguisher.extinguisherId);
           hideInspectionForm();
         } catch (err) {
           U.toast(err.message || 'บันทึกไม่สำเร็จ', 'error');
@@ -1674,6 +1753,22 @@
           U.setLoading(btn, false);
         }
       }
+      async function refreshLatestAndHistory(id) {
+  try {
+    if (API.getLatestSummary) {
+      const latestRes = await API.getLatestSummary(id);
+      latestSummary = latestRes && latestRes.found ? latestRes.item : null;
+
+      if (latestSummary) {
+        renderLatestSummary(latestSummary);
+      }
+    }
+  } catch (err) {
+    console.warn('refresh latest summary failed:', err);
+  }
+
+  await loadHistory(id, { silent: true });
+}
     })();
   </script>
 </body>
