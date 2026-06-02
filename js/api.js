@@ -136,6 +136,7 @@
 
       exportDetail: params.exportDetail || '',
       includeChecklist: params.includeChecklist || '',
+      autoRebuild: params.autoRebuild || '',
       includeNormalAbnormal: params.includeNormalAbnormal || ''
     };
   }
@@ -273,7 +274,12 @@
         timeoutMs: EXPORT_TIMEOUT_MS
       });
     },
-
+   rebuildMonthlyStatus(params = {}) {
+  return request('/api/rebuild-monthly-status', {
+    params: normalizeParams(params),
+    timeoutMs: SAVE_TIMEOUT_MS
+  });
+},
     async downloadCsv(params = {}) {
       const res = await this.exportCsv(params);
 
