@@ -162,6 +162,7 @@
     normalizeId,
     goCheck,
     downloadBase64File,
-    openExternalBrowserHint
+    openExternalBrowserHint,
+      getExtinguisherImage
   };
 })();
