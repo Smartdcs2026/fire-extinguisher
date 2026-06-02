@@ -122,6 +122,8 @@
     roundStatus: params.roundStatus || 'all',
     exportDetail: params.exportDetail || '',
     includeChecklist: params.includeChecklist || '',
+    includeNormalAbnormal: params.includeNormalAbnormal || '',
+    
     includeNormalAbnormal: params.includeNormalAbnormal || ''
   };
 }
@@ -232,7 +234,25 @@
         timeoutMs: 60000
       });
     },
+  getLatestSummary(id) {
+  return request('/api/latest-summary', {
+    params: {
+      id: id
+    }
+  });
+},
 
+getDashboardSummary(params = {}) {
+  return request('/api/dashboard-summary', {
+    params: normalizeParams(params)
+  });
+},
+
+getMonthlyStatusFast(params = {}) {
+  return request('/api/monthly-status-fast', {
+    params: normalizeParams(params)
+  });
+},
     async downloadCsv(params = {}) {
       const res = await this.exportCsv(params);
 
