@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#b91c1c" />
   <title>ข้อมูลถังดับเพลิง | Fire Extinguisher</title>
 
-  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.3.0" />
+  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.3.2" />
 
   <style>
     body,
@@ -61,6 +61,7 @@
       font-size: clamp(18px, 5vw, 26px);
       line-height: 1.1;
       font-weight: 900;
+      color: #111827;
     }
 
     .page-title p {
@@ -97,7 +98,7 @@
     }
 
     .main-card {
-      padding: 14px;
+      padding: 14px 14px 12px;
       position: relative;
       overflow: hidden;
     }
@@ -112,9 +113,9 @@
 
     .main-layout {
       display: grid;
-      grid-template-columns: 1fr 82px;
+      grid-template-columns: 1fr 74px;
       gap: 12px;
-      align-items: start;
+      align-items: center;
     }
 
     .main-info {
@@ -152,27 +153,28 @@
       line-height: 1.25;
     }
 
-    .ext-image-box {
-      width: 82px;
-      height: 132px;
-      border-radius: 18px;
-      background: #ffffff;
-      border: 1px solid var(--line);
-      display: grid;
-      place-items: center;
-      padding: 6px;
+    .ext-visual {
+      width: 74px;
+      height: 126px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       overflow: visible;
-      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.06);
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      padding: 0;
     }
 
-    .ext-image-box img {
+    .ext-visual img {
       display: block;
-      max-width: 100%;
-      max-height: 100%;
+      max-width: 74px;
+      max-height: 122px;
       width: auto;
       height: auto;
       object-fit: contain;
       object-position: center center;
+      filter: drop-shadow(0 8px 10px rgba(15, 23, 42, 0.14));
     }
 
     .info-grid {
@@ -208,31 +210,76 @@
       line-height: 1.35;
       font-weight: 900;
       word-break: break-word;
+      color: #111827;
+    }
+
+    .info-line:nth-child(1) {
+      background: #fff7ed;
+      border-color: #fed7aa;
+    }
+
+    .info-line:nth-child(2) {
+      background: #fef2f2;
+      border-color: #fecaca;
+    }
+
+    .info-line:nth-child(3) {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+    }
+
+    .info-line:nth-child(4) {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+
+    .info-line:nth-child(5) {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
     }
 
     .status-card {
-      padding: 14px;
+      padding: 12px;
+      border-left: 5px solid var(--primary);
     }
 
-    .section-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .latest-compact {
+      display: grid;
+      grid-template-columns: 1fr auto;
       gap: 10px;
-      margin-bottom: 10px;
+      align-items: center;
     }
 
-    .section-head h2 {
-      margin: 0;
-      font-size: 17px;
-      font-weight: 900;
+    .latest-main {
+      min-width: 0;
     }
 
-    .section-head small {
+    .latest-title {
       display: block;
+      font-size: 12px;
       color: var(--muted);
-      font-size: 11px;
-      margin-top: 2px;
+      font-weight: 800;
+      margin-bottom: 3px;
+    }
+
+    .latest-date {
+      display: block;
+      font-size: 14px;
+      font-weight: 950;
+      color: #111827;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+
+    .latest-sub {
+      display: block;
+      margin-top: 3px;
+      font-size: 12px;
+      color: #4b5563;
+      line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .badge {
@@ -261,94 +308,68 @@
       color: #92400e;
     }
 
-    .latest-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
+    .history-card {
+      padding: 12px;
     }
 
-    .latest-item {
-      border: 1px solid var(--line);
-      background: #f9fafb;
-      border-radius: 16px;
-      padding: 10px;
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
     }
 
-    .latest-item span {
+    .section-head h2 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 900;
+      color: #111827;
+    }
+
+    .section-head small {
       display: block;
       color: var(--muted);
       font-size: 11px;
-      font-weight: 800;
-      margin-bottom: 4px;
-    }
-
-    .latest-item strong {
-      display: block;
-      font-size: 13px;
-      line-height: 1.35;
-      font-weight: 900;
-      word-break: break-word;
-    }
-
-    .history-card {
-      padding: 14px;
+      margin-top: 2px;
     }
 
     .history-list {
       display: grid;
-      gap: 8px;
+      gap: 6px;
     }
 
     .history-item {
       border: 1px solid var(--line);
       background: #f9fafb;
       border-radius: 16px;
-      padding: 10px;
+      padding: 8px 9px;
     }
 
-    .history-row {
+    .history-row-one {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 10px;
-      align-items: start;
+      grid-template-columns: minmax(104px, 1.2fr) minmax(74px, 0.9fr) auto;
+      gap: 7px;
+      align-items: center;
     }
 
-    .history-date {
-      font-size: 13px;
+    .history-cell {
+      min-width: 0;
+      font-size: 12px;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .history-cell.date {
       font-weight: 900;
-      line-height: 1.35;
       color: #111827;
     }
 
-    .history-meta {
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.4;
-    }
-
-    .history-checks {
-      margin-top: 8px;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 6px;
-    }
-
-    .mini-check {
-      border-radius: 12px;
-      background: #fff;
-      border: 1px solid var(--line);
-      padding: 7px 8px;
-      font-size: 12px;
-      line-height: 1.35;
-      color: #374151;
-    }
-
-    .mini-check b {
-      display: block;
-      color: #111827;
-      font-size: 11px;
-      margin-bottom: 2px;
+    .history-cell.name {
+      color: #4b5563;
+      font-weight: 800;
     }
 
     .empty-state {
@@ -366,7 +387,7 @@
       background: transparent;
       border: 0;
       box-shadow: none;
-      padding: 4px 0 0;
+      padding: 2px 0 0;
       text-align: center;
     }
 
@@ -374,11 +395,16 @@
       border: 0;
       background: transparent;
       color: #9ca3af;
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 800;
-      text-decoration: underline;
+      text-decoration: none;
+      opacity: 0.8;
       padding: 8px 10px;
       cursor: pointer;
+    }
+
+    .staff-toggle::before {
+      content: "▾ ";
     }
 
     .inspect-panel {
@@ -545,16 +571,17 @@
       }
 
       .main-layout {
-        grid-template-columns: 1fr 110px;
+        grid-template-columns: 1fr 92px;
       }
 
-      .ext-image-box {
-        width: 110px;
-        height: 162px;
+      .ext-visual {
+        width: 92px;
+        height: 146px;
       }
 
-      .latest-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+      .ext-visual img {
+        max-width: 92px;
+        max-height: 142px;
       }
 
       .check-list {
@@ -582,30 +609,44 @@
       }
 
       .main-layout {
-        grid-template-columns: 1fr 70px;
+        grid-template-columns: 1fr 62px;
         gap: 9px;
       }
 
-      .ext-image-box {
-        width: 70px;
-        height: 118px;
-        padding: 4px;
+      .ext-visual {
+        width: 62px;
+        height: 112px;
+      }
+
+      .ext-visual img {
+        max-width: 62px;
+        max-height: 108px;
       }
 
       .info-grid,
-      .latest-grid,
-      .history-checks,
       .check-list {
         gap: 7px;
       }
 
-      .info-line,
-      .latest-item {
+      .info-line {
         padding: 8px;
       }
 
       .option-row {
         grid-template-columns: 1fr;
+      }
+
+      .history-row-one {
+        grid-template-columns: minmax(90px, 1.15fr) minmax(58px, 0.8fr) auto;
+        gap: 5px;
+      }
+
+      .history-cell {
+        font-size: 11px;
+      }
+
+      .latest-date {
+        font-size: 13px;
       }
     }
   </style>
@@ -641,7 +682,7 @@
             <span class="type-chip" id="typeBadge">-</span>
           </div>
 
-          <div class="ext-image-box">
+          <div class="ext-visual">
             <img id="extinguisherImage" alt="ภาพถังดับเพลิง" />
           </div>
         </div>
@@ -675,42 +716,27 @@
       </article>
 
       <section class="status-card">
-        <div class="section-head">
-          <div>
-            <h2>ผลตรวจล่าสุด</h2>
-            <small>ข้อมูลล่าสุดจากประวัติการตรวจถังนี้</small>
+        <div class="latest-compact">
+          <div class="latest-main">
+            <span class="latest-title">ผลตรวจล่าสุด</span>
+            <strong class="latest-date" id="latestTimestamp">-</strong>
+            <span class="latest-sub">
+              ผู้ตรวจ: <b id="latestInspector">-</b>
+              · จำนวนประวัติ: <b id="historyCount">0</b>
+            </span>
           </div>
+
           <span id="latestBadge" class="badge wait">ยังไม่มีข้อมูล</span>
         </div>
 
-        <div class="latest-grid">
-          <div class="latest-item">
-            <span>วันที่ตรวจ</span>
-            <strong id="latestTimestamp">-</strong>
-          </div>
-
-          <div class="latest-item">
-            <span>ผู้ตรวจ</span>
-            <strong id="latestInspector">-</strong>
-          </div>
-
-          <div class="latest-item">
-            <span>ผลตรวจ</span>
-            <strong id="latestResult">-</strong>
-          </div>
-
-          <div class="latest-item">
-            <span>จำนวนประวัติ</span>
-            <strong id="historyCount">0</strong>
-          </div>
-        </div>
+        <span id="latestResult" hidden>-</span>
       </section>
 
       <section class="history-card">
         <div class="section-head">
           <div>
             <h2>ประวัติการตรวจ</h2>
-            <small>แสดงรายการล่าสุดของถังใบนี้</small>
+            <small>วันที่ / ผู้ตรวจ / ผลตรวจ</small>
           </div>
           <button class="btn ghost small" id="refreshHistoryBtn" type="button">รีเฟรช</button>
         </div>
@@ -883,9 +909,9 @@
     </section>
   </main>
 
-  <script src="/fire-extinguisher/js/config.js?v=1.3.0"></script>
-  <script src="/fire-extinguisher/js/api.js?v=1.3.0"></script>
-  <script src="/fire-extinguisher/js/utils.js?v=1.3.0"></script>
+  <script src="/fire-extinguisher/js/config.js?v=1.3.2"></script>
+  <script src="/fire-extinguisher/js/api.js?v=1.3.2"></script>
+  <script src="/fire-extinguisher/js/utils.js?v=1.3.2"></script>
 
   <script>
     (function () {
@@ -1020,8 +1046,11 @@
         const img = U.$('#extinguisherImage');
         if (img) {
           const src = U.getExtinguisherImage(item.type);
+
+          img.style.display = src ? 'block' : 'none';
           img.src = src || '';
           img.alt = item.type || 'ภาพถังดับเพลิง';
+
           img.onerror = function () {
             this.style.display = 'none';
           };
@@ -1050,7 +1079,7 @@
         U.setText('#historyCount', items.length || 0);
 
         if (!latest) {
-          U.setText('#latestTimestamp', '-');
+          U.setText('#latestTimestamp', 'ยังไม่มีประวัติ');
           U.setText('#latestInspector', '-');
           U.setText('#latestResult', '-');
           U.setText('#lastStatusText', 'ยังไม่มีประวัติ');
@@ -1086,24 +1115,22 @@
         box.innerHTML = items.map(item => {
           const result = item.overallStatus || '-';
           const isOk = result === 'ปกติ';
+          const inspector = item.inspectorThai || item.inspectorEnglish || '-';
 
           return `
             <article class="history-item">
-              <div class="history-row">
-                <div>
-                  <div class="history-date">${U.escapeHtml(item.timestamp || '-')}</div>
-                  <div class="history-meta">
-                    ผู้ตรวจ: ${U.escapeHtml(item.inspectorThai || item.inspectorEnglish || '-')}
-                  </div>
+              <div class="history-row-one">
+                <div class="history-cell date" title="${U.escapeHtml(item.timestamp || '-')}">
+                  ${U.escapeHtml(item.timestamp || '-')}
                 </div>
-                <span class="badge ${isOk ? 'ok' : 'bad'}">${U.escapeHtml(result)}</span>
-              </div>
 
-              <div class="history-checks">
-                <div class="mini-check"><b>ความสะอาด</b>${U.escapeHtml(item.cleanliness || '-')}</div>
-                <div class="mini-check"><b>สภาพถัง</b>${U.escapeHtml(item.bodyStatus || '-')}</div>
-                <div class="mini-check"><b>แรงดัน</b>${U.escapeHtml(item.pressureStatus || '-')}</div>
-                <div class="mini-check"><b>เกจ/น้ำหนัก</b>${U.escapeHtml(item.gaugeWeightStatus || '-')}</div>
+                <div class="history-cell name" title="${U.escapeHtml(inspector)}">
+                  ${U.escapeHtml(inspector)}
+                </div>
+
+                <span class="badge ${isOk ? 'ok' : 'bad'}">
+                  ${U.escapeHtml(result)}
+                </span>
               </div>
             </article>
           `;
