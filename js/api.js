@@ -6,6 +6,9 @@
     : '';
 
   const DEFAULT_TIMEOUT_MS = 55000;
+  const READ_TIMEOUT_MS = 30000;
+  const SAVE_TIMEOUT_MS = 60000;
+  const EXPORT_TIMEOUT_MS = 60000;
 
   if (!API_BASE) {
     console.error('ไม่พบ APP_CONFIG.API_BASE กรุณาโหลด config.js ก่อน api.js');
@@ -36,7 +39,7 @@
     const url = buildUrl(path, method === 'GET' ? params : {});
 
     const headers = {
-      'Accept': 'application/json',
+      Accept: 'application/json',
       ...(options.body ? { 'Content-Type': 'application/json' } : {}),
       ...(options.headers || {})
     };
@@ -47,8 +50,8 @@
     }, timeoutMs);
 
     let res;
-    let data;
     let text = '';
+    let data;
 
     try {
       res = await fetch(url, {
@@ -108,25 +111,34 @@
   }
 
   function normalizeParams(params = {}) {
-  return {
-    period: params.period || '',
-    start: params.start || '',
-    end: params.end || '',
-    inspector: params.inspector || 'all',
-    type: params.type || 'all',
-    status: params.status || 'all',
-    inspectionStatus: params.inspectionStatus || 'all',
-    extinguisherId: params.extinguisherId || params.id || '',
-    location: params.location || '',
-    mode: params.mode || '',
-    roundStatus: params.roundStatus || 'all',
-    exportDetail: params.exportDetail || '',
-    includeChecklist: params.includeChecklist || '',
-    includeNormalAbnormal: params.includeNormalAbnormal || '',
-    
-    includeNormalAbnormal: params.includeNormalAbnormal || ''
-  };
-}
+    return {
+      period: params.period || '',
+      start: params.start || '',
+      end: params.end || '',
+
+      month: params.month || '',
+      inspectionMonth: params.inspectionMonth || '',
+      monthKey: params.monthKey || '',
+
+      inspector: params.inspector || 'all',
+      type: params.type || 'all',
+      status: params.status || 'all',
+      inspectionStatus: params.inspectionStatus || 'all',
+      extinguisherId: params.extinguisherId || params.id || '',
+      location: params.location || '',
+
+      page: params.page || '',
+      pageSize: params.pageSize || '',
+      limit: params.limit || '',
+
+      mode: params.mode || '',
+      roundStatus: params.roundStatus || 'all',
+
+      exportDetail: params.exportDetail || '',
+      includeChecklist: params.includeChecklist || '',
+      includeNormalAbnormal: params.includeNormalAbnormal || ''
+    };
+  }
 
   function downloadBase64(base64, fileName, mimeType) {
     if (!base64) {
@@ -161,103 +173,107 @@
     request,
 
     health() {
-      return request('/api/health');
+      return request('/api/health', {
+        timeoutMs: READ_TIMEOUT_MS
+      });
     },
 
     setup() {
       return request('/api/setup', {
-        timeoutMs: 60000
+        timeoutMs: SAVE_TIMEOUT_MS
       });
     },
 
     getExtinguishers() {
       return request('/api/extinguishers', {
-        timeoutMs: 60000
+        timeoutMs: SAVE_TIMEOUT_MS
       });
     },
 
     getExtinguisher(id) {
       return request('/api/extinguisher', {
-        params: { id }
+        params: { id },
+        timeoutMs: READ_TIMEOUT_MS
       });
     },
 
     getHistory(id, limit = 5) {
       return request('/api/history', {
-        params: { id, limit }
+        params: { id, limit },
+        timeoutMs: READ_TIMEOUT_MS
       });
     },
-     getLatestSummary(id) {
-  return request('/api/latest-summary', {
-    params: { id },
-    timeoutMs: 30000
-  });
-},
+
+    getLatestSummary(id) {
+      return request('/api/latest-summary', {
+        params: { id },
+        timeoutMs: READ_TIMEOUT_MS
+      });
+    },
+
     getNames() {
-      return request('/api/names');
+      return request('/api/names', {
+        timeoutMs: READ_TIMEOUT_MS
+      });
     },
 
     saveInspection(payload) {
       return request('/api/inspection/save', {
         method: 'POST',
         body: JSON.stringify(payload || {}),
-        timeoutMs: 60000
+        timeoutMs: SAVE_TIMEOUT_MS
       });
     },
 
     getReport(params = {}) {
       return request('/api/report', {
         params: normalizeParams(params),
-        timeoutMs: 60000
+        timeoutMs: SAVE_TIMEOUT_MS
       });
     },
 
     getInspectionStatus(params = {}) {
       return request('/api/inspection/status', {
         params: normalizeParams(params),
-        timeoutMs: 60000
+        timeoutMs: SAVE_TIMEOUT_MS
       });
     },
 
     getInspectionStatusDebug(params = {}) {
       return request('/api/inspection/status-debug', {
         params: normalizeParams(params),
-        timeoutMs: 60000
+        timeoutMs: SAVE_TIMEOUT_MS
+      });
+    },
+
+    getDashboardSummary(params = {}) {
+      return request('/api/dashboard-summary', {
+        params: normalizeParams(params),
+        timeoutMs: READ_TIMEOUT_MS
+      });
+    },
+
+    getMonthlyStatusFast(params = {}) {
+      return request('/api/monthly-status-fast', {
+        params: normalizeParams(params),
+        timeoutMs: READ_TIMEOUT_MS
       });
     },
 
     exportCsv(params = {}) {
       return request('/api/export/csv', {
         params: normalizeParams(params),
-        timeoutMs: 60000
+        timeoutMs: EXPORT_TIMEOUT_MS
       });
     },
 
     exportExcel(params = {}) {
       return request('/api/export/excel', {
         params: normalizeParams(params),
-        timeoutMs: 60000
+        timeoutMs: EXPORT_TIMEOUT_MS
       });
     },
-  getLatestSummary(id) {
-  return request('/api/latest-summary', {
-    params: {
-      id: id
-    }
-  });
-},
 
-getDashboardSummary(params = {}) {
-  return request('/api/dashboard-summary', {
-    params: normalizeParams(params)
-  });
-},
-
-getMonthlyStatusFast(params = {}) {
-  return request('/api/monthly-status-fast', {
-    params: normalizeParams(params)
-  });
-},
     async downloadCsv(params = {}) {
       const res = await this.exportCsv(params);
 
