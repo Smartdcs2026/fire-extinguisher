@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.0" />
+  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.3.0" />
 
   <style>
     :root {
@@ -34,6 +34,11 @@
 
     html {
       scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     body,
@@ -54,10 +59,20 @@
         linear-gradient(180deg, #fff7ed 0%, #f8fafc 48%, #eef2ff 100%);
     }
 
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    a {
+      color: inherit;
+    }
+
     .app-shell {
       max-width: 980px;
       margin: 0 auto;
       padding: 12px 10px 28px;
+      padding-bottom: calc(28px + env(safe-area-inset-bottom));
     }
 
     .app-header {
@@ -260,6 +275,12 @@
       transform: translateY(0);
     }
 
+    .btn:disabled {
+      opacity: 0.72;
+      cursor: not-allowed;
+      transform: none;
+    }
+
     .btn.primary {
       background: linear-gradient(135deg, #991b1b, #dc2626);
       color: #fff;
@@ -296,6 +317,49 @@
       padding: 8px 12px;
       border-radius: 13px;
       font-size: 12.5px;
+    }
+
+    .pending-actions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin: 10px 0;
+    }
+
+    .pending-btn {
+      min-width: 0;
+      min-height: 66px;
+      padding: 10px;
+      border-radius: 17px;
+      background: #fff;
+      border: 1px solid rgba(217, 119, 6, 0.28);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+      color: #111827;
+      text-decoration: none;
+      display: grid;
+      align-content: center;
+      gap: 3px;
+    }
+
+    .pending-btn strong {
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 950;
+      color: #92400e;
+    }
+
+    .pending-btn b {
+      font-size: 22px;
+      line-height: 1;
+      font-weight: 950;
+      color: #b45309;
+    }
+
+    .pending-btn span {
+      font-size: 10.5px;
+      line-height: 1.25;
+      font-weight: 750;
+      color: #64748b;
     }
 
     .manual-box {
@@ -810,6 +874,28 @@
         padding: 9px 8px;
       }
 
+      .pending-actions {
+        gap: 6px;
+      }
+
+      .pending-btn {
+        min-height: 60px;
+        padding: 8px 6px;
+        border-radius: 15px;
+      }
+
+      .pending-btn strong {
+        font-size: 11.5px;
+      }
+
+      .pending-btn b {
+        font-size: 20px;
+      }
+
+      .pending-btn span {
+        font-size: 9.2px;
+      }
+
       .input-row {
         grid-template-columns: minmax(0, 1fr) 78px;
         gap: 7px;
@@ -903,68 +989,6 @@
         padding: 11px;
       }
     }
-    .pending-actions {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.pending-btn {
-  min-width: 0;
-  min-height: 66px;
-  padding: 10px;
-  border-radius: 17px;
-  background: #fff;
-  border: 1px solid rgba(217, 119, 6, 0.28);
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
-  color: #111827;
-  text-decoration: none;
-  display: grid;
-  align-content: center;
-  gap: 3px;
-}
-
-.pending-btn strong {
-  font-size: 13px;
-  line-height: 1.2;
-  font-weight: 950;
-  color: #92400e;
-}
-
-.pending-btn span {
-  font-size: 10.5px;
-  line-height: 1.25;
-  font-weight: 750;
-  color: #64748b;
-}
-
-@media (max-width: 430px) {
-  .pending-actions {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 6px;
-  }
-
-  .pending-btn {
-    min-height: 60px;
-    padding: 8px 6px;
-    border-radius: 15px;
-  }
-
-  .pending-btn strong {
-    font-size: 11.5px;
-  }
-
-  .pending-btn span {
-    font-size: 9.2px;
-  }
-}
-    .pending-btn b {
-  font-size: 22px;
-  line-height: 1;
-  font-weight: 950;
-  color: #b45309;
-}
   </style>
 </head>
 
@@ -1018,25 +1042,27 @@
           รีเฟรชข้อมูล
         </button>
       </div>
+
       <div class="pending-actions">
-  <a class="pending-btn" href="/fire-extinguisher/report.html?mode=status&roundStatus=earlyUnchecked">
-    <strong>ค้างรอบ 1</strong>
-    <b id="pendingEarlyCount">-</b>
-    <span>ถังที่ยังไม่ตรวจต้นเดือน</span>
-  </a>
+        <a class="pending-btn" href="/fire-extinguisher/report.html?mode=status&roundStatus=earlyUnchecked">
+          <strong>ค้างรอบ 1</strong>
+          <b id="pendingEarlyCount">-</b>
+          <span>ยังไม่ตรวจต้นเดือน</span>
+        </a>
 
-  <a class="pending-btn" href="/fire-extinguisher/report.html?mode=status&roundStatus=lateUnchecked">
-    <strong>ค้างรอบ 2</strong>
-    <b id="pendingLateCount">-</b>
-    <span>ถังที่ยังไม่ตรวจปลายเดือน</span>
-  </a>
+        <a class="pending-btn" href="/fire-extinguisher/report.html?mode=status&roundStatus=lateUnchecked">
+          <strong>ค้างรอบ 2</strong>
+          <b id="pendingLateCount">-</b>
+          <span>ยังไม่ตรวจปลายเดือน</span>
+        </a>
 
-  <a class="pending-btn" href="/fire-extinguisher/report.html?mode=status&roundStatus=incompleteBothRounds">
-    <strong>ยังไม่ครบ 2 รอบ</strong>
-    <b id="pendingIncompleteCount">-</b>
-    <span>ถังที่ต้องติดตาม</span>
-  </a>
-</div>
+        <a class="pending-btn" href="/fire-extinguisher/report.html?mode=status&roundStatus=incompleteBothRounds">
+          <strong>ยังไม่ครบ 2 รอบ</strong>
+          <b id="pendingIncompleteCount">-</b>
+          <span>ถังที่ต้องติดตาม</span>
+        </a>
+      </div>
+
       <div class="manual-box">
         <label for="manualId">กรอกหมายเลขถัง กรณีสแกนไม่ได้</label>
         <div class="input-row">
@@ -1146,11 +1172,11 @@
     </section>
   </main>
 
-  <script src="/fire-extinguisher/js/config.js?v=1.2.2"></script>
-  <script src="/fire-extinguisher/js/api.js?v=1.2.2"></script>
-  <script src="/fire-extinguisher/js/utils.js?v=1.2.2"></script>
+  <script src="/fire-extinguisher/js/config.js?v=1.3.0"></script>
+  <script src="/fire-extinguisher/js/api.js?v=1.3.0"></script>
+  <script src="/fire-extinguisher/js/utils.js?v=1.3.0"></script>
   <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
-  <script src="/fire-extinguisher/js/scanner.js?v=1.2.2"></script>
+  <script src="/fire-extinguisher/js/scanner.js?v=1.3.0"></script>
 
   <script>
     (function () {
@@ -1159,6 +1185,9 @@
       const U = window.FireUtils;
       const API = window.FireAPI;
       const Scanner = window.FireScanner;
+
+      let dashboardSummary = null;
+      let dashboardMonthKey = '';
 
       let openScannerBtn;
       let closeScannerBtn;
@@ -1174,8 +1203,9 @@
         cacheElements();
         setLogo();
         bindEvents();
+
         await checkHealth();
-        await loadMonthStatus();
+        await loadDashboardSummary();
       }
 
       function cacheElements() {
@@ -1191,7 +1221,9 @@
       function setLogo() {
         const logo = U.$('#appLogo');
 
-        if (logo) {
+        if (!logo) return;
+
+        if (window.APP_CONFIG && window.APP_CONFIG.LOGO_URL) {
           logo.src = window.APP_CONFIG.LOGO_URL;
           logo.loading = 'eager';
           logo.decoding = 'async';
@@ -1209,12 +1241,23 @@
 
         if (manualSearchBtn) {
           manualSearchBtn.addEventListener('click', () => {
-            U.goCheck(manualId.value);
+            U.goCheck(manualId ? manualId.value : '');
           });
         }
 
         if (refreshStatusBtn) {
-          refreshStatusBtn.addEventListener('click', loadMonthStatus);
+          refreshStatusBtn.addEventListener('click', async () => {
+            U.setLoading(refreshStatusBtn, true, 'กำลังรีเฟรช...');
+
+            try {
+              await loadDashboardSummary();
+              U.toast('อัปเดตข้อมูลล่าสุดแล้ว', 'success');
+            } catch (err) {
+              U.toast(err.message || 'รีเฟรชไม่สำเร็จ', 'error');
+            } finally {
+              U.setLoading(refreshStatusBtn, false);
+            }
+          });
         }
 
         if (manualId) {
@@ -1226,7 +1269,7 @@
         }
 
         window.addEventListener('beforeunload', () => {
-          Scanner.stop();
+          safeStopScanner();
         });
       }
 
@@ -1245,62 +1288,189 @@
         }
       }
 
-      async function loadMonthStatus() {
+      async function loadDashboardSummary() {
         try {
-          if (refreshStatusBtn) {
-            U.setLoading(refreshStatusBtn, true, 'กำลังโหลด...');
+          if (API.getDashboardSummary) {
+            const res = await API.getDashboardSummary({
+              period: window.APP_CONFIG.DEFAULT_PERIOD || 'thisMonth'
+            });
+
+            if (!res || !res.ok) {
+              throw new Error(res && res.message ? res.message : 'โหลดข้อมูลสรุปไม่สำเร็จ');
+            }
+
+            dashboardSummary = normalizeDashboardSummary(res.summary || {});
+            dashboardMonthKey = res.monthKey || '';
+
+            renderDashboardSummary(dashboardSummary, dashboardMonthKey);
+            renderRoundRule(dashboardSummary, res.roundMeta || {});
+            renderTypeStatus(res.byType || dashboardSummary.byType || []);
+            return;
           }
 
-          const res = await API.getInspectionStatus({
-            period: window.APP_CONFIG.DEFAULT_PERIOD,
-            status: 'all'
-          });
-
-          const s = res.summary || {};
-
-          U.setText('#totalExtinguishers', s.totalExtinguishers ?? 0);
-          U.setText('#completedBothRounds', s.completedBothRounds ?? 0);
-          U.setText('#incompleteBothRounds', s.incompleteBothRounds ?? 0);
-          U.setText('#abnormalCount', s.abnormal ?? 0);
-         U.setText('#pendingEarlyCount', s.earlyUnchecked ?? 0);
-U.setText('#pendingLateCount', s.lateUnchecked ?? 0);
-U.setText('#pendingIncompleteCount', s.incompleteBothRounds ?? 0);
-          U.setText('#earlyChecked', s.earlyChecked ?? 0);
-          U.setText('#earlyUnchecked', s.earlyUnchecked ?? 0);
-          U.setText('#lateChecked', s.lateChecked ?? 0);
-          U.setText('#lateUnchecked', s.lateUnchecked ?? 0);
-
-          renderRoundRule(s, res.roundMeta || {});
-          renderTypeStatus(s.byType || []);
+          await loadInspectionStatusFallback();
         } catch (err) {
-          U.toast(err.message || 'โหลดสถานะเดือนไม่สำเร็จ', 'warning');
+          console.warn('loadDashboardSummary failed:', err);
 
-          U.setText('#totalExtinguishers', 0);
-          U.setText('#completedBothRounds', 0);
-          U.setText('#incompleteBothRounds', 0);
-          U.setText('#abnormalCount', 0);
-          U.setText('#earlyChecked', 0);
-          U.setText('#earlyUnchecked', 0);
-          U.setText('#lateChecked', 0);
-          U.setText('#lateUnchecked', 0);
-
-          renderTypeStatus([]);
-        } finally {
-          if (refreshStatusBtn) {
-            U.setLoading(refreshStatusBtn, false);
+          try {
+            await loadInspectionStatusFallback();
+          } catch (fallbackErr) {
+            console.warn('loadInspectionStatusFallback failed:', fallbackErr);
+            renderDashboardSummary(normalizeDashboardSummary({}), '');
+            renderTypeStatus([]);
+            U.toast(fallbackErr.message || err.message || 'โหลดข้อมูลสรุปไม่สำเร็จ', 'warning');
           }
         }
       }
 
+      async function loadInspectionStatusFallback() {
+        if (!API.getInspectionStatus) {
+          throw new Error('ไม่พบ API สำหรับโหลดสถานะการตรวจ');
+        }
+
+        const res = await API.getInspectionStatus({
+          period: window.APP_CONFIG.DEFAULT_PERIOD || 'thisMonth',
+          status: 'all',
+          limit: 500
+        });
+
+        const s = res.summary || {};
+
+        dashboardSummary = normalizeDashboardSummary({
+          total: s.totalExtinguishers ?? s.total ?? 0,
+          completed: s.completedBothRounds ?? s.completed ?? 0,
+          incomplete: s.incompleteBothRounds ?? s.incomplete ?? 0,
+          earlyDone: s.earlyChecked ?? s.earlyDone ?? 0,
+          earlyPending: s.earlyUnchecked ?? s.earlyPending ?? 0,
+          lateDone: s.lateChecked ?? s.lateDone ?? 0,
+          latePending: s.lateUnchecked ?? s.latePending ?? 0,
+          normal: s.normal ?? 0,
+          abnormal: s.abnormal ?? 0,
+          byType: s.byType || []
+        });
+
+        dashboardMonthKey = res.monthKey || '';
+
+        renderDashboardSummary(dashboardSummary, dashboardMonthKey);
+        renderRoundRule(s, res.roundMeta || {});
+        renderTypeStatus(s.byType || []);
+      }
+
+      function normalizeDashboardSummary(summary) {
+        summary = summary || {};
+
+        const total = toNumber(
+          summary.total ??
+          summary.totalExtinguishers ??
+          summary.all ??
+          0
+        );
+
+        const completed = toNumber(
+          summary.completed ??
+          summary.completedBothRounds ??
+          0
+        );
+
+        const incomplete = toNumber(
+          summary.incomplete ??
+          summary.incompleteBothRounds ??
+          Math.max(total - completed, 0)
+        );
+
+        const earlyDone = toNumber(
+          summary.earlyDone ??
+          summary.earlyChecked ??
+          0
+        );
+
+        const lateDone = toNumber(
+          summary.lateDone ??
+          summary.lateChecked ??
+          0
+        );
+
+        const earlyPending = toNumber(
+          summary.earlyPending ??
+          summary.earlyUnchecked ??
+          Math.max(total - earlyDone, 0)
+        );
+
+        const latePending = toNumber(
+          summary.latePending ??
+          summary.lateUnchecked ??
+          Math.max(total - lateDone, 0)
+        );
+
+        const normal = toNumber(summary.normal ?? 0);
+        const abnormal = toNumber(summary.abnormal ?? 0);
+
+        return {
+          ...summary,
+          total,
+          completed,
+          incomplete,
+          earlyDone,
+          lateDone,
+          earlyPending,
+          latePending,
+          normal,
+          abnormal,
+          byType: Array.isArray(summary.byType) ? summary.byType : []
+        };
+      }
+
+      function renderDashboardSummary(summary, monthKey) {
+        summary = normalizeDashboardSummary(summary);
+
+        setSummaryValue('totalExtinguishers', summary.total);
+        setSummaryValue('completedBothRounds', summary.completed);
+        setSummaryValue('incompleteBothRounds', summary.incomplete);
+        setSummaryValue('abnormalCount', summary.abnormal);
+
+        setSummaryValue('pendingEarlyCount', summary.earlyPending);
+        setSummaryValue('pendingLateCount', summary.latePending);
+        setSummaryValue('pendingIncompleteCount', summary.incomplete);
+
+        setSummaryValue('earlyChecked', summary.earlyDone);
+        setSummaryValue('earlyUnchecked', summary.earlyPending);
+        setSummaryValue('lateChecked', summary.lateDone);
+        setSummaryValue('lateUnchecked', summary.latePending);
+
+        const healthText = U.$('#healthText');
+        const healthDot = U.$('#healthDot');
+
+        if (healthText) {
+          const monthText = monthKey ? ` • รอบตรวจ ${monthKey}` : '';
+          healthText.textContent = `ระบบพร้อมใช้งาน • ถังในรอบนี้ ${formatNumber(summary.total)} รายการ${monthText}`;
+        }
+
+        if (healthDot) {
+          healthDot.className = 'status-dot ok';
+        }
+      }
+
+      function setSummaryValue(id, value) {
+        const el = document.getElementById(id);
+        if (el) {
+          el.textContent = formatNumber(value);
+        }
+      }
+
       function renderRoundRule(summary, roundMeta) {
-        const rule = summary.shortRuleText || roundMeta.shortRuleText || 'รอบ 1: วันที่ 1-10 • รอบ 2: วันที่ 11-สิ้นเดือน';
+        summary = summary || {};
+        roundMeta = roundMeta || {};
+
+        const rule = summary.shortRuleText ||
+          roundMeta.shortRuleText ||
+          'รอบ 1: วันที่ 1-10 • รอบ 2: วันที่ 11-สิ้นเดือน';
 
         const roundRuleBox = U.$('#roundRuleBox');
         const roundHelpText = U.$('#roundHelpText');
         const typeStatusNote = U.$('#typeStatusNote');
 
         if (roundRuleBox) {
-          const parts = rule.split('•').map(x => x.trim()).filter(Boolean);
+          const parts = String(rule).split('•').map(x => x.trim()).filter(Boolean);
 
           roundRuleBox.innerHTML = `
             <span>${U.escapeHtml(parts[0] || 'รอบ 1: วันที่ 1-10')}</span>
@@ -1328,19 +1498,22 @@ U.setText('#pendingIncompleteCount', s.incompleteBothRounds ?? 0);
         }
 
         grid.innerHTML = items.map(item => {
-          const total = Number(item.total || 0);
-          const earlyChecked = Number(item.earlyChecked || 0);
-          const earlyUnchecked = Number(item.earlyUnchecked || 0);
-          const lateChecked = Number(item.lateChecked || 0);
-          const lateUnchecked = Number(item.lateUnchecked || 0);
-          const completed = Number(item.completedBothRounds || 0);
+          const total = toNumber(item.total || 0);
+
+          const earlyChecked = toNumber(item.earlyChecked ?? item.earlyDone ?? 0);
+          const earlyUnchecked = toNumber(item.earlyUnchecked ?? item.earlyPending ?? Math.max(total - earlyChecked, 0));
+
+          const lateChecked = toNumber(item.lateChecked ?? item.lateDone ?? 0);
+          const lateUnchecked = toNumber(item.lateUnchecked ?? item.latePending ?? Math.max(total - lateChecked, 0));
+
+          const completed = toNumber(item.completedBothRounds ?? item.completed ?? 0);
           const completedPercent = total ? Math.round((completed / total) * 100) : 0;
 
           return `
             <article class="type-card">
               <div class="type-title">
                 <strong>${U.escapeHtml(item.type || 'ไม่ระบุชนิด')}</strong>
-                <span>ทั้งหมด ${total} ถัง • ครบ 2 รอบ ${completed} ถัง</span>
+                <span>ทั้งหมด ${formatNumber(total)} ถัง • ครบ 2 รอบ ${formatNumber(completed)} ถัง</span>
               </div>
 
               <div class="type-progress" aria-label="ตรวจครบสองรอบ ${completedPercent}%">
@@ -1351,16 +1524,16 @@ U.setText('#pendingIncompleteCount', s.incompleteBothRounds ?? 0);
                 <div class="type-round">
                   <div class="type-round-label">รอบ 1</div>
                   <div class="type-bars">
-                    <span class="type-pill ok">แล้ว ${earlyChecked}</span>
-                    <span class="type-pill wait">ค้าง ${earlyUnchecked}</span>
+                    <span class="type-pill ok">แล้ว ${formatNumber(earlyChecked)}</span>
+                    <span class="type-pill wait">ค้าง ${formatNumber(earlyUnchecked)}</span>
                   </div>
                 </div>
 
                 <div class="type-round">
                   <div class="type-round-label">รอบ 2</div>
                   <div class="type-bars">
-                    <span class="type-pill ok">แล้ว ${lateChecked}</span>
-                    <span class="type-pill wait">ค้าง ${lateUnchecked}</span>
+                    <span class="type-pill ok">แล้ว ${formatNumber(lateChecked)}</span>
+                    <span class="type-pill wait">ค้าง ${formatNumber(lateUnchecked)}</span>
                   </div>
                 </div>
               </div>
@@ -1371,6 +1544,10 @@ U.setText('#pendingIncompleteCount', s.incompleteBothRounds ?? 0);
 
       async function openScanner() {
         try {
+          if (!Scanner || !Scanner.start) {
+            throw new Error('ไม่พบระบบสแกน QR Code');
+          }
+
           U.show(scannerPanel);
           U.setLoading(openScannerBtn, true, 'กำลังเปิด...');
 
@@ -1380,6 +1557,7 @@ U.setText('#pendingIncompleteCount', s.incompleteBothRounds ?? 0);
               U.toast(`พบหมายเลขถัง ${id}`, 'success');
 
               setTimeout(() => {
+                safeStopScanner();
                 U.goCheck(id);
               }, 250);
             }
@@ -1393,11 +1571,25 @@ U.setText('#pendingIncompleteCount', s.incompleteBothRounds ?? 0);
       }
 
       function closeScanner() {
-        try {
-          Scanner.stop();
-        } catch (err) {}
-
+        safeStopScanner();
         U.hide(scannerPanel);
+      }
+
+      function safeStopScanner() {
+        try {
+          if (Scanner && Scanner.stop) {
+            Scanner.stop();
+          }
+        } catch (err) {}
+      }
+
+      function toNumber(value) {
+        const n = Number(value || 0);
+        return Number.isFinite(n) ? n : 0;
+      }
+
+      function formatNumber(value) {
+        return toNumber(value).toLocaleString('th-TH');
       }
     })();
   </script>
