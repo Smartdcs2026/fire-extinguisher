@@ -1939,6 +1939,41 @@
         font-size: 12px;
       }
     }
+    .info-card-with-image {
+  display: grid;
+  grid-template-columns: 1fr 90px;
+  gap: 12px;
+  align-items: start;
+}
+
+.ext-image-box {
+  width: 90px;
+  height: 120px;
+  border-radius: 18px;
+  background: #f9fafb;
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.ext-image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 6px;
+}
+
+@media (max-width: 420px) {
+  .info-card-with-image {
+    grid-template-columns: 1fr 76px;
+  }
+
+  .ext-image-box {
+    width: 76px;
+    height: 104px;
+  }
+}
   </style>
 </head>
 
@@ -1978,7 +2013,10 @@
             </div>
             <span class="id-badge" id="typeBadge">-</span>
           </div>
-
+          <div class="ext-image-box">
+    <img id="extinguisherImage" alt="ภาพถังดับเพลิง" />
+  </div>
+</div>
           <div class="info-grid">
             <div class="info-line span-2">
               <span>จุดติดตั้ง</span>
@@ -2331,6 +2369,12 @@
       }
 
       function renderExtinguisher(item) {
+        const img = U.$('#extinguisherImage');
+
+if (img) {
+  img.src = U.getExtinguisherImage(item.type);
+  img.alt = item.type || 'ภาพถังดับเพลิง';
+}
         if (!item) {
           showNotFound();
           return;
