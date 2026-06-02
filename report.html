@@ -9,9 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.3.0" />
 
-    
-<link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.8" />
   <style>
     :root {
       --primary: #b91c1c;
@@ -27,6 +26,15 @@
       --shadow2: 0 16px 38px rgba(15, 23, 42, 0.10);
     }
 
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      scroll-behavior: smooth;
+    }
+
     body,
     button,
     input,
@@ -36,6 +44,8 @@
     }
 
     body {
+      min-height: 100vh;
+      margin: 0;
       background:
         radial-gradient(circle at top left, rgba(254, 226, 226, 0.9), transparent 34%),
         radial-gradient(circle at top right, rgba(255, 237, 213, 0.72), transparent 32%),
@@ -43,10 +53,24 @@
       color: #111827;
     }
 
+    a {
+      color: inherit;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
     .app-shell {
       max-width: 1120px;
       margin: 0 auto;
       padding: 12px 10px 28px;
+      padding-bottom: calc(28px + env(safe-area-inset-bottom));
     }
 
     .page-top {
@@ -84,7 +108,6 @@
       background: #fff;
       display: grid;
       place-items: center;
-      box-sizing: border-box;
     }
 
     .page-logo img {
@@ -174,10 +197,23 @@
 
     .field input,
     .field select {
+      width: 100%;
       min-height: 42px;
       border-radius: 14px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      padding: 0 10px;
       font-size: 13.5px;
       font-weight: 800;
+      color: #0f172a;
+      outline: none;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--primary);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(185, 28, 28, 0.09);
     }
 
     .action-row {
@@ -207,6 +243,12 @@
     .btn:hover {
       transform: translateY(-1px);
       filter: brightness(1.02);
+    }
+
+    .btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
     }
 
     .btn.primary {
@@ -396,7 +438,7 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 940px;
+      min-width: 980px;
     }
 
     th,
@@ -456,29 +498,88 @@
       gap: 9px;
     }
 
-    .result-card {
+    .result-card,
+    .mobile-card {
       border: 1px solid var(--line2);
       background: #fff;
       border-radius: 18px;
       padding: 12px;
       box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
       display: grid;
-      gap: 7px;
+      gap: 8px;
     }
 
-    .result-card h3 {
+    .result-card h3,
+    .mobile-card h3 {
       margin: 0;
       font-size: 17px;
       line-height: 1.15;
       font-weight: 950;
     }
 
-    .result-card p {
+    .result-card p,
+    .mobile-card p {
       margin: 0;
       color: var(--muted2);
       font-size: 12.5px;
       line-height: 1.35;
       font-weight: 700;
+    }
+
+    .mobile-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mobile-card-head strong {
+      font-size: 18px;
+      font-weight: 950;
+      color: #0f172a;
+    }
+
+    .mobile-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .mobile-grid div {
+      min-width: 0;
+      padding: 8px;
+      border-radius: 13px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+    }
+
+    .mobile-grid span {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 850;
+      color: #64748b;
+      margin-bottom: 3px;
+    }
+
+    .mobile-grid b {
+      display: block;
+      font-size: 12px;
+      line-height: 1.3;
+      font-weight: 950;
+      color: #111827;
+      word-break: break-word;
+    }
+
+    .issue-box {
+      padding: 8px 10px;
+      border-radius: 13px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 850;
+      white-space: normal;
     }
 
     .card-status-grid {
@@ -504,6 +605,23 @@
       text-align: center;
       line-height: 1.45;
       font-weight: 800;
+    }
+
+    .pagination-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+      padding: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pagination-text {
+      font-size: 13px;
+      font-weight: 900;
+      color: #334155;
+      text-align: center;
     }
 
     .detail-modal {
@@ -571,6 +689,11 @@
       font-size: 14px;
       line-height: 1.4;
       font-weight: 900;
+      word-break: break-word;
+    }
+
+    .text-danger {
+      color: #b91c1c !important;
     }
 
     @media (min-width: 760px) {
@@ -718,9 +841,6 @@
         border-radius: 20px;
       }
     }
-    [hidden] {
-  display: none !important;
-}
   </style>
 </head>
 
@@ -752,17 +872,7 @@
       <div class="filter-grid">
         <div class="field">
           <label for="periodSelect">ช่วงเวลา</label>
-          <select id="periodSelect">
-            <option value="today">วันนี้</option>
-            <option value="yesterday">เมื่อวาน</option>
-            <option value="last7days">7 วันที่ผ่านมา</option>
-            <option value="last14days">14 วันที่ผ่านมา</option>
-            <option value="last30days">30 วันที่ผ่านมา</option>
-            <option value="thisMonth" selected>เดือนนี้</option>
-            <option value="lastMonth">เดือนที่แล้ว</option>
-            <option value="thisYear">ปีนี้</option>
-            <option value="custom">กำหนดเอง</option>
-          </select>
+          <select id="periodSelect"></select>
         </div>
 
         <div class="field date-field" hidden>
@@ -795,18 +905,30 @@
             <option value="all">ทั้งหมด</option>
           </select>
         </div>
+
         <div class="field" id="roundStatusField" hidden>
-  <label for="roundStatusSelect">รอบตรวจ</label>
-  <select id="roundStatusSelect">
-    <option value="all">ทั้งหมด</option>
-    <option value="earlyChecked">รอบ 1 ตรวจแล้ว</option>
-    <option value="earlyUnchecked">รอบ 1 ยังไม่ตรวจ</option>
-    <option value="lateChecked">รอบ 2 ตรวจแล้ว</option>
-    <option value="lateUnchecked">รอบ 2 ยังไม่ตรวจ</option>
-    <option value="completedBothRounds">ครบ 2 รอบ</option>
-    <option value="incompleteBothRounds">ยังไม่ครบ 2 รอบ</option>
-  </select>
-</div>
+          <label for="roundStatusSelect">รอบตรวจ</label>
+          <select id="roundStatusSelect">
+            <option value="all">ทั้งหมด</option>
+            <option value="earlyChecked">รอบ 1 ตรวจแล้ว</option>
+            <option value="earlyUnchecked">รอบ 1 ยังไม่ตรวจ</option>
+            <option value="lateChecked">รอบ 2 ตรวจแล้ว</option>
+            <option value="lateUnchecked">รอบ 2 ยังไม่ตรวจ</option>
+            <option value="completedBothRounds">ครบ 2 รอบ</option>
+            <option value="incompleteBothRounds">ยังไม่ครบ 2 รอบ</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="pageSizeSelect">จำนวนต่อหน้า</label>
+          <select id="pageSizeSelect">
+            <option value="50">50</option>
+            <option value="100" selected>100</option>
+            <option value="150">150</option>
+            <option value="300">300</option>
+          </select>
+        </div>
+
         <div class="field wide">
           <label for="searchInput">ค้นหา</label>
           <input id="searchInput" type="search" placeholder="หมายเลขถัง / จุดติดตั้ง" />
@@ -891,6 +1013,12 @@
       </div>
 
       <div class="mobile-list" id="mobileList"></div>
+
+      <div class="pagination-bar" id="paginationBar" hidden>
+        <button class="btn ghost small" id="prevPageBtn" type="button">ก่อนหน้า</button>
+        <span class="pagination-text" id="paginationText">หน้า 1 / 1</span>
+        <button class="btn ghost small" id="nextPageBtn" type="button">ถัดไป</button>
+      </div>
     </section>
   </main>
 
@@ -908,11 +1036,10 @@
     </div>
   </div>
 
+  <script src="/fire-extinguisher/js/config.js?v=1.3.0"></script>
+  <script src="/fire-extinguisher/js/api.js?v=1.3.0"></script>
+  <script src="/fire-extinguisher/js/utils.js?v=1.3.0"></script>
 
-
-<script src="/fire-extinguisher/js/config.js?v=1.2.8"></script>
-<script src="/fire-extinguisher/js/api.js?v=1.2.8"></script>
-<script src="/fire-extinguisher/js/utils.js?v=1.2.8"></script>
   <script>
     (function () {
       'use strict';
@@ -920,96 +1047,42 @@
       const U = window.FireUtils;
       const API = window.FireAPI;
 
-     let mode = 'report';
-let currentItems = [];
-let names = [];
-let extinguishers = [];
-let loadSeq = 0;
+      let mode = 'report';
+      let currentItems = [];
+      let names = [];
+      let extinguishers = [];
+      let loadSeq = 0;
+
+      let currentPage = 1;
+      let pageSize = 100;
+      let totalPages = 1;
+      let totalItems = 0;
 
       document.addEventListener('DOMContentLoaded', init);
 
- async function init() {
-  try {
-    setLogo();
-    bindEvents();
+      async function init() {
+        try {
+          setLogo();
+          initModeFromUrl();
+          syncPeriodOptionsForMode();
+          setStatusOptions();
+          applyInitialQueryParams();
+          syncModeUi();
+          bindEvents();
 
-    applyInitialQueryParams();
-    setStatusOptions();
-    applyInitialQueryParams();
+          await loadOptions();
+          await loadData({ resetPage: true });
+        } catch (err) {
+          console.error('init error:', err);
+          toast(err.message || 'เปิดหน้ารายงานไม่สำเร็จ', 'error');
+          resetAllLoadingButtons();
+        }
+      }
 
-    syncModeUi();
-    toggleCustomDate();
-
-    await loadOptions();
-    await loadData();
-  } catch (err) {
-    console.error('init error:', err);
-    U.toast(err.message || 'เปิดหน้ารายงานไม่สำเร็จ', 'error');
-    resetAllLoadingButtons();
-  }
-}
-
-      function syncPeriodOptionsForMode() {
-  const select = U.$('#periodSelect');
-  if (!select) return;
-
-  const current = select.value || 'thisMonth';
-
-  if (mode === 'status') {
-    select.innerHTML = `
-      <option value="thisMonth">เดือนนี้</option>
-      <option value="lastMonth">เดือนที่แล้ว</option>
-      <option value="custom">กำหนดเดือนเอง</option>
-    `;
-
-    if (current === 'thisMonth' || current === 'lastMonth' || current === 'custom') {
-      select.value = current;
-    } else {
-      select.value = 'thisMonth';
-    }
-  } else {
-    select.innerHTML = `
-      <option value="today">วันนี้</option>
-      <option value="yesterday">เมื่อวาน</option>
-      <option value="last7days">7 วันที่ผ่านมา</option>
-      <option value="last14days">14 วันที่ผ่านมา</option>
-      <option value="last30days">30 วันที่ผ่านมา</option>
-      <option value="thisMonth">เดือนนี้</option>
-      <option value="lastMonth">เดือนที่แล้ว</option>
-      <option value="thisYear">ปีนี้</option>
-      <option value="custom">กำหนดเอง</option>
-    `;
-
-    select.value = current || 'thisMonth';
-  }
-}
-      
-  function syncModeUi() {
-  const roundField = U.$('#roundStatusField');
-  const roundSummaryGrid = U.$('#roundSummaryGrid');
-
-  syncPeriodOptionsForMode();
-
-  U.$('#tabReport').classList.toggle('active', mode === 'report');
-  U.$('#tabStatus').classList.toggle('active', mode === 'status');
-
-  if (roundField) {
-    roundField.hidden = mode !== 'status';
-  }
-
-  if (roundSummaryGrid) {
-    roundSummaryGrid.hidden = mode !== 'status';
-  }
-
-  U.$('#resultTitle').textContent = mode === 'report'
-    ? 'รายการผลตรวจ'
-    : 'สถานะประจำเดือน';
-
-  toggleCustomDate();
-}
       function setLogo() {
         const logo = U.$('#pageLogo');
-        if (logo) {
+
+        if (logo && window.APP_CONFIG && window.APP_CONFIG.LOGO_URL) {
           logo.src = window.APP_CONFIG.LOGO_URL;
           logo.loading = 'eager';
           logo.decoding = 'async';
@@ -1017,85 +1090,184 @@ let loadSeq = 0;
       }
 
       function bindEvents() {
-  U.$('#tabReport').addEventListener('click', () => setMode('report'));
-  U.$('#tabStatus').addEventListener('click', () => setMode('status'));
+        U.$('#tabReport').addEventListener('click', () => setMode('report'));
+        U.$('#tabStatus').addEventListener('click', () => setMode('status'));
 
-  U.$('#periodSelect').addEventListener('change', () => {
-    toggleCustomDate();
-    loadData();
-  });
+        U.$('#periodSelect').addEventListener('change', () => {
+          toggleCustomDate();
+          loadData({ resetPage: true });
+        });
 
-  const roundStatusSelect = U.$('#roundStatusSelect');
-  if (roundStatusSelect) {
-    roundStatusSelect.addEventListener('change', loadData);
-  }
+        U.$('#inspectorSelect').addEventListener('change', () => loadData({ resetPage: true }));
+        U.$('#typeSelect').addEventListener('change', () => loadData({ resetPage: true }));
+        U.$('#statusSelect').addEventListener('change', () => loadData({ resetPage: true }));
 
-  U.$('#inspectorSelect').addEventListener('change', loadData);
-  U.$('#typeSelect').addEventListener('change', loadData);
-  U.$('#statusSelect').addEventListener('change', loadData);
+        const roundStatusSelect = U.$('#roundStatusSelect');
+        if (roundStatusSelect) {
+          roundStatusSelect.addEventListener('change', () => loadData({ resetPage: true }));
+        }
 
-  U.$('#loadBtn').addEventListener('click', loadData);
-  U.$('#clearBtn').addEventListener('click', clearFilters);
-  U.$('#csvBtn').addEventListener('click', () => exportFile('csv'));
-  U.$('#excelBtn').addEventListener('click', () => exportFile('excel'));
+        const pageSizeSelect = U.$('#pageSizeSelect');
+        if (pageSizeSelect) {
+          pageSizeSelect.addEventListener('change', () => {
+            pageSize = Number(pageSizeSelect.value || 100);
+            loadData({ resetPage: true });
+          });
+        }
 
-  U.$('#closeModalBtn').addEventListener('click', closeModal);
+        U.$('#loadBtn').addEventListener('click', () => loadData({ resetPage: true }));
+        U.$('#clearBtn').addEventListener('click', clearFilters);
+        U.$('#csvBtn').addEventListener('click', () => exportFile('csv'));
+        U.$('#excelBtn').addEventListener('click', () => exportFile('excel'));
 
-  U.$('#detailModal').addEventListener('click', (e) => {
-    if (e.target.id === 'detailModal') closeModal();
-  });
+        U.$('#closeModalBtn').addEventListener('click', closeModal);
 
-  U.$('#tableBody').addEventListener('click', handleDetailClick);
-  U.$('#mobileList').addEventListener('click', handleDetailClick);
+        U.$('#detailModal').addEventListener('click', (e) => {
+          if (e.target.id === 'detailModal') closeModal();
+        });
 
-  U.$('#searchInput').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      loadData();
-    }
-  });
+        U.$('#tableBody').addEventListener('click', handleDetailClick);
+        U.$('#mobileList').addEventListener('click', handleDetailClick);
 
-  window.addEventListener('error', (e) => {
-    console.error('page error:', e.error || e.message);
-    resetAllLoadingButtons();
-  });
+        U.$('#searchInput').addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            loadData({ resetPage: true });
+          }
+        });
 
-  window.addEventListener('unhandledrejection', (e) => {
-    console.error('promise error:', e.reason);
-    resetAllLoadingButtons();
-  });
-}
-function resetAllLoadingButtons() {
-  ['#loadBtn', '#csvBtn', '#excelBtn', '#clearBtn'].forEach(selector => {
-    const btn = U.$(selector);
-    if (btn) U.setLoading(btn, false);
-  });
-}
-      function handleDetailClick(e) {
-        const btn = e.target.closest('[data-detail]');
-        if (!btn) return;
+        U.$('#prevPageBtn').addEventListener('click', async () => {
+          if (currentPage <= 1) return;
+          currentPage--;
+          await loadData();
+        });
 
-        const index = Number(btn.dataset.detail);
-        openDetail(currentItems[index]);
+        U.$('#nextPageBtn').addEventListener('click', async () => {
+          if (currentPage >= totalPages) return;
+          currentPage++;
+          await loadData();
+        });
+
+        window.addEventListener('error', (e) => {
+          console.error('page error:', e.error || e.message);
+          resetAllLoadingButtons();
+        });
+
+        window.addEventListener('unhandledrejection', (e) => {
+          console.error('promise error:', e.reason);
+          resetAllLoadingButtons();
+        });
       }
 
-     function setMode(nextMode) {
-  mode = nextMode === 'status' ? 'status' : 'report';
+      function initModeFromUrl() {
+        const sp = new URLSearchParams(location.search);
+        const queryMode = sp.get('mode');
 
-  setStatusOptions();
-  syncModeUi();
-  loadData();
-}
+        mode = queryMode === 'status' ? 'status' : 'report';
+      }
+
+      function applyInitialQueryParams() {
+        const sp = new URLSearchParams(location.search);
+
+        setSelectValue('#periodSelect', sp.get('period'));
+        setSelectValue('#roundStatusSelect', sp.get('roundStatus'));
+        setSelectValue('#statusSelect', sp.get('status'));
+
+        const search = sp.get('q') || sp.get('search') || sp.get('id') || sp.get('extinguisherId') || '';
+        if (search) {
+          U.$('#searchInput').value = search;
+        }
+      }
+
+      function setSelectValue(selector, value) {
+        if (!value) return;
+
+        const el = U.$(selector);
+        if (!el) return;
+
+        const has = Array.from(el.options || []).some(opt => opt.value === value);
+        if (has) {
+          el.value = value;
+        }
+      }
+
+      function setMode(nextMode) {
+        mode = nextMode === 'status' ? 'status' : 'report';
+
+        currentItems = [];
+        currentPage = 1;
+        totalPages = 1;
+        totalItems = 0;
+
+        syncPeriodOptionsForMode();
+        setStatusOptions();
+        syncModeUi();
+        loadData({ resetPage: true });
+      }
+
+      function syncPeriodOptionsForMode() {
+        const select = U.$('#periodSelect');
+        if (!select) return;
+
+        const current = select.value || 'thisMonth';
+
+        if (mode === 'status') {
+          select.innerHTML = `
+            <option value="thisMonth">เดือนนี้</option>
+            <option value="lastMonth">เดือนที่แล้ว</option>
+            <option value="custom">กำหนดเดือนเอง</option>
+          `;
+
+          select.value = ['thisMonth', 'lastMonth', 'custom'].includes(current)
+            ? current
+            : 'thisMonth';
+        } else {
+          select.innerHTML = `
+            <option value="today">วันนี้</option>
+            <option value="yesterday">เมื่อวาน</option>
+            <option value="last7days">7 วันที่ผ่านมา</option>
+            <option value="last14days">14 วันที่ผ่านมา</option>
+            <option value="last30days">30 วันที่ผ่านมา</option>
+            <option value="thisMonth">เดือนนี้</option>
+            <option value="lastMonth">เดือนที่แล้ว</option>
+            <option value="thisYear">ปีนี้</option>
+            <option value="custom">กำหนดเอง</option>
+          `;
+
+          select.value = current || 'thisMonth';
+        }
+      }
+
+      function syncModeUi() {
+        const tabReport = U.$('#tabReport');
+        const tabStatus = U.$('#tabStatus');
+        const roundField = U.$('#roundStatusField');
+        const roundSummaryGrid = U.$('#roundSummaryGrid');
+
+        if (tabReport) tabReport.classList.toggle('active', mode === 'report');
+        if (tabStatus) tabStatus.classList.toggle('active', mode === 'status');
+
+        if (roundField) {
+          roundField.hidden = mode !== 'status';
+        }
+
+        if (roundSummaryGrid) {
+          roundSummaryGrid.hidden = mode !== 'status';
+        }
+
+        U.$('#resultTitle').textContent = mode === 'report'
+          ? 'รายการผลตรวจ'
+          : 'สถานะประจำเดือน';
+
+        toggleCustomDate();
+      }
 
       function setStatusOptions() {
         const select = U.$('#statusSelect');
+        if (!select) return;
 
         if (mode === 'status') {
           select.innerHTML = `
             <option value="all">ทั้งหมด</option>
-            <option value="ครบ 2 รอบ">ครบ 2 รอบ</option>
-            <option value="ยังไม่ครบ 2 รอบ">ยังไม่ครบ 2 รอบ</option>
-            <option value="ตรวจแล้ว">ตรวจแล้วอย่างน้อย 1 ครั้ง</option>
-            <option value="ยังไม่ได้ตรวจ">ยังไม่เคยตรวจในเดือน</option>
             <option value="ปกติ">ผลล่าสุดปกติ</option>
             <option value="ผิดปกติ">ผลล่าสุดผิดปกติ</option>
           `;
@@ -1108,55 +1280,35 @@ function resetAllLoadingButtons() {
         }
       }
 
-     async function loadOptions() {
-  names = [];
-  extinguishers = [];
+      async function loadOptions() {
+        names = [];
+        extinguishers = [];
 
-  let reportFallbackItems = [];
+        try {
+          const results = await Promise.allSettled([
+            API.getNames(),
+            API.getExtinguishers()
+          ]);
 
-  try {
-    const results = await Promise.allSettled([
-      API.getNames(),
-      API.getExtinguishers(),
-      API.getReport({
-        period: U.$('#periodSelect').value || 'thisMonth',
-        inspector: 'all',
-        type: 'all',
-        status: 'all',
-        roundStatus: 'all'
-      })
-    ]);
+          if (results[0].status === 'fulfilled' && Array.isArray(results[0].value.items)) {
+            names = normalizeNameItems(results[0].value.items);
+          }
 
-    if (results[0].status === 'fulfilled' && Array.isArray(results[0].value.items)) {
-      names = normalizeNameItems(results[0].value.items);
-    }
+          if (results[1].status === 'fulfilled' && Array.isArray(results[1].value.items)) {
+            extinguishers = results[1].value.items || [];
+          }
 
-    if (results[1].status === 'fulfilled' && Array.isArray(results[1].value.items)) {
-      extinguishers = results[1].value.items || [];
-    }
+          renderInspectorOptions();
+          renderTypeOptions();
+        } catch (err) {
+          console.error('loadOptions error:', err);
+          toast(err.message || 'โหลดตัวเลือกไม่สำเร็จ', 'warning');
 
-    if (results[2].status === 'fulfilled' && Array.isArray(results[2].value.items)) {
-      reportFallbackItems = results[2].value.items || [];
-    }
+          renderInspectorOptions();
+          renderTypeOptions();
+        }
+      }
 
-    if (!names.length && reportFallbackItems.length) {
-      names = buildNamesFromReport(reportFallbackItems);
-    }
-
-    if (!extinguishers.length && reportFallbackItems.length) {
-      extinguishers = buildExtinguishersFromReport(reportFallbackItems);
-    }
-
-    renderInspectorOptions();
-    renderTypeOptions();
-  } catch (err) {
-    console.error('loadOptions error:', err);
-    U.toast(err.message || 'โหลดตัวเลือกไม่สำเร็จ', 'warning');
-
-    renderInspectorOptions();
-    renderTypeOptions();
-  }
-}
       function normalizeNameItems(items) {
         const map = new Map();
 
@@ -1176,6 +1328,215 @@ function resetAllLoadingButtons() {
         });
 
         return Array.from(map.values());
+      }
+
+      function buildNameDisplay(thaiName, englishName) {
+        if (thaiName && englishName) return `${thaiName} / ${englishName}`;
+        return thaiName || englishName || '';
+      }
+
+      function renderInspectorOptions() {
+        const select = U.$('#inspectorSelect');
+        if (!select) return;
+
+        select.innerHTML = '<option value="all">ทั้งหมด</option>' + names.map(item => {
+          const label = item.displayName || item.thaiName || item.englishName || '';
+          const value = item.thaiName || item.englishName || label;
+          return `<option value="${escapeHtml(value)}">${escapeHtml(label)}</option>`;
+        }).join('');
+      }
+
+      function renderTypeOptions() {
+        const select = U.$('#typeSelect');
+        if (!select) return;
+
+        const currentValue = select.value || 'all';
+
+        const types = [
+          ...new Set(
+            extinguishers
+              .map(item => String(item.type || '').trim())
+              .filter(Boolean)
+          )
+        ].sort((a, b) => String(a).localeCompare(String(b), 'th'));
+
+        select.innerHTML = '<option value="all">ทั้งหมด</option>' + types.map(type => {
+          return `<option value="${escapeHtml(type)}">${escapeHtml(type)}</option>`;
+        }).join('');
+
+        select.value = types.includes(currentValue) ? currentValue : 'all';
+      }
+
+      function toggleCustomDate() {
+        const period = U.$('#periodSelect').value;
+        const isCustom = period === 'custom';
+
+        U.$all('.date-field').forEach(el => {
+          el.hidden = !isCustom;
+        });
+      }
+
+      function clearFilters() {
+        U.$('#periodSelect').value = 'thisMonth';
+        U.$('#startDate').value = '';
+        U.$('#endDate').value = '';
+        U.$('#inspectorSelect').value = 'all';
+        U.$('#typeSelect').value = 'all';
+        U.$('#searchInput').value = '';
+        U.$('#pageSizeSelect').value = '100';
+
+        pageSize = 100;
+        currentPage = 1;
+
+        setStatusOptions();
+        U.$('#statusSelect').value = 'all';
+
+        const roundStatusSelect = U.$('#roundStatusSelect');
+        if (roundStatusSelect) {
+          roundStatusSelect.value = 'all';
+        }
+
+        toggleCustomDate();
+        syncModeUi();
+        loadData({ resetPage: true });
+      }
+
+      function buildParams() {
+        const period = U.$('#periodSelect').value || 'thisMonth';
+        const search = U.$('#searchInput').value.trim();
+        const roundStatusSelect = U.$('#roundStatusSelect');
+
+        const params = {
+          period,
+          inspector: U.$('#inspectorSelect').value || 'all',
+          type: U.$('#typeSelect').value || 'all',
+          status: mode === 'report' ? (U.$('#statusSelect').value || 'all') : 'all',
+          inspectionStatus: mode === 'status' ? (U.$('#statusSelect').value || 'all') : 'all',
+          roundStatus: mode === 'status' && roundStatusSelect ? roundStatusSelect.value || 'all' : 'all',
+          page: currentPage,
+          pageSize
+        };
+
+        if (period === 'custom') {
+          params.start = U.$('#startDate').value;
+          params.end = U.$('#endDate').value;
+        }
+
+        if (search) {
+          if (/^[A-Za-z0-9_-]+$/.test(search) && !search.includes(' ')) {
+            params.extinguisherId = search;
+          } else {
+            params.location = search;
+          }
+        }
+
+        return params;
+      }
+
+      async function loadData(options = {}) {
+        if (options.resetPage) {
+          currentPage = 1;
+        }
+
+        const btn = U.$('#loadBtn');
+        const seq = ++loadSeq;
+
+        try {
+          if (btn) {
+            U.setLoading(btn, true, 'กำลังโหลด...');
+          }
+
+          const params = buildParams();
+
+          let res;
+
+          if (mode === 'status' && API.getMonthlyStatusFast) {
+            res = await API.getMonthlyStatusFast(params);
+          } else if (mode === 'status') {
+            res = await API.getInspectionStatus(params);
+          } else {
+            res = await API.getReport(params);
+          }
+
+          if (seq !== loadSeq) return;
+
+          if (!res || !res.ok) {
+            throw new Error(res && res.message ? res.message : 'โหลดข้อมูลไม่สำเร็จ');
+          }
+
+          currentItems = normalizeItemsForMode(Array.isArray(res.items) ? res.items : []);
+
+          totalItems = Number(res.total || currentItems.length || 0);
+          totalPages = Math.max(1, Number(res.totalPages || 1));
+          currentPage = Number(res.page || currentPage || 1);
+          pageSize = Number(res.pageSize || pageSize || 100);
+
+          renderRoundNote(res.summary || {}, res.roundMeta || {});
+          renderSummary(res.summary || {}, res);
+          renderResults(currentItems);
+          renderPagination();
+
+          if (mode === 'report') {
+            refreshOptionsFromCurrentItems(currentItems);
+          }
+        } catch (err) {
+          if (seq !== loadSeq) return;
+
+          console.error('loadData error:', err);
+
+          toast(err.message || 'โหลดข้อมูลไม่สำเร็จ', 'error');
+
+          currentItems = [];
+          totalItems = 0;
+          totalPages = 1;
+
+          renderRoundNote({}, {});
+          renderSummary({}, {});
+          renderResults([]);
+          renderPagination();
+        } finally {
+          if (seq === loadSeq && btn) {
+            U.setLoading(btn, false);
+          }
+        }
+      }
+
+      function normalizeItemsForMode(items) {
+        if (mode !== 'status') return items;
+
+        return items.map(item => ({
+          ...item,
+          monthlyStatus: item.monthlyStatus || item.completedStatus || 'ยังไม่ครบ',
+          earlyRoundStatus: item.earlyRoundStatus || item.earlyRound || (item.earlyChecked ? 'ตรวจแล้ว' : 'ยังไม่ตรวจ'),
+          lateRoundStatus: item.lateRoundStatus || item.lateRound || (item.lateChecked ? 'ตรวจแล้ว' : 'ยังไม่ตรวจ'),
+          lastCheckedAt: item.lastCheckedAt || item.latestTimestamp || '',
+          lastResult: item.lastResult || item.latestStatus || '',
+          checkCount: item.checkCount ?? item.countInMonth ?? 0,
+          lastInspectorThai: item.lastInspectorThai || item.latestInspectorThai || '',
+          lastInspectorEnglish: item.lastInspectorEnglish || item.latestInspectorEnglish || ''
+        }));
+      }
+
+      function renderRoundNote(summary, roundMeta) {
+        const rule = summary.shortRuleText || roundMeta.shortRuleText || 'รอบ 1: วันที่ 1-10 • รอบ 2: วันที่ 11-สิ้นเดือน';
+
+        const note = mode === 'status'
+          ? `${rule} ระบบนับถังละ 1 ครั้งต่อรอบ และแสดงสถานะทีละเดือน`
+          : `${rule} รายการผลตรวจแสดงตามวันที่บันทึกจริง`;
+
+        U.setText('#roundNote', note);
+      }
+
+      function refreshOptionsFromCurrentItems(items) {
+        if (!names.length && items.length) {
+          names = buildNamesFromReport(items);
+          renderInspectorOptions();
+        }
+
+        if (!extinguishers.length && items.length) {
+          extinguishers = buildExtinguishersFromReport(items);
+          renderTypeOptions();
+        }
       }
 
       function buildNamesFromReport(items) {
@@ -1201,11 +1562,6 @@ function resetAllLoadingButtons() {
         return Array.from(map.values());
       }
 
-      function buildNameDisplay(thaiName, englishName) {
-        if (thaiName && englishName) return `${thaiName} / ${englishName}`;
-        return thaiName || englishName || '';
-      }
-
       function buildExtinguishersFromReport(items) {
         const map = new Map();
 
@@ -1225,257 +1581,100 @@ function resetAllLoadingButtons() {
         return Array.from(map.values());
       }
 
-      function renderInspectorOptions() {
-        const select = U.$('#inspectorSelect');
-        if (!select) return;
+      function renderSummary(summary, res) {
+        summary = summary || {};
+        res = res || {};
 
-        select.innerHTML = '<option value="all">ทั้งหมด</option>' + names.map(item => {
-          const label = item.displayName || item.thaiName || item.englishName || '';
-          const value = item.thaiName || item.englishName || label;
-          return `<option value="${U.escapeHtml(value)}">${U.escapeHtml(label)}</option>`;
-        }).join('');
-      }
+        if (mode === 'status') {
+          const total = Number(res.total || summary.totalExtinguishers || summary.total || currentItems.length || 0);
+          const completed = Number(summary.completedBothRounds ?? summary.completed ?? countStatus('monthlyStatus', 'ครบ 2 รอบ'));
+          const incomplete = Number(summary.incompleteBothRounds ?? summary.incomplete ?? Math.max(total - completed, 0));
+          const abnormal = Number(summary.abnormal ?? countAbnormalLatest());
 
-      function renderTypeOptions() {
-  const select = U.$('#typeSelect');
-  if (!select) return;
+          U.setText('#sumLabel1', 'ตรงเงื่อนไข');
+          U.setText('#sumLabel2', 'ครบ 2 รอบ');
+          U.setText('#sumLabel3', 'ยังไม่ครบ');
+          U.setText('#sumLabel4', 'ผิดปกติล่าสุด');
 
-  const currentValue = select.value || 'all';
+          U.setText('#sum1', formatNumber(total));
+          U.setText('#sum2', formatNumber(completed));
+          U.setText('#sum3', formatNumber(incomplete));
+          U.setText('#sum4', formatNumber(abnormal));
 
-  const types = [
-    ...new Set(
-      extinguishers
-        .map(item => String(item.type || '').trim())
-        .filter(Boolean)
-    )
-  ].sort((a, b) => String(a).localeCompare(String(b), 'th'));
+          U.setText('#earlyChecked', formatNumber(summary.earlyChecked ?? summary.earlyDone ?? countRound('earlyRoundStatus', 'ตรวจแล้ว')));
+          U.setText('#earlyUnchecked', formatNumber(summary.earlyUnchecked ?? summary.earlyPending ?? countRoundNotChecked('earlyRoundStatus')));
+          U.setText('#lateChecked', formatNumber(summary.lateChecked ?? summary.lateDone ?? countRound('lateRoundStatus', 'ตรวจแล้ว')));
+          U.setText('#lateUnchecked', formatNumber(summary.lateUnchecked ?? summary.latePending ?? countRoundNotChecked('lateRoundStatus')));
+        } else {
+          U.setText('#sumLabel1', 'รายการทั้งหมด');
+          U.setText('#sumLabel2', 'ถังที่ตรวจแล้ว');
+          U.setText('#sumLabel3', 'ผลปกติ');
+          U.setText('#sumLabel4', 'ผลผิดปกติ');
 
-  select.innerHTML = '<option value="all">ทั้งหมด</option>' + types.map(type => {
-    return `<option value="${U.escapeHtml(type)}">${U.escapeHtml(type)}</option>`;
-  }).join('');
+          U.setText('#sum1', formatNumber(summary.totalRecords ?? res.total ?? currentItems.length ?? 0));
+          U.setText('#sum2', formatNumber(summary.checkedExtinguishers ?? countUniqueExtinguishers()));
+          U.setText('#sum3', formatNumber(summary.normalRecords ?? countReportStatus('ปกติ')));
+          U.setText('#sum4', formatNumber(summary.abnormalRecords ?? countReportNotNormal()));
 
-  select.value = types.includes(currentValue) ? currentValue : 'all';
-}
-
-      function toggleCustomDate() {
-        const isCustom = U.$('#periodSelect').value === 'custom';
-        U.$all('.date-field').forEach(el => {
-          el.hidden = !isCustom;
-        });
-      }
-
-      function clearFilters() {
-  U.$('#periodSelect').value = 'thisMonth';
-  U.$('#startDate').value = '';
-  U.$('#endDate').value = '';
-  U.$('#inspectorSelect').value = 'all';
-  U.$('#typeSelect').value = 'all';
-  U.$('#searchInput').value = '';
-
-  setStatusOptions();
-
-  U.$('#statusSelect').value = 'all';
-
-  const roundStatusSelect = U.$('#roundStatusSelect');
-  if (roundStatusSelect) {
-    roundStatusSelect.value = 'all';
-  }
-
-  toggleCustomDate();
-  syncModeUi();
-  loadData();
-}
-
-  function buildParams() {
-  const period = U.$('#periodSelect').value;
-  const search = U.$('#searchInput').value.trim();
-  const roundStatusSelect = U.$('#roundStatusSelect');
-
-  const params = {
-    period,
-    inspector: U.$('#inspectorSelect').value || 'all',
-    type: U.$('#typeSelect').value || 'all',
-    status: U.$('#statusSelect').value || 'all',
-    roundStatus: mode === 'status' && roundStatusSelect
-      ? roundStatusSelect.value || 'all'
-      : 'all'
-  };
-
-  if (period === 'custom') {
-    params.start = U.$('#startDate').value;
-    params.end = U.$('#endDate').value;
-  }
-
-  if (search) {
-    if (search.toUpperCase().startsWith('FE') || /^[0-9]+$/.test(search)) {
-      params.extinguisherId = search;
-    } else {
-      params.location = search;
-    }
-  }
-
-  return params;
-}
-   async function loadData() {
-  const btn = U.$('#loadBtn');
-  const seq = ++loadSeq;
-
-  try {
-    if (btn) {
-      U.setLoading(btn, true, 'กำลังโหลด...');
-    }
-
-    const params = buildParams();
-
-    const res = mode === 'status'
-      ? await API.getInspectionStatus(params)
-      : await API.getReport(params);
-
-    if (seq !== loadSeq) return;
-
-    currentItems = Array.isArray(res.items) ? res.items : [];
-
-    renderRoundNote(res.summary || {}, res.roundMeta || {});
-    renderSummary(res.summary || {});
-    renderResults(currentItems);
-
-    if (mode === 'report') {
-      refreshOptionsFromCurrentItems(currentItems);
-    }
-  } catch (err) {
-    if (seq !== loadSeq) return;
-
-    console.error('loadData error:', err);
-
-    U.toast(err.message || 'โหลดข้อมูลไม่สำเร็จ', 'error');
-
-    currentItems = [];
-    renderRoundNote({}, {});
-    renderSummary({});
-    renderResults([]);
-  } finally {
-    if (seq === loadSeq && btn) {
-      U.setLoading(btn, false);
-    }
-  }
-}
-
-    function renderRoundNote(summary, roundMeta) {
-  const rule = summary.shortRuleText || roundMeta.shortRuleText || 'รอบ 1: วันที่ 1-10 • รอบ 2: วันที่ 11-สิ้นเดือน';
-
-  const note = mode === 'status'
-    ? `${rule} ระบบนับถังละ 1 ครั้งต่อรอบ และควรดูสถานะทีละเดือน`
-    : `${rule} รายการผลตรวจแสดงตามวันที่บันทึกจริง`;
-
-  U.setText('#roundNote', note);
-}
-
-      function refreshOptionsFromCurrentItems(items) {
-        let changed = false;
-
-        if (!names.length && items.length) {
-          names = buildNamesFromReport(items);
-          renderInspectorOptions();
-          changed = true;
-        }
-
-        if (!extinguishers.length && items.length) {
-          extinguishers = buildExtinguishersFromReport(items);
-          renderTypeOptions();
-          changed = true;
-        }
-
-        if (changed) {
-          console.log('Options refreshed from current report items.');
+          U.setText('#earlyChecked', '-');
+          U.setText('#earlyUnchecked', '-');
+          U.setText('#lateChecked', '-');
+          U.setText('#lateUnchecked', '-');
         }
       }
-
-      function renderSummary(summary) {
-  if (mode === 'status') {
-    U.setText('#sumLabel1', 'ตรงเงื่อนไข');
-    U.setText('#sumLabel2', 'ครบ 2 รอบ');
-    U.setText('#sumLabel3', 'ยังไม่ครบ');
-    U.setText('#sumLabel4', 'ผิดปกติล่าสุด');
-
-    U.setText('#sum1', summary.totalExtinguishers ?? 0);
-    U.setText('#sum2', summary.completedBothRounds ?? 0);
-    U.setText('#sum3', summary.incompleteBothRounds ?? 0);
-    U.setText('#sum4', summary.abnormal ?? 0);
-
-    U.setText('#earlyChecked', summary.earlyChecked ?? 0);
-    U.setText('#earlyUnchecked', summary.earlyUnchecked ?? 0);
-    U.setText('#lateChecked', summary.lateChecked ?? 0);
-    U.setText('#lateUnchecked', summary.lateUnchecked ?? 0);
-  } else {
-    U.setText('#sumLabel1', 'รายการทั้งหมด');
-    U.setText('#sumLabel2', 'ถังที่ตรวจแล้ว');
-    U.setText('#sumLabel3', 'ผลปกติ');
-    U.setText('#sumLabel4', 'ผลผิดปกติ');
-
-    U.setText('#sum1', summary.totalRecords ?? 0);
-    U.setText('#sum2', summary.checkedExtinguishers ?? 0);
-    U.setText('#sum3', summary.normalRecords ?? 0);
-    U.setText('#sum4', summary.abnormalRecords ?? 0);
-
-    U.setText('#earlyChecked', '-');
-    U.setText('#earlyUnchecked', '-');
-    U.setText('#lateChecked', '-');
-    U.setText('#lateUnchecked', '-');
-  }
-}
 
       function renderResults(items) {
-  const count = Array.isArray(items) ? items.length : 0;
+        const count = Array.isArray(items) ? items.length : 0;
 
-  U.$('#resultCount').textContent = `${count} รายการ`;
+        U.$('#resultCount').textContent = mode === 'status'
+          ? `${formatNumber(count)} รายการในหน้านี้ / ทั้งหมด ${formatNumber(totalItems)}`
+          : `${formatNumber(count)} รายการ`;
 
-  if (mode === 'status') {
-    U.$('#resultTitle').textContent = 'สถานะประจำเดือน';
-    renderStatusTable(items);
-    renderStatusCards(items);
-  } else {
-    U.$('#resultTitle').textContent = 'รายการผลตรวจ';
-    renderReportTable(items);
-    renderReportCards(items);
-  }
-}
+        if (mode === 'status') {
+          U.$('#resultTitle').textContent = 'สถานะประจำเดือน';
+          renderStatusTable(items);
+          renderStatusCards(items);
+        } else {
+          U.$('#resultTitle').textContent = 'รายการผลตรวจ';
+          renderReportTable(items);
+          renderReportCards(items);
+        }
+      }
 
       function renderReportTable(items) {
-  U.$('#tableHead').innerHTML = `
-    <tr>
-      <th>วันที่บันทึก</th>
-      <th>เดือนรอบตรวจ</th>
-      <th>รอบตรวจ</th>
-      <th>หมายเลขถัง</th>
-      <th>จุดติดตั้ง</th>
-      <th>ชนิด</th>
-      <th>ผลตรวจ</th>
-      <th>ผู้บันทึก</th>
-      <th>รายละเอียด</th>
-    </tr>
-  `;
+        U.$('#tableHead').innerHTML = `
+          <tr>
+            <th>วันที่บันทึก</th>
+            <th>เดือนรอบตรวจ</th>
+            <th>รอบตรวจ</th>
+            <th>หมายเลขถัง</th>
+            <th>จุดติดตั้ง</th>
+            <th>ชนิด</th>
+            <th>ผลตรวจ</th>
+            <th>ผู้บันทึก</th>
+            <th>รายละเอียด</th>
+          </tr>
+        `;
 
-  if (!items.length) {
-    U.$('#tableBody').innerHTML = '<tr><td colspan="9">ไม่พบข้อมูล</td></tr>';
-    return;
-  }
+        if (!items.length) {
+          U.$('#tableBody').innerHTML = '<tr><td colspan="9">ไม่พบข้อมูล</td></tr>';
+          return;
+        }
 
-  U.$('#tableBody').innerHTML = items.map((item, index) => {
-    return `
-      <tr>
-        <td>${U.escapeHtml(item.timestamp || '-')}</td>
-        <td>${U.escapeHtml(item.inspectionMonth || formatMonthValue(item.month || item.timestamp) || '-')}</td>
-        <td>${U.escapeHtml(item.inspectionRound || getRoundTextFromTimestamp(item.timestamp) || '-')}</td>
-        <td><strong>${U.escapeHtml(item.extinguisherId || '-')}</strong></td>
-        <td>${U.escapeHtml(item.location || '-')}</td>
-        <td>${U.escapeHtml(item.type || '-')}</td>
-        <td>${renderBadge(item.overallStatus)}</td>
-        <td>${U.escapeHtml(item.inspectorThai || item.inspectorEnglish || '-')}</td>
-        <td><button class="btn ghost small" type="button" data-detail="${index}">ดู</button></td>
-      </tr>
-    `;
-  }).join('');
-}
+        U.$('#tableBody').innerHTML = items.map((item, index) => `
+          <tr>
+            <td>${escapeHtml(item.timestamp || '-')}</td>
+            <td>${escapeHtml(item.inspectionMonth || formatMonthValue(item.month || item.timestamp) || '-')}</td>
+            <td>${escapeHtml(item.inspectionRound || getRoundTextFromTimestamp(item.timestamp) || '-')}</td>
+            <td><strong>${escapeHtml(item.extinguisherId || '-')}</strong></td>
+            <td>${escapeHtml(item.location || '-')}</td>
+            <td>${escapeHtml(item.type || '-')}</td>
+            <td>${renderBadge(item.overallStatus)}</td>
+            <td>${escapeHtml(item.inspectorThai || item.inspectorEnglish || '-')}</td>
+            <td><button class="btn ghost small" type="button" data-detail="${index}">ดู</button></td>
+          </tr>
+        `).join('');
+      }
 
       function renderStatusTable(items) {
         U.$('#tableHead').innerHTML = `
@@ -1490,61 +1689,62 @@ function resetAllLoadingButtons() {
             <th>ผลล่าสุด</th>
             <th>จำนวนครั้ง</th>
             <th>ผู้ตรวจล่าสุด</th>
+            <th>รายละเอียด</th>
           </tr>
         `;
 
         if (!items.length) {
-          U.$('#tableBody').innerHTML = '<tr><td colspan="10">ไม่พบข้อมูล</td></tr>';
+          U.$('#tableBody').innerHTML = '<tr><td colspan="11">ไม่พบข้อมูล</td></tr>';
           return;
         }
 
-        U.$('#tableBody').innerHTML = items.map(item => {
+        U.$('#tableBody').innerHTML = items.map((item, index) => `
+          <tr>
+            <td><strong>${escapeHtml(item.extinguisherId || '-')}</strong></td>
+            <td>${escapeHtml(item.location || '-')}</td>
+            <td>${escapeHtml(item.type || '-')}</td>
+            <td>${renderMonthlyBadge(item.monthlyStatus)}</td>
+            <td>${renderRoundBadge(item.earlyRoundStatus)}</td>
+            <td>${renderRoundBadge(item.lateRoundStatus)}</td>
+            <td>${escapeHtml(item.lastCheckedAt || '-')}</td>
+            <td>${item.lastResult ? renderBadge(item.lastResult) : '-'}</td>
+            <td>${escapeHtml(item.checkCount ?? 0)}</td>
+            <td>${escapeHtml(item.lastInspectorThai || item.lastInspectorEnglish || '-')}</td>
+            <td><button class="btn ghost small" type="button" data-detail="${index}">ดู</button></td>
+          </tr>
+        `).join('');
+      }
+
+      function renderReportCards(items) {
+        const box = U.$('#mobileList');
+
+        if (!items.length) {
+          box.innerHTML = '<div class="empty-state">ไม่พบข้อมูล</div>';
+          return;
+        }
+
+        box.innerHTML = items.map((item, index) => {
+          const inspectionMonth = item.inspectionMonth || formatMonthValue(item.month || item.timestamp) || '-';
+          const inspectionRound = item.inspectionRound || getRoundTextFromTimestamp(item.timestamp) || '-';
+
           return `
-            <tr>
-              <td><strong>${U.escapeHtml(item.extinguisherId || '-')}</strong></td>
-              <td>${U.escapeHtml(item.location || '-')}</td>
-              <td>${U.escapeHtml(item.type || '-')}</td>
-              <td>${renderMonthlyBadge(item.monthlyStatus)}</td>
-              <td>${renderRoundBadge(item.earlyRoundStatus)}</td>
-              <td>${renderRoundBadge(item.lateRoundStatus)}</td>
-              <td>${U.escapeHtml(item.lastCheckedAt || '-')}</td>
-              <td>${item.lastResult ? renderBadge(item.lastResult) : '-'}</td>
-              <td>${U.escapeHtml(item.checkCount ?? 0)}</td>
-              <td>${U.escapeHtml(item.lastInspectorThai || item.lastInspectorEnglish || '-')}</td>
-            </tr>
+            <article class="result-card">
+              <h3>${escapeHtml(item.extinguisherId || '-')}</h3>
+              <p>${escapeHtml(item.location || '-')}</p>
+              <p>${escapeHtml(item.type || '-')} / ${escapeHtml(item.size || '-')}</p>
+              <p>บันทึก: ${escapeHtml(item.timestamp || '-')}</p>
+              <p>เดือนรอบตรวจ: ${escapeHtml(inspectionMonth)} / ${escapeHtml(inspectionRound)}</p>
+              <p>ผู้บันทึก: ${escapeHtml(item.inspectorThai || item.inspectorEnglish || '-')}</p>
+
+              <div class="card-foot">
+                ${renderBadge(item.overallStatus)}
+                <button class="btn ghost small" type="button" data-detail="${index}">ดูรายละเอียด</button>
+              </div>
+            </article>
           `;
         }).join('');
       }
 
-     function renderReportCards(items) {
-  const box = U.$('#mobileList');
-
-  if (!items.length) {
-    box.innerHTML = '<div class="empty-state">ไม่พบข้อมูล</div>';
-    return;
-  }
-
-  box.innerHTML = items.map((item, index) => {
-    const inspectionMonth = item.inspectionMonth || formatMonthValue(item.month || item.timestamp) || '-';
-    const inspectionRound = item.inspectionRound || getRoundTextFromTimestamp(item.timestamp) || '-';
-
-    return `
-      <article class="result-card">
-        <h3>${U.escapeHtml(item.extinguisherId || '-')}</h3>
-        <p>${U.escapeHtml(item.location || '-')}</p>
-        <p>${U.escapeHtml(item.type || '-')} / ${U.escapeHtml(item.size || '-')}</p>
-        <p>บันทึก: ${U.escapeHtml(item.timestamp || '-')}</p>
-        <p>เดือนรอบตรวจ: ${U.escapeHtml(inspectionMonth)} / ${U.escapeHtml(inspectionRound)}</p>
-        <p>ผู้บันทึก: ${U.escapeHtml(item.inspectorThai || item.inspectorEnglish || '-')}</p>
-
-        <div class="card-foot">
-          ${renderBadge(item.overallStatus)}
-          <button class="btn ghost small" type="button" data-detail="${index}">ดูรายละเอียด</button>
-        </div>
-      </article>
-    `;
-  }).join('');
-}
       function renderStatusCards(items) {
         const box = U.$('#mobileList');
 
@@ -1553,95 +1753,87 @@ function resetAllLoadingButtons() {
           return;
         }
 
-        box.innerHTML = items.map(item => {
-          return `
-            <article class="result-card">
-              <h3>${U.escapeHtml(item.extinguisherId || '-')}</h3>
-              <p>${U.escapeHtml(item.location || '-')}</p>
-              <p>${U.escapeHtml(item.type || '-')} / ${U.escapeHtml(item.size || '-')}</p>
+        box.innerHTML = items.map((item, index) => {
+          const isComplete = item.monthlyStatus === 'ครบ 2 รอบ';
+          const latestBad = item.lastResult && item.lastResult !== 'ปกติ';
 
-              <div class="card-status-grid">
-                ${renderMonthlyBadge(item.monthlyStatus)}
-                ${item.lastResult ? renderBadge(item.lastResult) : '<span class="badge wait">ยังไม่มีผล</span>'}
-                ${renderRoundBadge(item.earlyRoundStatus || (item.earlyChecked ? 'ตรวจแล้ว' : 'ยังไม่ได้ตรวจ'))}
-                ${renderRoundBadge(item.lateRoundStatus || (item.lateChecked ? 'ตรวจแล้ว' : 'ยังไม่ได้ตรวจ'))}
+          return `
+            <article class="mobile-card">
+              <div class="mobile-card-head">
+                <strong>${escapeHtml(item.extinguisherId || '-')}</strong>
+                <span class="${isComplete ? 'badge ok' : 'badge wait'}">
+                  ${escapeHtml(item.monthlyStatus || 'ยังไม่ครบ')}
+                </span>
               </div>
 
-              <p>ตรวจล่าสุด: ${U.escapeHtml(item.lastCheckedAt || '-')}</p>
-              <p>จำนวนครั้ง: ${U.escapeHtml(item.checkCount ?? 0)}</p>
-              <p>ผู้ตรวจล่าสุด: ${U.escapeHtml(item.lastInspectorThai || item.lastInspectorEnglish || '-')}</p>
+              <div class="mobile-grid">
+                <div>
+                  <span>จุดติดตั้ง</span>
+                  <b>${escapeHtml(item.location || '-')}</b>
+                </div>
+                <div>
+                  <span>ชนิด</span>
+                  <b>${escapeHtml(item.type || '-')}</b>
+                </div>
+                <div>
+                  <span>รอบ 1</span>
+                  <b>${escapeHtml(item.earlyRoundStatus || '-')}</b>
+                </div>
+                <div>
+                  <span>รอบ 2</span>
+                  <b>${escapeHtml(item.lateRoundStatus || '-')}</b>
+                </div>
+                <div>
+                  <span>ผลล่าสุด</span>
+                  <b class="${latestBad ? 'text-danger' : ''}">${escapeHtml(item.lastResult || '-')}</b>
+                </div>
+                <div>
+                  <span>ตรวจล่าสุด</span>
+                  <b>${escapeHtml(item.lastCheckedAt || '-')}</b>
+                </div>
+              </div>
+
+              ${
+                item.abnormalSummary
+                  ? `<div class="issue-box">${escapeHtml(item.abnormalSummary)}</div>`
+                  : ''
+              }
+
+              <button class="btn ghost small" type="button" data-detail="${index}">ดูรายละเอียด</button>
             </article>
           `;
         }).join('');
       }
 
-      function renderBadge(status) {
-        const text = String(status || '-').trim();
-        const isOk = text === 'ปกติ';
-        return `<span class="badge ${isOk ? 'ok' : 'bad'}">${U.escapeHtml(text)}</span>`;
-      }
+      function renderPagination() {
+        const bar = U.$('#paginationBar');
+        const text = U.$('#paginationText');
+        const prev = U.$('#prevPageBtn');
+        const next = U.$('#nextPageBtn');
 
-      function renderMonthlyBadge(status) {
-        if (status === 'ครบ 2 รอบ') {
-          return '<span class="badge ok">ครบ 2 รอบ</span>';
-        }
-        return '<span class="badge wait">ยังไม่ครบ 2 รอบ</span>';
-      }
+        if (!bar) return;
 
-      function renderRoundBadge(status) {
-        if (status === 'ตรวจแล้ว') {
-          return '<span class="badge ok">ตรวจแล้ว</span>';
-        }
-        return '<span class="badge wait">ยังไม่ตรวจ</span>';
-      }
+        bar.hidden = mode !== 'status' || (totalItems <= pageSize && totalPages <= 1);
 
-     function getRoundTextFromTimestamp(timestamp) {
-  const text = String(timestamp || '').trim();
-
-  /*
-    รองรับทั้ง:
-    02/06/2026 01:42:45
-    02/06/2026 1:42:45
-  */
-  const m = text.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2}):(\d{2})$/);
-
-  if (!m) return '-';
-
-  const day = Number(m[1]);
-  const hour = Number(m[4]);
-
-  if (day === 1 && hour <= 2) {
-    return 'รอบปลายเดือน';
-  }
-
-  if (day <= 10) {
-    return 'รอบต้นเดือน';
-  }
-
-  return 'รอบปลายเดือน';
-}
-      function formatMonthValue(value) {
-        const text = String(value || '').trim();
-
-        if (!text || text === '-') return '-';
-
-        const ym = text.match(/^(\d{4})-(\d{2})$/);
-        if (ym) return `${ym[1]}-${ym[2]}`;
-
-        const thDate = text.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
-        if (thDate) return `${thDate[3]}-${thDate[2]}`;
-
-        const iso = text.match(/^(\d{4})-(\d{2})-(\d{2})/);
-        if (iso) return `${iso[1]}-${iso[2]}`;
-
-        const d = new Date(text);
-        if (!Number.isNaN(d.getTime())) {
-          const y = d.getFullYear();
-          const m = String(d.getMonth() + 1).padStart(2, '0');
-          return `${y}-${m}`;
+        if (text) {
+          text.textContent = `หน้า ${formatNumber(currentPage)} / ${formatNumber(totalPages)} • ทั้งหมด ${formatNumber(totalItems)} รายการ`;
         }
 
-        return text;
+        if (prev) {
+          prev.disabled = currentPage <= 1;
+        }
+
+        if (next) {
+          next.disabled = currentPage >= totalPages;
+        }
+      }
+
+      function handleDetailClick(e) {
+        const btn = e.target.closest('[data-detail]');
+        if (!btn) return;
+
+        const index = Number(btn.dataset.detail);
+        openDetail(currentItems[index]);
       }
 
       function openDetail(item) {
@@ -1652,6 +1844,7 @@ function resetAllLoadingButtons() {
 
         const fields = mode === 'status'
           ? [
+              ['เดือนรอบตรวจ', item.inspectionMonth],
               ['หมายเลขถัง', item.extinguisherId],
               ['จุดติดตั้ง', item.location],
               ['ชนิดถังดับเพลิง', item.type],
@@ -1662,14 +1855,16 @@ function resetAllLoadingButtons() {
               ['รอบปลายเดือน', item.lateRoundStatus],
               ['ตรวจล่าสุด', item.lastCheckedAt],
               ['ผลล่าสุด', item.lastResult],
-              ['จำนวนครั้งในช่วงที่เลือก', item.checkCount],
-              ['ผู้ตรวจล่าสุด', item.lastInspectorThai || item.lastInspectorEnglish]
+              ['จำนวนครั้งในเดือน', item.checkCount],
+              ['ผู้ตรวจล่าสุด', item.lastInspectorThai || item.lastInspectorEnglish],
+              ['จุดผิดปกติล่าสุด', item.abnormalSummary],
+              ['อัปเดตล่าสุด', item.updatedAt]
             ]
           : [
-  ['วันที่บันทึกจริง', item.timestamp],
-  ['เดือนตามเวลาบันทึก', formatMonthValue(item.month || item.timestamp)],
-  ['เดือนรอบตรวจ', item.inspectionMonth || formatMonthValue(item.month || item.timestamp)],
-  ['รอบตรวจ', item.inspectionRound || getRoundTextFromTimestamp(item.timestamp)],
+              ['วันที่บันทึกจริง', item.timestamp],
+              ['เดือนตามเวลาบันทึก', formatMonthValue(item.month || item.timestamp)],
+              ['เดือนรอบตรวจ', item.inspectionMonth || formatMonthValue(item.month || item.timestamp)],
+              ['รอบตรวจ', item.inspectionRound || getRoundTextFromTimestamp(item.timestamp)],
               ['หมายเลขถัง', item.extinguisherId],
               ['จุดติดตั้ง', item.location],
               ['ชนิดถังดับเพลิง', item.type],
@@ -1696,14 +1891,12 @@ function resetAllLoadingButtons() {
               ['หมายเหตุเพิ่มเติม', item.remark]
             ];
 
-        U.$('#detailGrid').innerHTML = fields.map(([label, value]) => {
-          return `
-            <div class="detail-item">
-              <span>${U.escapeHtml(label)}</span>
-              <strong>${U.escapeHtml(value || '-')}</strong>
-            </div>
-          `;
-        }).join('');
+        U.$('#detailGrid').innerHTML = fields.map(([label, value]) => `
+          <div class="detail-item">
+            <span>${escapeHtml(label)}</span>
+            <strong>${escapeHtml(value || '-')}</strong>
+          </div>
+        `).join('');
 
         U.$('#detailModal').classList.add('show');
       }
@@ -1712,70 +1905,219 @@ function resetAllLoadingButtons() {
         U.$('#detailModal').classList.remove('show');
       }
 
-  async function exportFile(type) {
-  const btn = type === 'csv' ? U.$('#csvBtn') : U.$('#excelBtn');
+      async function exportFile(type) {
+        const btn = type === 'csv' ? U.$('#csvBtn') : U.$('#excelBtn');
 
-  try {
-    if (btn) {
-      U.setLoading(btn, true, 'กำลัง Export...');
-    }
+        try {
+          if (btn) {
+            U.setLoading(btn, true, 'กำลัง Export...');
+          }
 
-    const baseParams = buildParams();
+          const baseParams = buildParams();
 
-    const params = {
-      ...baseParams,
-      mode,
-      exportDetail: mode === 'report' ? 'full' : 'status',
-      includeChecklist: mode === 'report' ? '1' : '0',
-      includeNormalAbnormal: mode === 'report' ? '1' : '0',
-      includeImages: '0'
-    };
+          const params = {
+            ...baseParams,
+            mode,
+            exportDetail: mode === 'report' ? 'full' : 'status',
+            includeChecklist: mode === 'report' ? '1' : '0',
+            includeNormalAbnormal: mode === 'report' ? '1' : '0',
+            includeImages: '0'
+          };
 
-    const exportName = mode === 'report'
-      ? 'รายละเอียดผลตรวจ'
-      : 'สถานะประจำเดือน';
+          delete params.page;
+          delete params.pageSize;
 
-    U.toast(`กำลังสร้างไฟล์ ${type.toUpperCase()} ${exportName}...`, 'info');
+          const exportName = mode === 'report'
+            ? 'รายละเอียดผลตรวจ'
+            : 'สถานะประจำเดือน';
 
-    const res = type === 'csv'
-      ? await API.exportCsv(params)
-      : await API.exportExcel(params);
+          toast(`กำลังสร้างไฟล์ ${type.toUpperCase()} ${exportName}...`, 'info');
 
-    U.downloadBase64File(res.base64, res.fileName, res.mimeType);
-    U.toast('Export สำเร็จ', 'success');
-  } catch (err) {
-    console.error('exportFile error:', err);
-    U.toast(err.message || 'Export ไม่สำเร็จ', 'error');
-  } finally {
-    if (btn) {
-      U.setLoading(btn, false);
-    }
-  }
-}
-      function applyInitialQueryParams() {
-  const sp = new URLSearchParams(location.search);
+          const res = type === 'csv'
+            ? await API.exportCsv(params)
+            : await API.exportExcel(params);
 
-  const queryMode = sp.get('mode');
-  const roundStatus = sp.get('roundStatus');
-  const status = sp.get('status');
-  const period = sp.get('period');
+          if (U.downloadBase64File) {
+            U.downloadBase64File(res.base64, res.fileName, res.mimeType);
+          } else {
+            downloadBase64File(res.base64, res.fileName, res.mimeType);
+          }
 
-  if (period && U.$('#periodSelect')) {
-    U.$('#periodSelect').value = period;
-  }
+          toast('Export สำเร็จ', 'success');
+        } catch (err) {
+          console.error('exportFile error:', err);
+          toast(err.message || 'Export ไม่สำเร็จ', 'error');
+        } finally {
+          if (btn) {
+            U.setLoading(btn, false);
+          }
+        }
+      }
 
-  if (roundStatus && U.$('#roundStatusSelect')) {
-    U.$('#roundStatusSelect').value = roundStatus;
-  }
+      function renderBadge(status) {
+        const text = String(status || '-').trim();
 
-  if (status && U.$('#statusSelect')) {
-    U.$('#statusSelect').value = status;
-  }
+        if (!text || text === '-') {
+          return '<span class="badge wait">-</span>';
+        }
 
-  if (queryMode === 'status' || queryMode === 'report') {
-    mode = queryMode;
-  }
-}
+        const isOk = text === 'ปกติ';
+        return `<span class="badge ${isOk ? 'ok' : 'bad'}">${escapeHtml(text)}</span>`;
+      }
+
+      function renderMonthlyBadge(status) {
+        if (status === 'ครบ 2 รอบ') {
+          return '<span class="badge ok">ครบ 2 รอบ</span>';
+        }
+
+        return '<span class="badge wait">ยังไม่ครบ</span>';
+      }
+
+      function renderRoundBadge(status) {
+        if (status === 'ตรวจแล้ว') {
+          return '<span class="badge ok">ตรวจแล้ว</span>';
+        }
+
+        return '<span class="badge wait">ยังไม่ตรวจ</span>';
+      }
+
+      function countStatus(field, value) {
+        return currentItems.filter(item => String(item[field] || '') === value).length;
+      }
+
+      function countRound(field, value) {
+        return currentItems.filter(item => String(item[field] || '') === value).length;
+      }
+
+      function countRoundNotChecked(field) {
+        return currentItems.filter(item => String(item[field] || '') !== 'ตรวจแล้ว').length;
+      }
+
+      function countAbnormalLatest() {
+        return currentItems.filter(item => item.lastResult && item.lastResult !== 'ปกติ').length;
+      }
+
+      function countReportStatus(status) {
+        return currentItems.filter(item => String(item.overallStatus || '') === status).length;
+      }
+
+      function countReportNotNormal() {
+        return currentItems.filter(item => item.overallStatus && item.overallStatus !== 'ปกติ').length;
+      }
+
+      function countUniqueExtinguishers() {
+        return new Set(currentItems.map(item => item.extinguisherId).filter(Boolean)).size;
+      }
+
+      function getRoundTextFromTimestamp(timestamp) {
+        const text = String(timestamp || '').trim();
+        const m = text.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2}):(\d{2})$/);
+
+        if (!m) return '-';
+
+        const day = Number(m[1]);
+        const hour = Number(m[4]);
+
+        if (day === 1 && hour <= 2) {
+          return 'รอบปลายเดือน';
+        }
+
+        if (day <= 10) {
+          return 'รอบต้นเดือน';
+        }
+
+        return 'รอบปลายเดือน';
+      }
+
+      function formatMonthValue(value) {
+        const text = String(value || '').trim();
+
+        if (!text || text === '-') return '-';
+
+        const ym = text.match(/^(\d{4})-(\d{2})$/);
+        if (ym) return `${ym[1]}-${ym[2]}`;
+
+        const thDate = text.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+        if (thDate) return `${thDate[3]}-${String(thDate[2]).padStart(2, '0')}`;
+
+        const iso = text.match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (iso) return `${iso[1]}-${iso[2]}`;
+
+        const d = new Date(text);
+        if (!Number.isNaN(d.getTime())) {
+          const y = d.getFullYear();
+          const m = String(d.getMonth() + 1).padStart(2, '0');
+          return `${y}-${m}`;
+        }
+
+        return text;
+      }
+
+      function resetAllLoadingButtons() {
+        ['#loadBtn', '#csvBtn', '#excelBtn', '#clearBtn'].forEach(selector => {
+          const btn = U.$(selector);
+          if (btn) U.setLoading(btn, false);
+        });
+      }
+
+      function toNumber(value) {
+        const n = Number(value || 0);
+        return Number.isFinite(n) ? n : 0;
+      }
+
+      function formatNumber(value) {
+        return toNumber(value).toLocaleString('th-TH');
+      }
+
+      function escapeHtml(value) {
+        if (U && U.escapeHtml) {
+          return U.escapeHtml(value);
+        }
+
+        return String(value ?? '')
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#039;');
+      }
+
+      function toast(message, type) {
+        if (U && U.toast) {
+          U.toast(message, type);
+        } else {
+          console.log(`[${type || 'info'}] ${message}`);
+        }
+      }
+
+      function downloadBase64File(base64, fileName, mimeType) {
+        if (!base64) {
+          throw new Error('ไม่พบข้อมูลไฟล์สำหรับดาวน์โหลด');
+        }
+
+        const byteCharacters = atob(base64);
+        const byteNumbers = new Array(byteCharacters.length);
+
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], {
+          type: mimeType || 'application/octet-stream'
+        });
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+
+        a.href = url;
+        a.download = fileName || 'download';
+        document.body.appendChild(a);
+        a.click();
+
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
     })();
   </script>
 </body>
