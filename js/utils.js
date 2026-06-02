@@ -40,26 +40,26 @@
     if (el) el.hidden = true;
   }
 
- function setLoading(button, isLoading, text = 'กำลังโหลด...') {
-  if (!button) return;
+  function setLoading(button, isLoading, text = 'กำลังโหลด...') {
+    if (!button) return;
 
-  if (isLoading) {
-    if (!button.dataset.oldText) {
-      button.dataset.oldText = button.textContent || '';
+    if (isLoading) {
+      if (!button.dataset.oldText) {
+        button.dataset.oldText = button.textContent || '';
+      }
+
+      button.disabled = true;
+      button.textContent = text;
+      button.classList.add('is-loading');
+      button.setAttribute('aria-busy', 'true');
+    } else {
+      button.disabled = false;
+      button.textContent = button.dataset.oldText || button.textContent || '';
+      button.classList.remove('is-loading');
+      button.removeAttribute('aria-busy');
+      delete button.dataset.oldText;
     }
-
-    button.disabled = true;
-    button.textContent = text;
-    button.classList.add('is-loading');
-    button.setAttribute('aria-busy', 'true');
-  } else {
-    button.disabled = false;
-    button.textContent = button.dataset.oldText || button.textContent || '';
-    button.classList.remove('is-loading');
-    button.removeAttribute('aria-busy');
-    delete button.dataset.oldText;
   }
-}
 
   function toast(message, type = 'info') {
     const old = document.querySelector('.app-toast');
@@ -148,6 +148,53 @@
     `;
   }
 
+  function getExtinguisherImage(typeText) {
+    const text = String(typeText || '').toLowerCase();
+    const images = window.APP_CONFIG && window.APP_CONFIG.EXTINGUISHER_IMAGES
+      ? window.APP_CONFIG.EXTINGUISHER_IMAGES
+      : {};
+
+    if (
+      text.includes('co2') ||
+      text.includes('carbon dioxide') ||
+      text.includes('คาร์บอนไดออกไซด์')
+    ) {
+      return images.CO2 || images.DEFAULT || '';
+    }
+
+    if (
+      text.includes('dry chemical') ||
+      text.includes('ผงเคมี') ||
+      text.includes('เคมีแห้ง')
+    ) {
+      return images.DRY_CHEMICAL || images.DEFAULT || '';
+    }
+
+    if (
+      text.includes('foam') ||
+      text.includes('โฟม')
+    ) {
+      return images.FOAM || images.DEFAULT || '';
+    }
+
+    if (
+      text.includes('low pressure water') ||
+      text.includes('low pressure') ||
+      text.includes('water vapor')
+    ) {
+      return images.LOW_PRESSURE_WATER || images.WATER || images.DEFAULT || '';
+    }
+
+    if (
+      text.includes('water') ||
+      text.includes('น้ำ')
+    ) {
+      return images.WATER || images.DEFAULT || '';
+    }
+
+    return images.DEFAULT || '';
+  }
+
   window.FireUtils = {
     $,
     $all,
@@ -163,6 +210,6 @@
     goCheck,
     downloadBase64File,
     openExternalBrowserHint,
-      getExtinguisherImage
+    getExtinguisherImage
   };
 })();
