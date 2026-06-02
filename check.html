@@ -4,222 +4,241 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#b91c1c" />
-  <title>ตรวจถังดับเพลิง | Fire Extinguisher</title>
+  <title>ข้อมูลถังดับเพลิง | Fire Extinguisher</title>
 
-  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.2.0" />
+  <link rel="stylesheet" href="/fire-extinguisher/css/styles.css?v=1.3.0" />
 
   <style>
-    .page-top {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
+    body,
+    button,
+    input,
+    select,
+    textarea {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
-    .back-link {
-      width: 42px;
-      height: 42px;
+    .app-shell {
+      width: min(100%, 780px);
+      margin: 0 auto;
+      padding: 12px;
+      padding-bottom: calc(26px + env(safe-area-inset-bottom));
+    }
+
+    .page-top {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .page-logo {
+      width: 76px;
+      height: 40px;
       border-radius: 14px;
       background: #fff;
       border: 1px solid var(--line);
+      box-shadow: var(--shadow);
       display: grid;
       place-items: center;
-      font-weight: 900;
-      box-shadow: var(--shadow);
-      flex: 0 0 auto;
+      padding: 6px 8px;
+      overflow: hidden;
+    }
+
+    .page-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
     }
 
     .page-title {
       min-width: 0;
-      flex: 1;
     }
 
     .page-title h1 {
       margin: 0;
-      font-size: clamp(20px, 5vw, 30px);
-      line-height: 1.12;
+      font-size: clamp(18px, 5vw, 26px);
+      line-height: 1.1;
+      font-weight: 900;
     }
 
     .page-title p {
       margin: 3px 0 0;
       color: var(--muted);
-      font-size: 13px;
+      font-size: 12px;
+      line-height: 1.35;
     }
 
-    .hero-card,
+    .loading-box,
+    .not-found-box,
+    .main-card,
     .status-card,
     .history-card,
-    .form-card,
-    .section-panel {
+    .inspect-panel,
+    .check-item {
       background: var(--card);
       border: 1px solid var(--line);
-      border-radius: var(--radius);
+      border-radius: 22px;
       box-shadow: var(--shadow);
-      margin-bottom: 14px;
     }
 
-    .hero-card {
-      padding: 16px;
-      overflow: hidden;
+    .loading-box,
+    .not-found-box {
+      padding: 18px;
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .content-stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .main-card {
+      padding: 14px;
       position: relative;
+      overflow: hidden;
     }
 
-    .hero-card::before {
+    .main-card::before {
       content: "";
       position: absolute;
       inset: 0 auto 0 0;
-      width: 6px;
+      width: 5px;
       background: linear-gradient(180deg, var(--primary), var(--primary-dark));
     }
 
-    .hero-layout {
+    .main-layout {
       display: grid;
-      grid-template-columns: 86px 1fr;
-      gap: 14px;
+      grid-template-columns: 1fr 82px;
+      gap: 12px;
       align-items: start;
     }
 
-    .ext-photo-box {
-      width: 86px;
-      height: 118px;
-      border-radius: 18px;
-      border: 1px solid var(--line);
-      background: #fff;
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
-    }
-
-    .ext-photo-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      padding: 6px;
-      display: block;
-    }
-
-    .hero-main {
+    .main-info {
       min-width: 0;
+      padding-left: 4px;
+    }
+
+    .id-label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 3px;
     }
 
     .ext-id {
       margin: 0 0 8px;
-      font-size: 28px;
-      line-height: 1;
-      font-weight: 900;
-      letter-spacing: 0.3px;
+      font-size: clamp(34px, 11vw, 52px);
+      line-height: 0.95;
+      font-weight: 950;
+      letter-spacing: 0.2px;
       word-break: break-word;
+      color: #111827;
     }
 
-    .type-badge {
+    .type-chip {
       display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      max-width: 100%;
       border-radius: 999px;
+      padding: 6px 10px;
       background: #fee2e2;
       color: #991b1b;
-      padding: 6px 10px;
       font-size: 12px;
       font-weight: 900;
-      margin-bottom: 10px;
+      line-height: 1.25;
     }
 
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 8px;
-    }
-
-    .hero-item {
+    .ext-image-box {
+      width: 82px;
+      height: 132px;
+      border-radius: 18px;
+      background: #ffffff;
       border: 1px solid var(--line);
-      background: #f9fafb;
-      border-radius: 14px;
-      padding: 10px 12px;
+      display: grid;
+      place-items: center;
+      padding: 6px;
+      overflow: visible;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.06);
     }
 
-    .hero-item span {
+    .ext-image-box img {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      object-position: center center;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .info-line {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #f9fafb;
+      padding: 10px;
+    }
+
+    .info-line.full {
+      grid-column: 1 / -1;
+    }
+
+    .info-line span {
       display: block;
       color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 3px;
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 4px;
     }
 
-    .hero-item strong {
+    .info-line strong {
       display: block;
       font-size: 14px;
-      line-height: 1.4;
-      word-break: break-word;
-    }
-
-    .action-strip {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    .action-main-btn {
-      min-height: 50px;
-      border-radius: 16px;
+      line-height: 1.35;
       font-weight: 900;
-      letter-spacing: 0.2px;
-    }
-
-    .quick-actions {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
+      word-break: break-word;
     }
 
     .status-card {
-      padding: 16px;
+      padding: 14px;
     }
 
     .section-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
+      gap: 10px;
+      margin-bottom: 10px;
     }
 
     .section-head h2 {
       margin: 0;
-      font-size: 18px;
+      font-size: 17px;
+      font-weight: 900;
     }
 
-    .status-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-
-    .status-item {
-      border: 1px solid var(--line);
-      background: #f9fafb;
-      border-radius: 14px;
-      padding: 10px 12px;
-    }
-
-    .status-item span {
+    .section-head small {
       display: block;
       color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 3px;
-    }
-
-    .status-item strong {
-      display: block;
-      font-size: 14px;
-      line-height: 1.4;
-      word-break: break-word;
+      font-size: 11px;
+      margin-top: 2px;
     }
 
     .badge {
       display: inline-flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       border-radius: 999px;
       padding: 5px 10px;
       font-size: 12px;
@@ -242,46 +261,94 @@
       color: #92400e;
     }
 
+    .latest-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .latest-item {
+      border: 1px solid var(--line);
+      background: #f9fafb;
+      border-radius: 16px;
+      padding: 10px;
+    }
+
+    .latest-item span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .latest-item strong {
+      display: block;
+      font-size: 13px;
+      line-height: 1.35;
+      font-weight: 900;
+      word-break: break-word;
+    }
+
     .history-card {
-      padding: 16px;
+      padding: 14px;
     }
 
     .history-list {
       display: grid;
-      gap: 10px;
+      gap: 8px;
     }
 
     .history-item {
       border: 1px solid var(--line);
       background: #f9fafb;
       border-radius: 16px;
-      padding: 12px;
+      padding: 10px;
     }
 
-    .history-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: start;
+    .history-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
       gap: 10px;
-      margin-bottom: 6px;
+      align-items: start;
     }
 
-    .history-item strong {
+    .history-date {
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.35;
+      color: #111827;
+    }
+
+    .history-meta {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .history-checks {
+      margin-top: 8px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .mini-check {
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 7px 8px;
+      font-size: 12px;
+      line-height: 1.35;
+      color: #374151;
+    }
+
+    .mini-check b {
       display: block;
-      font-size: 15px;
-      margin-bottom: 3px;
-    }
-
-    .history-time {
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .history-item p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
+      color: #111827;
+      font-size: 11px;
+      margin-bottom: 2px;
     }
 
     .empty-state {
@@ -291,79 +358,91 @@
       padding: 14px;
       border-radius: 16px;
       text-align: center;
+      font-size: 13px;
       line-height: 1.45;
     }
 
-    .form-card {
-      padding: 16px;
+    .staff-card {
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      padding: 4px 0 0;
+      text-align: center;
     }
 
-    .form-card[hidden] {
+    .staff-toggle {
+      border: 0;
+      background: transparent;
+      color: #9ca3af;
+      font-size: 12px;
+      font-weight: 800;
+      text-decoration: underline;
+      padding: 8px 10px;
+      cursor: pointer;
+    }
+
+    .inspect-panel {
+      padding: 14px;
+    }
+
+    .inspect-panel[hidden] {
       display: none !important;
     }
 
-    .form-title-row {
+    .form-head {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      gap: 12px;
+      align-items: start;
+      gap: 10px;
       margin-bottom: 12px;
     }
 
-    .form-title-row h2 {
+    .form-head h2 {
       margin: 0;
-      font-size: 20px;
+      font-size: 18px;
+      line-height: 1.2;
+      font-weight: 900;
     }
 
-    .form-title-row p {
-      margin: 4px 0 0;
+    .form-head p {
+      margin: 3px 0 0;
       color: var(--muted);
-      font-size: 13px;
-    }
-
-    .standard-note {
-      border: 1px solid #fed7aa;
-      background: #fff7ed;
-      color: #9a3412;
-      border-radius: 16px;
-      padding: 12px;
-      font-size: 13px;
-      line-height: 1.5;
-      margin-bottom: 14px;
+      font-size: 12px;
+      line-height: 1.35;
     }
 
     .check-list {
       display: grid;
-      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
     }
 
     .check-item {
-      border: 1px solid var(--line);
-      background: #fff;
+      padding: 11px;
+      box-shadow: none;
       border-radius: 18px;
-      padding: 14px;
+    }
+
+    .check-item.full {
+      grid-column: 1 / -1;
     }
 
     .check-title {
       font-weight: 900;
-      margin-bottom: 10px;
-      font-size: 16px;
-    }
-
-    .check-sub {
-      color: var(--muted);
-      font-size: 12px;
-      margin: -4px 0 10px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      line-height: 1.25;
     }
 
     .option-row {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
+      gap: 6px;
     }
 
     .option-pill {
       position: relative;
+      min-width: 0;
     }
 
     .option-pill input {
@@ -375,35 +454,39 @@
     .option-pill span {
       display: grid;
       place-items: center;
-      min-height: 44px;
-      border-radius: 15px;
+      min-height: 38px;
+      border-radius: 13px;
       border: 1px solid var(--line);
       background: #fff;
-      font-weight: 800;
+      font-size: 13px;
+      font-weight: 850;
       color: var(--text);
       cursor: pointer;
+      text-align: center;
+      padding: 6px 4px;
     }
 
     .option-pill input:checked + span {
       border-color: rgba(185, 28, 28, 0.85);
       background: rgba(185, 28, 28, 0.09);
       color: var(--primary-dark);
-      box-shadow: 0 0 0 4px rgba(185, 28, 28, 0.08);
+      box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.08);
     }
 
     .note-field {
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
     .note-field textarea,
     .note-field input {
-      min-height: 46px;
+      min-height: 42px;
+      font-size: 13px;
     }
 
     .co2-box {
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 16px;
+      margin-top: 9px;
+      padding: 10px;
+      border-radius: 15px;
       background: #fff7ed;
       border: 1px solid #fed7aa;
     }
@@ -411,70 +494,76 @@
     .co2-box label {
       display: block;
       font-weight: 900;
-      margin-bottom: 8px;
+      margin-bottom: 7px;
       color: #9a3412;
+      font-size: 13px;
     }
 
     .field-group {
-      margin-top: 14px;
+      margin-top: 10px;
+    }
+
+    .field-group:first-child {
+      margin-top: 0;
     }
 
     .field-group label {
       display: block;
       font-weight: 900;
-      margin-bottom: 8px;
+      margin-bottom: 7px;
+      font-size: 13px;
+    }
+
+    input,
+    select,
+    textarea {
+      min-height: 42px;
+      border-radius: 14px;
+      font-size: 14px;
     }
 
     .submit-bar {
       position: sticky;
       bottom: 0;
-      margin: 16px -16px -16px;
-      padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+      margin: 12px -14px -14px;
+      padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
       background: rgba(255, 255, 255, 0.94);
       border-top: 1px solid var(--line);
       backdrop-filter: blur(12px);
-      border-radius: 0 0 var(--radius) var(--radius);
-    }
-
-    .loading-box {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 18px;
-      box-shadow: var(--shadow);
-      color: var(--muted);
-      text-align: center;
+      border-radius: 0 0 22px 22px;
+      z-index: 10;
     }
 
     @media (min-width: 720px) {
-      .hero-layout {
-        grid-template-columns: 110px 1fr;
+      .app-shell {
+        padding: 18px;
       }
 
-      .ext-photo-box {
+      .page-logo {
+        width: 94px;
+        height: 44px;
+      }
+
+      .main-layout {
+        grid-template-columns: 1fr 110px;
+      }
+
+      .ext-image-box {
         width: 110px;
-        height: 148px;
+        height: 162px;
       }
 
-      .hero-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .status-grid {
-        grid-template-columns: repeat(4, 1fr);
+      .latest-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
       }
 
       .check-list {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .check-item.full {
-        grid-column: 1 / -1;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .submit-bar {
         position: static;
-        margin: 18px 0 0;
+        margin: 14px 0 0;
         padding: 0;
         background: transparent;
         border: 0;
@@ -483,24 +572,38 @@
     }
 
     @media (max-width: 380px) {
-      .hero-layout {
-        grid-template-columns: 76px 1fr;
+      .app-shell {
+        padding: 10px;
       }
 
-      .ext-photo-box {
-        width: 76px;
-        height: 104px;
+      .page-logo {
+        width: 62px;
+        height: 36px;
       }
 
-      .ext-id {
-        font-size: 24px;
+      .main-layout {
+        grid-template-columns: 1fr 70px;
+        gap: 9px;
       }
 
-      .status-grid {
-        grid-template-columns: 1fr;
+      .ext-image-box {
+        width: 70px;
+        height: 118px;
+        padding: 4px;
       }
 
-      .quick-actions,
+      .info-grid,
+      .latest-grid,
+      .history-checks,
+      .check-list {
+        gap: 7px;
+      }
+
+      .info-line,
+      .latest-item {
+        padding: 8px;
+      }
+
       .option-row {
         grid-template-columns: 1fr;
       }
@@ -511,15 +614,13 @@
 <body>
   <main class="app-shell">
     <div class="page-top">
-      <a class="back-link" href="/fire-extinguisher/">←</a>
-
       <div class="page-logo">
-        <img id="pageLogo" alt="Fire Extinguisher Logo" />
+        <img id="pageLogo" alt="Smart DC Logo" />
       </div>
 
       <div class="page-title">
-        <h1>ข้อมูลการตรวจถังดับเพลิง</h1>
-        <p>แสดงข้อมูลถัง ประวัติการตรวจ และบันทึกผลตรวจ</p>
+        <h1>ข้อมูลถังดับเพลิง</h1>
+        <p>ข้อมูลถังและประวัติการตรวจล่าสุด</p>
       </div>
     </div>
 
@@ -527,117 +628,117 @@
       กำลังโหลดข้อมูลถัง...
     </section>
 
-    <section id="notFoundBox" class="loading-box" hidden>
-      ไม่พบข้อมูลถัง หรือ URL ไม่มีหมายเลขถัง
-      <div style="margin-top:12px;">
-        <a class="btn ghost" href="/fire-extinguisher/">กลับหน้าแรก</a>
-      </div>
+    <section id="notFoundBox" class="not-found-box" hidden>
+      ไม่พบข้อมูลถัง หรือ QR Code ไม่มีหมายเลขถัง
     </section>
 
-    <section id="contentBox" hidden>
-      <article class="hero-card">
-        <div class="hero-layout">
-          <div class="ext-photo-box">
-            <img id="extinguisherImage" alt="ภาพถังดับเพลิง" />
+    <section id="contentBox" class="content-stack" hidden>
+      <article class="main-card">
+        <div class="main-layout">
+          <div class="main-info">
+            <span class="id-label">หมายเลขถัง</span>
+            <h2 class="ext-id" id="extinguisherId">-</h2>
+            <span class="type-chip" id="typeBadge">-</span>
           </div>
 
-          <div class="hero-main">
-            <h2 class="ext-id" id="extinguisherId">-</h2>
-            <div class="type-badge" id="typeBadge">-</div>
-
-            <div class="hero-grid">
-              <div class="hero-item">
-                <span>จุดติดตั้ง</span>
-                <strong id="location">-</strong>
-              </div>
-
-              <div class="hero-item">
-                <span>ชนิดถังดับเพลิง</span>
-                <strong id="type">-</strong>
-              </div>
-
-              <div class="hero-item">
-                <span>ขนาด</span>
-                <strong id="size">-</strong>
-              </div>
-
-              <div class="hero-item">
-                <span>ปีผลิตถัง</span>
-                <strong id="yearMade">-</strong>
-              </div>
-            </div>
+          <div class="ext-image-box">
+            <img id="extinguisherImage" alt="ภาพถังดับเพลิง" />
           </div>
         </div>
 
-        <div class="action-strip">
-          <button class="btn primary full action-main-btn" id="toggleFormBtn" type="button">
-            ตรวจเช็คถัง
-          </button>
+        <div class="info-grid">
+          <div class="info-line full">
+            <span>จุดติดตั้ง</span>
+            <strong id="location">-</strong>
+          </div>
 
-          <div class="quick-actions">
-            <button class="btn ghost" id="scrollHistoryBtn" type="button">ดูประวัติ</button>
-            <button class="btn ghost" id="refreshHistoryBtn" type="button">รีเฟรชข้อมูล</button>
+          <div class="info-line">
+            <span>ชนิดถัง</span>
+            <strong id="type">-</strong>
+          </div>
+
+          <div class="info-line">
+            <span>ขนาด</span>
+            <strong id="size">-</strong>
+          </div>
+
+          <div class="info-line">
+            <span>ปีผลิตถัง</span>
+            <strong id="yearMade">-</strong>
+          </div>
+
+          <div class="info-line">
+            <span>สถานะล่าสุด</span>
+            <strong id="lastStatusText">-</strong>
           </div>
         </div>
       </article>
 
       <section class="status-card">
         <div class="section-head">
-          <h2>สถานะการตรวจล่าสุด</h2>
+          <div>
+            <h2>ผลตรวจล่าสุด</h2>
+            <small>ข้อมูลล่าสุดจากประวัติการตรวจถังนี้</small>
+          </div>
           <span id="latestBadge" class="badge wait">ยังไม่มีข้อมูล</span>
         </div>
 
-        <div class="status-grid">
-          <div class="status-item">
-            <span>ตรวจล่าสุด</span>
+        <div class="latest-grid">
+          <div class="latest-item">
+            <span>วันที่ตรวจ</span>
             <strong id="latestTimestamp">-</strong>
           </div>
 
-          <div class="status-item">
-            <span>ผู้ตรวจล่าสุด</span>
+          <div class="latest-item">
+            <span>ผู้ตรวจ</span>
             <strong id="latestInspector">-</strong>
           </div>
 
-          <div class="status-item">
-            <span>ผลตรวจล่าสุด</span>
-            <strong id="latestStatusText">-</strong>
+          <div class="latest-item">
+            <span>ผลตรวจ</span>
+            <strong id="latestResult">-</strong>
           </div>
 
-          <div class="status-item">
-            <span>จำนวนประวัติทั้งหมด</span>
+          <div class="latest-item">
+            <span>จำนวนประวัติ</span>
             <strong id="historyCount">0</strong>
           </div>
         </div>
       </section>
 
-      <section class="history-card" id="historySection">
+      <section class="history-card">
         <div class="section-head">
-          <h2>ประวัติการตรวจ</h2>
+          <div>
+            <h2>ประวัติการตรวจ</h2>
+            <small>แสดงรายการล่าสุดของถังใบนี้</small>
+          </div>
+          <button class="btn ghost small" id="refreshHistoryBtn" type="button">รีเฟรช</button>
         </div>
 
         <div class="history-list" id="historyList">
-          <div class="empty-state">ยังไม่มีประวัติการตรวจ</div>
+          <div class="empty-state">ยังไม่มีประวัติการตรวจถังนี้</div>
         </div>
       </section>
 
-      <form class="form-card" id="inspectionForm" hidden>
-        <div class="form-title-row">
-          <div>
-            <h2>แบบฟอร์มตรวจเช็คถัง</h2>
-            <p>บันทึกผลตามจุดตรวจมาตรฐานของถังดับเพลิง</p>
-          </div>
-          <button class="btn ghost small" id="closeFormBtn" type="button">ปิด</button>
-        </div>
+      <section class="staff-card">
+        <button class="staff-toggle" id="toggleInspectBtn" type="button">
+          สำหรับเจ้าหน้าที่: บันทึกผลตรวจ
+        </button>
+      </section>
 
-        <div class="standard-note">
-          กรอกข้อมูลตามสภาพจริงของถังดับเพลิง ณ จุดติดตั้ง หากพบความผิดปกติให้ระบุรายละเอียดให้ครบถ้วน
-          เพื่อใช้เป็นหลักฐานการตรวจและติดตามการแก้ไข
+      <form class="inspect-panel" id="inspectionForm" hidden>
+        <div class="form-head">
+          <div>
+            <h2>แบบฟอร์มบันทึกผลตรวจ</h2>
+            <p>ส่วนนี้สำหรับเจ้าหน้าที่ผู้ตรวจเช็คถังดับเพลิง</p>
+          </div>
+
+          <button class="btn ghost small" id="closeFormBtn" type="button">ปิด</button>
         </div>
 
         <div class="check-list">
           <div class="check-item">
             <div class="check-title">ความสะอาด</div>
-            <div class="check-sub">ตรวจความสะอาดของถัง ป้าย และบริเวณติดตั้ง</div>
             <div class="option-row">
               <label class="option-pill">
                 <input type="radio" name="cleanliness" value="สะอาด" checked />
@@ -655,7 +756,6 @@
 
           <div class="check-item">
             <div class="check-title">สภาพถัง</div>
-            <div class="check-sub">ตรวจรอยบุบ แตก ผุ กัดกร่อน หรือความเสียหายตัวถัง</div>
             <div class="option-row">
               <label class="option-pill">
                 <input type="radio" name="bodyStatus" value="ปกติ" checked />
@@ -673,7 +773,6 @@
 
           <div class="check-item">
             <div class="check-title">แรงดัน</div>
-            <div class="check-sub">ตรวจระดับแรงดันให้อยู่ในเกณฑ์ปกติ</div>
             <div class="option-row">
               <label class="option-pill">
                 <input type="radio" name="pressureStatus" value="ปกติ" checked />
@@ -690,8 +789,7 @@
           </div>
 
           <div class="check-item">
-            <div class="check-title">เกจวัด / น้ำหนัก</div>
-            <div class="check-sub">ตรวจเกจวัดหรือชั่งน้ำหนักตามชนิดถัง</div>
+            <div class="check-title">เกจวัด/น้ำหนัก</div>
             <div class="option-row">
               <label class="option-pill">
                 <input type="radio" name="gaugeWeightStatus" value="ปกติ" checked />
@@ -713,8 +811,7 @@
           </div>
 
           <div class="check-item">
-            <div class="check-title">สาย / กระบอกฉีด</div>
-            <div class="check-sub">ตรวจหัวฉีด สายฉีด หรือกระบอกฉีดให้อยู่สภาพพร้อมใช้งาน</div>
+            <div class="check-title">สาย/กระบอกฉีด</div>
             <div class="option-row">
               <label class="option-pill">
                 <input type="radio" name="hoseStatus" value="ปกติ" checked />
@@ -731,8 +828,7 @@
           </div>
 
           <div class="check-item">
-            <div class="check-title">สายรัดสลัก / ซีล</div>
-            <div class="check-sub">ตรวจสลักนิรภัยและซีลไม่ขาดหรือสูญหาย</div>
+            <div class="check-title">สายรัดสลัก</div>
             <div class="option-row">
               <label class="option-pill">
                 <input type="radio" name="pinSealStatus" value="ปกติ" checked />
@@ -750,7 +846,6 @@
 
           <div class="check-item">
             <div class="check-title">คันบังคับ</div>
-            <div class="check-sub">ตรวจคันบังคับให้ใช้งานได้ ไม่หลวม ไม่ชำรุด</div>
             <div class="option-row">
               <label class="option-pill">
                 <input type="radio" name="handleStatus" value="ปกติ" checked />
@@ -782,17 +877,15 @@
         </div>
 
         <div class="submit-bar">
-          <button class="btn primary full" id="submitBtn" type="submit">
-            บันทึกผลตรวจ
-          </button>
+          <button class="btn primary full" id="submitBtn" type="submit">บันทึกผลตรวจ</button>
         </div>
       </form>
     </section>
   </main>
 
-  <script src="/fire-extinguisher/js/config.js?v=1.2.0"></script>
-  <script src="/fire-extinguisher/js/api.js?v=1.2.0"></script>
-  <script src="/fire-extinguisher/js/utils.js?v=1.2.0"></script>
+  <script src="/fire-extinguisher/js/config.js?v=1.3.0"></script>
+  <script src="/fire-extinguisher/js/api.js?v=1.3.0"></script>
+  <script src="/fire-extinguisher/js/utils.js?v=1.3.0"></script>
 
   <script>
     (function () {
@@ -837,13 +930,8 @@
           }
         });
 
-        U.$('#scrollHistoryBtn').addEventListener('click', () => {
-          U.$('#historySection').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-
-        U.$('#toggleFormBtn').addEventListener('click', openForm);
-        U.$('#closeFormBtn').addEventListener('click', closeForm);
-
+        U.$('#toggleInspectBtn').addEventListener('click', toggleInspectionForm);
+        U.$('#closeFormBtn').addEventListener('click', hideInspectionForm);
         U.$('#inspectionForm').addEventListener('change', handleFormChange);
         U.$('#inspectionForm').addEventListener('submit', handleSubmit);
       }
@@ -866,7 +954,7 @@
           renderExtinguisher(currentExtinguisher);
           renderNames(names);
           renderHistory(historyItems);
-          renderLatestStatus(historyItems);
+          renderLatest(historyItems);
           updateCo2Visibility();
 
           U.hide('#loadingBox');
@@ -879,11 +967,11 @@
 
       async function loadHistory(id) {
         try {
-          const res = await API.getHistory(id, 20);
+          const res = await API.getHistory(id, 10);
           historyItems = res.items || [];
           renderHistory(historyItems);
-          renderLatestStatus(historyItems);
-          U.toast('อัปเดตข้อมูลล่าสุดแล้ว', 'success');
+          renderLatest(historyItems);
+          U.toast('อัปเดตประวัติล่าสุดแล้ว', 'success');
         } catch (err) {
           U.toast(err.message || 'โหลดประวัติไม่สำเร็จ', 'error');
         }
@@ -907,13 +995,9 @@
 
           if (!displayName) return;
 
-          const key = `${thaiName}|${englishName}|${displayName}`;
+          const key = `${thaiName}|${englishName}`;
           if (!map.has(key)) {
-            map.set(key, {
-              thaiName,
-              englishName,
-              displayName
-            });
+            map.set(key, { thaiName, englishName, displayName });
           }
         });
 
@@ -921,6 +1005,11 @@
       }
 
       function renderExtinguisher(item) {
+        if (!item) {
+          showNotFound();
+          return;
+        }
+
         U.setText('#extinguisherId', item.extinguisherId);
         U.setText('#location', item.location);
         U.setText('#type', item.type);
@@ -931,8 +1020,11 @@
         const img = U.$('#extinguisherImage');
         if (img) {
           const src = U.getExtinguisherImage(item.type);
-          img.src = src || window.APP_CONFIG.LOGO_URL;
+          img.src = src || '';
           img.alt = item.type || 'ภาพถังดับเพลิง';
+          img.onerror = function () {
+            this.style.display = 'none';
+          };
         }
       }
 
@@ -952,7 +1044,7 @@
         ].join('');
       }
 
-      function renderLatestStatus(items) {
+      function renderLatest(items) {
         const latest = items && items.length ? items[0] : null;
 
         U.setText('#historyCount', items.length || 0);
@@ -960,7 +1052,8 @@
         if (!latest) {
           U.setText('#latestTimestamp', '-');
           U.setText('#latestInspector', '-');
-          U.setText('#latestStatusText', '-');
+          U.setText('#latestResult', '-');
+          U.setText('#lastStatusText', 'ยังไม่มีประวัติ');
 
           const badge = U.$('#latestBadge');
           badge.className = 'badge wait';
@@ -968,54 +1061,68 @@
           return;
         }
 
+        const result = latest.overallStatus || '-';
+        const inspector = latest.inspectorThai || latest.inspectorEnglish || '-';
+
         U.setText('#latestTimestamp', latest.timestamp || '-');
-        U.setText('#latestInspector', latest.inspectorThai || latest.inspectorEnglish || '-');
-        U.setText('#latestStatusText', latest.overallStatus || '-');
+        U.setText('#latestInspector', inspector);
+        U.setText('#latestResult', result);
+        U.setText('#lastStatusText', result);
 
         const badge = U.$('#latestBadge');
-        const isOk = latest.overallStatus === 'ปกติ';
+        const isOk = result === 'ปกติ';
         badge.className = `badge ${isOk ? 'ok' : 'bad'}`;
-        badge.textContent = latest.overallStatus || '-';
+        badge.textContent = result;
       }
 
       function renderHistory(items) {
         const box = U.$('#historyList');
 
         if (!items.length) {
-          box.innerHTML = '<div class="empty-state">ยังไม่มีประวัติการตรวจ</div>';
+          box.innerHTML = '<div class="empty-state">ยังไม่มีประวัติการตรวจถังนี้</div>';
           return;
         }
 
         box.innerHTML = items.map(item => {
-          const isOk = item.overallStatus === 'ปกติ';
+          const result = item.overallStatus || '-';
+          const isOk = result === 'ปกติ';
 
           return `
             <article class="history-item">
-              <div class="history-head">
+              <div class="history-row">
                 <div>
-                  <strong>${U.escapeHtml(item.timestamp || '-')}</strong>
-                  <div class="history-time">ผู้ตรวจ: ${U.escapeHtml(item.inspectorThai || item.inspectorEnglish || '-')}</div>
+                  <div class="history-date">${U.escapeHtml(item.timestamp || '-')}</div>
+                  <div class="history-meta">
+                    ผู้ตรวจ: ${U.escapeHtml(item.inspectorThai || item.inspectorEnglish || '-')}
+                  </div>
                 </div>
-                <span class="badge ${isOk ? 'ok' : 'bad'}">${U.escapeHtml(item.overallStatus || '-')}</span>
+                <span class="badge ${isOk ? 'ok' : 'bad'}">${U.escapeHtml(result)}</span>
               </div>
-              <p>
-                สภาพถัง: ${U.escapeHtml(item.bodyStatus || '-')} •
-                แรงดัน: ${U.escapeHtml(item.pressureStatus || '-')} •
-                เกจ/น้ำหนัก: ${U.escapeHtml(item.gaugeWeightStatus || '-')}
-              </p>
-              ${item.remark ? `<p style="margin-top:6px;">หมายเหตุ: ${U.escapeHtml(item.remark)}</p>` : ''}
+
+              <div class="history-checks">
+                <div class="mini-check"><b>ความสะอาด</b>${U.escapeHtml(item.cleanliness || '-')}</div>
+                <div class="mini-check"><b>สภาพถัง</b>${U.escapeHtml(item.bodyStatus || '-')}</div>
+                <div class="mini-check"><b>แรงดัน</b>${U.escapeHtml(item.pressureStatus || '-')}</div>
+                <div class="mini-check"><b>เกจ/น้ำหนัก</b>${U.escapeHtml(item.gaugeWeightStatus || '-')}</div>
+              </div>
             </article>
           `;
         }).join('');
       }
 
-      function openForm() {
-        U.show('#inspectionForm');
-        U.$('#inspectionForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      function toggleInspectionForm() {
+        const form = U.$('#inspectionForm');
+        if (form.hidden) {
+          form.hidden = false;
+          form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          hideInspectionForm();
+        }
       }
 
-      function closeForm() {
-        U.hide('#inspectionForm');
+      function hideInspectionForm() {
+        const form = U.$('#inspectionForm');
+        form.hidden = true;
       }
 
       function handleFormChange() {
@@ -1042,13 +1149,17 @@
       }
 
       function updateCo2Visibility() {
+        const box = U.$('#co2Box');
+        if (!box) return;
+
         const isCo2 = currentExtinguisher && isCo2Type(currentExtinguisher.type);
-        U.$('#co2Box').hidden = !isCo2;
+        box.hidden = !isCo2;
       }
 
       function isCo2Type(type) {
         const text = String(type || '').toLowerCase();
         return text.includes('co2') ||
+          text.includes('co₂') ||
           text.includes('carbon dioxide') ||
           text.includes('คาร์บอนไดออกไซด์');
       }
@@ -1118,7 +1229,7 @@
           ['pressureStatus', 'pressureNote', 'แรงดัน'],
           ['gaugeWeightStatus', 'gaugeWeightNote', 'เกจวัด/น้ำหนัก'],
           ['hoseStatus', 'hoseNote', 'สาย/กระบอกฉีด'],
-          ['pinSealStatus', 'pinSealNote', 'สายรัดสลัก / ซีล'],
+          ['pinSealStatus', 'pinSealNote', 'สายรัดสลัก'],
           ['handleStatus', 'handleNote', 'คันบังคับ']
         ];
 
@@ -1156,7 +1267,7 @@
           updateCo2Visibility();
 
           await loadHistory(currentExtinguisher.extinguisherId);
-          closeForm();
+          hideInspectionForm();
         } catch (err) {
           U.toast(err.message || 'บันทึกไม่สำเร็จ', 'error');
         } finally {
