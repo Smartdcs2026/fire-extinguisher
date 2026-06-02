@@ -187,7 +187,12 @@
         params: { id, limit }
       });
     },
-
+     getLatestSummary(id) {
+  return request('/api/latest-summary', {
+    params: { id },
+    timeoutMs: 30000
+  });
+},
     getNames() {
       return request('/api/names');
     },
