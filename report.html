@@ -1222,18 +1222,16 @@
             : 'thisMonth';
         } else {
           select.innerHTML = `
-  <option value="today">วันนี้</option>
-  <option value="yesterday">เมื่อวาน</option>
-  <option value="thisWeek">สัปดาห์นี้</option>
-  <option value="lastWeek">สัปดาห์ที่แล้ว</option>
-  <option value="last7days">7 วันที่ผ่านมา</option>
-  <option value="last14days">14 วันที่ผ่านมา</option>
-  <option value="last30days">30 วันที่ผ่านมา</option>
-  <option value="thisMonth">เดือนนี้</option>
-  <option value="lastMonth">เดือนที่แล้ว</option>
-  <option value="thisYear">ปีนี้</option>
-  <option value="custom">กำหนดเอง</option>
-`;
+            <option value="today">วันนี้</option>
+            <option value="yesterday">เมื่อวาน</option>
+            <option value="last7days">7 วันที่ผ่านมา</option>
+            <option value="last14days">14 วันที่ผ่านมา</option>
+            <option value="last30days">30 วันที่ผ่านมา</option>
+            <option value="thisMonth">เดือนนี้</option>
+            <option value="lastMonth">เดือนที่แล้ว</option>
+            <option value="thisYear">ปีนี้</option>
+            <option value="custom">กำหนดเอง</option>
+          `;
 
           select.value = current || 'thisMonth';
         }
