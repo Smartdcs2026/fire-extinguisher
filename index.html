@@ -1605,5 +1605,16 @@
       }
     })();
   </script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/fire-extinguisher/sw.js', {
+        scope: '/fire-extinguisher/'
+      }).catch(err => {
+        console.warn('Service Worker register failed:', err);
+      });
+    });
+  }
+</script>
 </body>
 </html>
